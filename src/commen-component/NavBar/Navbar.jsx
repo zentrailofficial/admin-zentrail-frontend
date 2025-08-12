@@ -205,7 +205,7 @@ const NAV_ITEMS = [
   { title: "Services", icon: <DashboardIcon />, path: "/services" },
   { title: "Category", icon: <DashboardIcon />, path: "/category" },
   {
-    title: "Category Services",
+    title: "Category Feature",
     icon: <DashboardIcon />,
     path: "/categoryservices",
   },

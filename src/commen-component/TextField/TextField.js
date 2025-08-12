@@ -11,7 +11,9 @@ const CommenTextField = ({
   focused,
   minLength,
   maxLength,
-  messages = {}
+  messages = {},
+  onChange,
+  ...rest
 }) => {
   const { control } = useFormContext();
 
@@ -54,6 +56,14 @@ const CommenTextField = ({
           helperText={error?.message}
           margin="normal"
           focused={!!focused}
+   onChange={(e) => {
+            const inputValue = e.target.value;
+            field.onChange(e);
+            if (onChange) {
+              onChange(inputValue);
+            }
+          }}
+              {...rest}
           // inputProps={{
           //   maxLength: maxLength || undefined, // prevent typing over limit
           // }}

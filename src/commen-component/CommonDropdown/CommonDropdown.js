@@ -13,16 +13,15 @@ const CommonDropdown = ({
   label,
   options = [],
   required = false,
-  showAddMore = false,
-  onAddMoreClick,
+  multiple = false, 
+  onChangeValues,  
   ...props
 }) => {
-  const { control , error } = useFormContext();
+  const { control , error  } = useFormContext();
   const labelId = `${name}-label`;
   const selectId = `${name}-select`;
-
   return (
-    <FormControl fullWidth margin="normal"  size="small">
+    <FormControl fullWidth margin="normal" size="small">
       <InputLabel id={labelId}>{label}</InputLabel>
       <Controller
         name={name}
@@ -36,36 +35,33 @@ const CommonDropdown = ({
             id={selectId}
             labelId={labelId}
             label={label}
+            multiple={multiple}
             error={!!error}
             size="small"
+            onChange={(e) => {
+              field.onChange(e);
+              const selectedValues = e.target.value;
+              if (onChangeValues) {
+                onChangeValues( selectedValues );
+              }
+            }}
             {...props}
-            MenuProps={{ PaperProps: { style: { maxHeight: 250 ,marginRight:0} } }}
+            MenuProps={{
+              PaperProps: { style: { maxHeight: 250, marginRight: 0 } },
+            }}
           >
             {options.map((option, index) => (
               <MenuItem key={index} value={option.value}>
                 {option.label}
               </MenuItem>
             ))}
-
-            {/* {showAddMore && (
-              <MenuItem
-                value="__add_more__"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onAddMoreClick) onAddMoreClick();
-                }}
-              >
-                ➕ Add More
-              </MenuItem>
-            )} */}
           </Select>
         )}
       />
       {error && (
         <Box mt={0.5} color="error.main" fontSize={13}>
-          
           {error.message}
-        </Box>  
+        </Box>
       )}
     </FormControl>
   );

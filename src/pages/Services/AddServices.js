@@ -1,11 +1,21 @@
-import { Box, Card, CardContent, Grid, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  Stack,
+  Typography,
+  IconButton,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import CommenTextField from "../../commen-component/TextField/TextField";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import BookIcon from "@mui/icons-material/Book";
 import SettingsIcon from "@mui/icons-material/Settings";
+// import {  Delete as DeleteIcon } from "@mui/icons-material";
+
 import {
   CloudUpload as CloudUploadIcon,
   Add as AddIcon,
@@ -34,10 +44,9 @@ const AddServices = () => {
       title: "",
       uid: "",
       description: "",
-      authorName: "",
-      serviceCategory: "",
-      blogcategory: "",
-      Portfolio: "",
+      serviceCategory: [],
+      blogcategory: [],
+      Portfolio: [],
       featuredImage: {
         url: "",
         altText: "",
@@ -54,10 +63,14 @@ const AddServices = () => {
         image: "",
       },
       status: "Draft",
+      faq: [{ question: "", answer: "" }],
     },
   });
-  const { watch, setValue } = methods;
-  const titleValue = watch("title");
+  const { setValue, control, handleSubmit } = methods;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "faq",
+  });
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -66,11 +79,12 @@ const AddServices = () => {
       const formData = new FormData();
       formData.append("uid", data.uid);
       formData.append("title", data.title);
-      formData.append("authorName", data.authorName);
       formData.append("description", data.description);
       formData.append("blogcategory", data.blogcategory);
+      formData.append("serviceCategory", data.serviceCategory);
+      formData.append("Portfolio", data.Portfolio);
       formData.append("status", data.status);
-      if (data.featuredImage.length > 0) {
+      if (data?.featuredImage?.length > 0) {
         formData.append("featuredImage", data.featuredImage[0].file);
         formData.append(
           "featuredImageAlt",
@@ -84,6 +98,7 @@ const AddServices = () => {
       formData.append("ogTags[title]", data.ogTags?.title || "");
       formData.append("ogTags[description]", data.ogTags?.description || "");
       formData.append("ogTags[image]", data.ogTags?.image || "");
+      formData.append("faq", JSON.stringify(data.faq));
 
       const response = await apiClient.post(
         "/api/service/servicepage",
@@ -96,7 +111,6 @@ const AddServices = () => {
       );
 
       if (response.status === 201) {
-        console.log("Blog created successfully");
         setLoading(false);
         navigate("/services");
       }
@@ -106,20 +120,17 @@ const AddServices = () => {
       alert("Failed to create blog");
     }
   };
-
-  const handleAddMore = () => {
-    alert("Add more clicked!");
-  };
-
+  // setLoading(false);
   const fetchPortfolio = async () => {
     try {
       const res = await apiClient.get("/api/portfolio");
       console.log(res.data);
-      const option = res.data.map((portfolio) => ({
-        value: portfolio._id,
-        label: portfolio._id,
+      const options = res.data.map((portfolio) => ({
+        value: portfolio._id, // the actual ID for form submission
+        label: portfolio.name || "", // a readable name for the dropdown
       }));
-      setAllPortfolioData(option);
+
+      setAllPortfolioData(options);
       // setAllPortfolioData(res.data);
       // setLoading(false);
     } catch (error) {
@@ -127,18 +138,16 @@ const AddServices = () => {
       // setLoading(false);
     }
   };
-
   const fetchCategory = async () => {
     try {
       const res = await apiClient.get("/api/category");
-      const option = res.data.map((category) => ({
-        value: category._id,
-        label: category.name,
+      const options = res.data.map((portfolio) => ({
+        value: portfolio._id,
+        label: portfolio.name || "",
       }));
-      setCategoryOptions(option);
+      setCategoryOptions(options);
     } catch (error) {
       console.error("Error fetching portfolio", error);
-      // setLoading(false);
     }
   };
 
@@ -158,17 +167,18 @@ const AddServices = () => {
     fetchCategorieservices();
   }, []);
 
-  useEffect(() => {
-    if (titleValue) {
-      const slug = titleValue
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s]/gi, "") // remove special characters
-        .replace(/\s+/g, "_"); // replace spaces with underscore
-
-      setValue("uid", slug);
-    }
-  }, [titleValue, setValue]);
+  const textToSlug = (text) => {
+    return text
+      .toString()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  };
 
   return (
     <FormProvider {...methods}>
@@ -215,15 +225,10 @@ const AddServices = () => {
                     label="Service Title *"
                     required
                     size="small"
+                    onChange={(val) => setValue("uid", textToSlug(val))}
                   />
 
                   <CommenTextField name="uid" label="uid" size="small" />
-
-                  <CommenTextField
-                    name="authorName"
-                    label="Author"
-                    size="small"
-                  />
                   <CommenQuillEditor
                     name="description"
                     label="Description *"
@@ -243,16 +248,15 @@ const AddServices = () => {
                     >
                       <CategoryIcon color="primary" />
                       <Typography variant="h6" fontWeight={600}>
-                        Category
+                        Select Blog Category
                       </Typography>
                     </Stack>
 
                     <CommonDropdown
                       name="blogcategory"
-                      label="Category *"
+                      label="Blog Category *"
                       options={categoryOptions}
                       required
-                      onAddMoreClick={handleAddMore}
                     />
                   </CardContent>
                 </Card>
@@ -266,16 +270,16 @@ const AddServices = () => {
                     >
                       <CategoryIcon color="primary" />
                       <Typography variant="h6" fontWeight={600}>
-                        Service Category
+                        Service feature
                       </Typography>
                     </Stack>
 
                     <CommonDropdown
                       name="serviceCategory"
                       label="Service Category *"
+                      multiple
                       options={AllCategorieservicesOptions}
                       required
-                      onAddMoreClick={handleAddMore}
                     />
                   </CardContent>
                 </Card>
@@ -290,19 +294,28 @@ const AddServices = () => {
                     >
                       <CategoryIcon color="primary" />
                       <Typography variant="h6" fontWeight={600}>
-                        Portfolio
+                        Gallery
                       </Typography>
                     </Stack>
 
                     <CommonDropdown
                       name="Portfolio"
                       label="Portfolio *"
-                      options={allPortfolioData}
+                      options={categoryOptions}
                       required
-                      onAddMoreClick={handleAddMore}
                     />
                   </CardContent>
                 </Card>
+                <CommonDropdown
+                  name="status"
+                  label="Status"
+                  required
+                  options={[
+                    { value: "Draft", label: "Draft" },
+                    { value: "Published", label: "Published" },
+                    { value: "Scheduled", label: "Scheduled" },
+                  ]}
+                />
               </Grid>
               <Grid
                 item
@@ -351,10 +364,6 @@ const AddServices = () => {
                       rows={3}
                     />
                     <CommenTextField name="meta.keywords" label="Keywords" />
-                    <CommenTextField
-                      name="meta.canonicalUrl"
-                      label="Canonical URL"
-                    />
                   </Box>
 
                   {/* OG Tags Accordion */}
@@ -395,6 +404,74 @@ const AddServices = () => {
                     />
                   </CardContent>
                 </Card>
+
+                {/* FAQ Section */}
+                <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
+                  <CardContent>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      mb={2}
+                    >
+                      <Typography variant="h6" fontWeight={600}>
+                        FAQs
+                      </Typography>
+                      <IconButton
+                        color="primary"
+                        onClick={() => append({ question: "", answer: "" })}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </Stack>
+
+                    {fields.map((item, index) => (
+                      <Box
+                        key={item.id}
+                        sx={{
+                          border: "1px solid #ddd",
+                          borderRadius: 2,
+                          p: 2,
+                          mb: 2,
+                          background: "#fafafa",
+                        }}
+                      >
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          mb={1}
+                        >
+                          <Typography variant="subtitle1">
+                            FAQ {index + 1}
+                          </Typography>
+                          {fields.length > 1 && (
+                            <IconButton
+                              color="error"
+                              onClick={() => remove(index)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                        </Stack>
+
+                        <CommenTextField
+                          name={`faq.${index}.question`}
+                          label="Question *"
+                          required
+                        />
+                        <CommenTextField
+                          name={`faq.${index}.answer`}
+                          label="Answer *"
+                          required
+                          multiline
+                          rows={3}
+                        />
+                      </Box>
+                    ))}
+                  </CardContent>
+                </Card>
+
                 <Box mt={4}>
                   <CommonButton
                     sx={{

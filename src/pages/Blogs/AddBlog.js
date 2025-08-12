@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import {
   Box,
   Paper,
@@ -8,6 +8,7 @@ import {
   CardContent,
   Stack,
   Grid,
+    IconButton,
 } from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
@@ -44,22 +45,22 @@ const AddBlogForm = () => {
       description: "",
       category: "",
       images: [],
+        faq: [{ question: "", answer: "" }],
     },
   });
-     const { watch, setValue } = methods;
+     const { watch, setValue  , control} = methods;
   const titleValue = watch("title");
-
-  // const categoryOptions = [
-  //   { value: "tech", label: "Tech" },
-  //   { value: "health", label: "Health" },
-  // ];
+    const { fields, append, remove } = useFieldArray({
+      control,
+      name: "faq",
+    });
 
   const onSubmit = async (data) => {
     console.log(data);
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append("uid", uuidv4());
+      formData.append("uid", data.uid);
       formData.append("title", data.title);
       formData.append("authorName", data.author);
       formData.append("description", data.description);
@@ -80,7 +81,7 @@ const AddBlogForm = () => {
       formData.append("ogTags[title]", data.ogTags?.title || "");
       formData.append("ogTags[description]", data.ogTags?.description || "");
       formData.append("ogTags[image]", data.ogTags?.image || "");
-
+formData.append("faq", JSON.stringify(data.faq));
       const response = await apiClient.post("/api/blogs", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -207,8 +208,6 @@ const AddBlogForm = () => {
                       label="Category *"
                       options={categoryOptions}
                       required
-                      showAddMore
-                      onAddMoreClick={handleAddMore}
                     />
                   </CardContent>
                 </Card>
@@ -302,9 +301,6 @@ const AddBlogForm = () => {
                       label="Canonical URL"
                     />
                   </Box>
-
-                  {/* OG Tags Accordion */}
-
                   <Box
                     sx={{ borderRadius: 3, mb: 4, padding: { xs: 3, md: 2 } }}
                   >
@@ -321,7 +317,76 @@ const AddBlogForm = () => {
                     <CommenTextField name="ogTags.image" label="OG Image URL" />
                   </Box>
                   {/* </CardContent> */}
+
                 </Card>
+
+                    {/* FAQ Section */}
+                                <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
+                                  <CardContent>
+                                    <Stack
+                                      direction="row"
+                                      alignItems="center"
+                                      justifyContent="space-between"
+                                      mb={2}
+                                    >
+                                      <Typography variant="h6" fontWeight={600}>
+                                        FAQs
+                                      </Typography>
+                                      <IconButton
+                                        color="primary"
+                                        onClick={() => append({ question: "", answer: "" })}
+                                      >
+                                        <AddIcon />
+                                      </IconButton>
+                                    </Stack>
+                
+                                    {fields.map((item, index) => (
+                                      <Box
+                                        key={item.id}
+                                        sx={{
+                                          border: "1px solid #ddd",
+                                          borderRadius: 2,
+                                          p: 2,
+                                          mb: 2,
+                                          background: "#fafafa",
+                                        }}
+                                      >
+                                        <Stack
+                                          direction="row"
+                                          justifyContent="space-between"
+                                          alignItems="center"
+                                          mb={1}
+                                        >
+                                          <Typography variant="subtitle1">
+                                            FAQ {index + 1}
+                                          </Typography>
+                                          {fields.length > 1 && (
+                                            <IconButton
+                                              color="error"
+                                              onClick={() => remove(index)}
+                                            >
+                                              <DeleteIcon />
+                                            </IconButton>
+                                          )}
+                                        </Stack>
+                
+                                        <CommenTextField
+                                          name={`faq.${index}.question`}
+                                          label="Question *"
+                                          
+                                        />
+                                        <CommenTextField
+                                          name={`faq.${index}.answer`}
+                                          label="Answer *"
+                                          
+                                          multiline
+                                          rows={3}
+                                        />
+                                      </Box>
+                                    ))}
+                                  </CardContent>
+                                </Card>
+                
               </Grid>
               <Grid
                 item

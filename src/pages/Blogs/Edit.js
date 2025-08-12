@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { Box, Typography, Card, Stack, Grid } from "@mui/material";
+import { useForm, FormProvider , useFieldArray  } from "react-hook-form";
+import { Box, Typography, Card, Stack, Grid, IconButton, CardContent } from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
@@ -35,10 +35,15 @@ const EditBlog = () => {
       images: [],
       meta: {},
       ogTags: {},
+       faq: [{ question: "", answer: "" }]
     },
   });
-  const { reset, handleSubmit, getValues, formState } = methods;
+  const { reset, handleSubmit, getValues, formState ,control} = methods;
 
+    const { fields, append, remove } = useFieldArray({
+    control,
+    name: "faq",
+  });
   const [loading, setLoading] = useState(true);
   const [btnloading, setbtnLoading] = useState(false);
 
@@ -63,6 +68,7 @@ const EditBlog = () => {
           author: blog.authorName,
           description: blog.description,
           category: blog.category?._id,
+          faq: Array.isArray(blog.faq) && blog.faq.length > 0 ? blog.faq : [{ question: "", answer: "" }],
           images: blog.featuredImage?.url
             ? [
                 {
@@ -95,6 +101,7 @@ const EditBlog = () => {
       formData.append("category", data.category);
       formData.append("tags", JSON.stringify(data.tags || []));
       formData.append("status", "Draft");
+ formData.append("faq", JSON.stringify(data.faq));
 
       // Check if a new image is uploaded
       const image = data.images?.[0];
@@ -296,22 +303,59 @@ const EditBlog = () => {
                         label="OG Image URL"
                       />
                     </Stack>
-                    {/* Status Select (unchanged for now) */}
-                    {/* <FormControl fullWidth sx={{ mt: 3 }}>
-                        <InputLabel>Status</InputLabel>
-                        <Controller
-                          name="status"
-                          control={control}
-                          defaultValue="Draft"
-                          render={({ field }) => (
-                            <Select {...field} label="Status">
-                              <MenuItem value="Draft">Draft</MenuItem>
-                              <MenuItem value="Published">Published</MenuItem>
-                              <MenuItem value="Scheduled">Scheduled</MenuItem>
-                            </Select>
+                 <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
+                  <CardContent>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      mb={2}
+                    >
+                      <Typography variant="h6" fontWeight={600}>
+                        FAQs
+                      </Typography>
+                      <IconButton color="primary" onClick={() => append({ question: "", answer: "" })}>
+                        <AddIcon />
+                      </IconButton>
+                    </Stack>
+
+                    {fields.map((item, index) => (
+                      <Box
+                        key={item.id}
+                        sx={{
+                          border: "1px solid #ddd",
+                          borderRadius: 2,
+                          p: 2,
+                          mb: 2,
+                          background: "#fafafa",
+                        }}
+                      >
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          mb={1}
+                        >
+                          <Typography variant="subtitle1">FAQ {index + 1}</Typography>
+                          {fields.length > 1 && (
+                            <IconButton color="error" onClick={() => remove(index)}>
+                              <DeleteIcon />
+                            </IconButton>
                           )}
+                        </Stack>
+
+                        <CommenTextField name={`faq.${index}.question`} label="Question *" />
+                        <CommenTextField
+                          name={`faq.${index}.answer`}
+                          label="Answer *"
+                          multiline
+                          rows={3}
                         />
-                      </FormControl> */}
+                      </Box>
+                    ))}
+                  </CardContent>
+                </Card>
+
                   </Stack>
                 </Card>
                 <CommonButton type="submit" loading={btnloading}>
