@@ -108,13 +108,13 @@ const AddBlogForm = () => {
         const slug = titleValue
           .toLowerCase()
           .trim()
-          .replace(/[^\w\s]/gi, "") // remove special characters
-          .replace(/\s+/g, "_"); // replace spaces with underscore
+          .replace(/[^\w\s]/gi, "")
+          .replace(/\s+/g, "_");
   
         setValue("uid", slug);
       }
     }, [titleValue, setValue]);
-    
+
   useEffect(() => {
     apiClient.get("/api/category").then((data) => {
       console.log(data.data);
