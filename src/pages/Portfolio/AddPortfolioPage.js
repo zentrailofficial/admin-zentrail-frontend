@@ -6,6 +6,7 @@ import {
   Button,
   Grid,
   CircularProgress,
+  Card,
 } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
@@ -65,42 +66,53 @@ const AddPortfolioPage = () => {
 
   return (
     <FormProvider {...methods}>
-      <Box>
-        <Paper sx={{ p: 4 }}>
-          <Typography variant="h5" gutterBottom>
-            Add Portfolio
-          </Typography>
+        {/* <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{
+            width: { xs: "100%", md: "50%" },
+            display: "flex",
+            flexDirection: "column",
+          }}
+        > */}
+          <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 ,width:{md:"50%"},margin:"auto"}}>
+            <Typography variant="h5" gutterBottom>
+              Add Portfolio
+            </Typography>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Category Dropdown */}
-            <CommonDropdown
-              name="category"
-              label="Select Category"
-              options={categories}
-              required={true}
-            />
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Category Dropdown */}
+              <CommonDropdown
+                name="category"
+                label="Select Category"
+                options={categories}
+                required={true}
+              />
 
-            {/* Image Upload */}
-            <ImageUpload
-              name="images"
-              label="Upload Portfolio Images"
-              multiple
-              altText
-            />
+              {/* Image Upload */}
+              <Box>
+                <ImageUpload
+                  name="images"
+                  label="Upload Portfolio Images"
+                  multiple
+                  altText
+                />
+              </Box>
 
-            <Box mt={3}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={loading}
-              >
-                {loading ? <CircularProgress size={24} /> : "Add Portfolio"}
-              </Button>
-            </Box>
-          </form>
-        </Paper>
-      </Box>
+              <Box mt={3}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disabled={loading}
+                >
+                  {loading ? <CircularProgress size={24} /> : "Add Portfolio"}
+                </Button>
+              </Box>
+            </form>
+          </Card>
+        {/* </Grid> */}
     </FormProvider>
   );
 };

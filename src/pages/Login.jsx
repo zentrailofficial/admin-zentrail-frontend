@@ -17,8 +17,9 @@ import { apiClient } from '../lib/api-client';
 
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
 const Login = () => {
-
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const theme = useTheme();
@@ -27,6 +28,7 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       const res = await apiClient.post("/api/auth/login", data);
+      login(res?.data?.user)
 
       const { token } = res.data;
 

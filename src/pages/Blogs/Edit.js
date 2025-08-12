@@ -1,17 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import {
-  Box,
-  Paper,
-  Typography,
-  Card,
-  CardContent,
-  Stack,
-  Grid,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
+import { Box, Typography, Card, Stack, Grid } from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
@@ -28,13 +17,15 @@ import {
   Category as CategoryIcon,
 } from "@mui/icons-material";
 import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
+import BookIcon from "@mui/icons-material/Book";
 import { apiClient } from "../../lib/api-client";
-import { v4 as uuidv4 } from "uuid";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 
 const EditBlog = () => {
+  const navigate = useNavigate()
   const { id } = useParams(); // assuming route = /edit/:id
+  const [categoryOptions, setCategoryOptions] = useState([]);
   const methods = useForm({
     defaultValues: {
       title: "",
@@ -49,24 +40,29 @@ const EditBlog = () => {
   const { reset, handleSubmit, getValues, formState } = methods;
 
   const [loading, setLoading] = useState(true);
+  const [btnloading, setbtnLoading] = useState(false);
 
-  console.log(reset, formState);
-  const categoryOptions = [
-    { value: "tech", label: "Tech" },
-    { value: "health", label: "Health" },
-  ];
-  console.log(id);
+  useEffect(() => {
+    apiClient.get("/api/category").then((data) => {
+      const option = data.data.map((category) => ({
+        value: category._id,
+        label: category.name,
+      }));
+      setCategoryOptions(option);
+    });
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await apiClient.get(`/api/blogs/${id}`);
         const blog = res.data.blog;
-        console.log(blog, "Ddd");
+        console.log(res.data.blog)
         const mapped = {
           title: blog.title,
           author: blog.authorName,
           description: blog.description,
-          category: blog.category,
+          category: blog.category?._id,
           images: blog.featuredImage?.url
             ? [
                 {
@@ -78,7 +74,6 @@ const EditBlog = () => {
           meta: blog.meta,
           ogTags: blog.ogTags,
         };
-        console.log(mapped);
         reset(mapped);
         setLoading(false);
       } catch (err) {
@@ -90,6 +85,7 @@ const EditBlog = () => {
   }, [id, reset]);
 
   const onSubmit = async (data) => {
+    setbtnLoading(true)
     try {
       const formData = new FormData();
 
@@ -124,13 +120,15 @@ const EditBlog = () => {
       const res = await apiClient.put(`/api/blogs/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
       if (res.status === 200) {
-        alert("Blog updated successfully");
+        // alert("Blog updated successfully");
+        navigate("/blog")
+        setbtnLoading(false)
       }
     } catch (error) {
       console.error("Failed to update blog", error);
       alert("Failed to update");
+      setbtnLoading(false)
     }
   };
 
@@ -142,34 +140,56 @@ const EditBlog = () => {
 
   return (
     <FormProvider {...methods}>
-      <Box
-        sx={{
-          minHeight: "100vh",
-          py: 4,
-          px: 2,
-          // background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        }}
-      >
-        <Box maxWidth="600px" mx="auto">
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h5" gutterBottom>
-              Add New Blog
-            </Typography>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <Box
+          sx={{
+            minHeight: "100vh",
+            py: 0,
+            px: 0,
+            // bgcolor: "dark" ? "white" : "#F7F7F9",
+            transition: "background 0.3s",
+          }}
+        >
+          <Box maxWidth="xl" mx="auto">
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                flexDirection: { xs: "column", md: "row" },
+                alignItems: "stretch",
+              }}
+            >
+              {/* Left Section */}
+              <Grid
+                item
+                xs={12}
+                md={6}
+                sx={{
+                  width: { xs: "100%", md: "50%" },
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
+                  <Stack direction="row" alignItems="center" spacing={2} mb={3}>
+                    <BookIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Update Blog
+                    </Typography>
+                  </Stack>
 
-            <form onSubmit={methods.handleSubmit(onSubmit)}>
-              <CommenTextField name="title" label="Blog Title *" required />
-              <CommenTextField name="author" label="Author" required />
-              <CommenQuillEditor
-                name="description"
-                label="Description *"
-                required
-                minLength={30}
-                placeholder="Write blog content here..."
-              />
-
-              {/* Category and Tags */}
-              <Card elevation={0} sx={{ borderRadius: 3, overflow: "hidden" }}>
-                <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                  <CommenTextField name="title" label="Blog Title *" required />
+                  <CommenTextField name="author" label="Author" required />
+                  <CommenQuillEditor
+                    name="description"
+                    label="Description *"
+                    required
+                    minLength={30}
+                    placeholder="Write blog content here..."
+                  />
+                </Card>
+                {/* Category and Tags */}
+                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
                   <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                     <CategoryIcon color="primary" />
                     <Typography variant="h6" fontWeight={600}>
@@ -185,12 +205,10 @@ const EditBlog = () => {
                     showAddMore
                     onAddMoreClick={handleAddMore}
                   />
-                </CardContent>
-              </Card>
+                </Card>
 
-              {/* URL and Image */}
-              <Card elevation={0} sx={{ borderRadius: 3, overflow: "hidden" }}>
-                <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                {/* URL and Image */}
+                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
                   <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                     <ImageIcon color="primary" />
                     <Typography variant="h6" fontWeight={600}>
@@ -206,102 +224,71 @@ const EditBlog = () => {
                       altText
                     />
                   </Stack>
-                </CardContent>
-              </Card>
+                </Card>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                md={6}
+                sx={{
+                  width: { xs: "100%", md: "45%" },
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <Card elevation={3} sx={{ borderRadius: 3, mb: 4, padding: 3 }}>
+                  <Stack spacing={3}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={3}
+                    >
+                      <SettingsIcon color="primary" />
+                      <Typography variant="h6" fontWeight="600">
+                        SEO Settings
+                      </Typography>
+                    </Stack>
+                    <Typography fontWeight="600" textAlign={"center"}>
+                      Meta Tags
+                    </Typography>
+                    <Stack spacing={2}>
+                      <CommenTextField
+                        name="meta.title"
+                        label="Meta Title *"
+                        required={true}
+                      />
+                      <CommenTextField
+                        name="meta.description"
+                        label="Meta Description *"
+                        multiline
+                        rows={3}
+                      />
+                      <CommenTextField name="meta.keywords" label="Keywords" />
+                      <CommenTextField
+                        name="meta.canonicalUrl"
+                        label="Canonical URL"
+                      />
+                    </Stack>
 
-              <Grid item xs={12} lg={4}>
-                <Stack spacing={3}>
-                  <Card
-                    elevation={0}
-                    sx={{
-                      borderRadius: 3,
-                      overflow: "hidden",
-                      position: "sticky",
-                      top: 20,
-                    }}
-                  >
-                    <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing={2}
-                        mb={3}
-                      >
-                        <SettingsIcon color="primary" />
-                        <Typography variant="h6" fontWeight="600">
-                          SEO Settings
-                        </Typography>
-                      </Stack>
-
-                      {/* Meta Tags Accordion */}
-                      <Accordion
-                        elevation={0}
-                        sx={{ "&:before": { display: "none" } }}
-                      >
-                        <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          sx={{ px: 0 }}
-                        >
-                          <Typography fontWeight="600">Meta Tags</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails sx={{ px: 0 }}>
-                          <Stack spacing={2}>
-                            <CommenTextField
-                              name="meta.title"
-                              label="Meta Title *"
-                              required={true}
-                            />
-                            <CommenTextField
-                              name="meta.description"
-                              label="Meta Description *"
-                              multiline
-                              rows={3}
-                            />
-                            <CommenTextField
-                              name="meta.keywords"
-                              label="Keywords"
-                            />
-                            <CommenTextField
-                              name="meta.canonicalUrl"
-                              label="Canonical URL"
-                            />
-                          </Stack>
-                        </AccordionDetails>
-                      </Accordion>
-
-                      {/* OG Tags Accordion */}
-                      <Accordion
-                        elevation={0}
-                        sx={{ "&:before": { display: "none" } }}
-                      >
-                        <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          sx={{ px: 0 }}
-                        >
-                          <Typography fontWeight="600">Open Graph</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails sx={{ px: 0 }}>
-                          <Stack spacing={2}>
-                            <CommenTextField
-                              name="ogTags.title"
-                              label="OG Title"
-                            />
-                            <CommenTextField
-                              name="ogTags.description"
-                              label="OG Description"
-                              multiline
-                              rows={3}
-                            />
-                            <CommenTextField
-                              name="ogTags.image"
-                              label="OG Image URL"
-                            />
-                          </Stack>
-                        </AccordionDetails>
-                      </Accordion>
-
-                      {/* Status Select (unchanged for now) */}
-                      {/* <FormControl fullWidth sx={{ mt: 3 }}>
+                    <Typography textAlign={"center"} fontWeight="600">
+                      Open Graph
+                    </Typography>
+                    <Stack spacing={2}>
+                      <CommenTextField name="ogTags.title" label="OG Title" />
+                      <CommenTextField
+                        name="ogTags.description"
+                        label="OG Description"
+                        multiline
+                        rows={3}
+                      />
+                      <CommenTextField
+                        name="ogTags.image"
+                        label="OG Image URL"
+                      />
+                    </Stack>
+                    {/* Status Select (unchanged for now) */}
+                    {/* <FormControl fullWidth sx={{ mt: 3 }}>
                         <InputLabel>Status</InputLabel>
                         <Controller
                           name="status"
@@ -316,16 +303,14 @@ const EditBlog = () => {
                           )}
                         />
                       </FormControl> */}
-                    </CardContent>
-                  </Card>
-                </Stack>
+                  </Stack>
+                </Card>
+                <CommonButton type="submit" loading={btnloading}>Submit</CommonButton>
               </Grid>
-
-              <CommonButton type="submit">Submit</CommonButton>
-            </form>
-          </Paper>
+            </Grid>
+          </Box>
         </Box>
-      </Box>
+      </form>
     </FormProvider>
   );
 };

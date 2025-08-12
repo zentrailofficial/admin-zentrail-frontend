@@ -149,7 +149,7 @@ const AddBlogForm = () => {
               {/* <Paper sx={{ borderRadius: 3, p: { xs: 2, md: 3 }, height: "100%" }}> */}
 
              
-                <Card elevation={3} sx={{ borderRadius: 3, mb: 4, padding: 3 }}>
+                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
                   <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                     <BookIcon color="primary" />
                     <Typography variant="h6" gutterBottom fontWeight={600}>
@@ -178,7 +178,7 @@ const AddBlogForm = () => {
                   />
                 </Card>
 
-                <Card elevation={2} sx={{ borderRadius: 3, mt: 4 }}>
+                <Card elevation={2} sx={{ borderRadius: 3,mb: 2}}>
                   <CardContent sx={{ p: { xs: 3, md: 2 } }}>
                     <Stack
                       direction="row"
@@ -203,7 +203,7 @@ const AddBlogForm = () => {
                   </CardContent>
                 </Card>
 
-                <Card elevation={2} sx={{ borderRadius: 3, mt: 4 }}>
+                <Card elevation={2} sx={{ borderRadius: 3, mb: 2}}>
                   <CardContent sx={{ p: { xs: 3, md: 2 } }}>
                     <Stack
                       direction="row"
@@ -319,7 +319,7 @@ const AddBlogForm = () => {
                     flexDirection: "column",
                   }}
                 >
-                  <Box mt={4}>
+                  <Box>
                     <CommonButton
                       sx={{
                         borderRadius: 10,
