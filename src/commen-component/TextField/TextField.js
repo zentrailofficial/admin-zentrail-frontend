@@ -1,4 +1,3 @@
-
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField } from "@mui/material";
 
@@ -9,7 +8,10 @@ const CommenTextField = ({
   required = false,
   multiline = false,
   rows = 4,
-  focused
+  focused,
+  minLength,
+  maxLength,
+  messages = {}
 }) => {
   const { control } = useFormContext();
 
@@ -18,11 +20,25 @@ const CommenTextField = ({
       name={name}
       control={control}
       rules={{
-        required: required ? `${label} is required` : false,
-        minLength: {
-          value: 3,
-          message: `${label} must be at least 3 characters`,
-        },
+        required: required
+          ? messages.required || `${label} is required`
+          : false,
+        ...(minLength && {
+          minLength: {
+            value: minLength,
+            message:
+              messages.minLength ||
+              `${label} must be at least ${minLength} characters`,
+          },
+        }),
+        ...(maxLength && {
+          maxLength: {
+            value: maxLength,
+            message:
+              messages.maxLength ||
+              `${label} cannot exceed ${maxLength} characters`,
+          },
+        }),
       }}
       render={({ field, fieldState: { error } }) => (
         <TextField
@@ -37,7 +53,10 @@ const CommenTextField = ({
           error={!!error}
           helperText={error?.message}
           margin="normal"
-          focused={focused?true:false}
+          focused={!!focused}
+          // inputProps={{
+          //   maxLength: maxLength || undefined, // prevent typing over limit
+          // }}
         />
       )}
     />

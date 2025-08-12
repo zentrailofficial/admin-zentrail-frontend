@@ -23,7 +23,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 
 const EditBlog = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { id } = useParams(); // assuming route = /edit/:id
   const [categoryOptions, setCategoryOptions] = useState([]);
   const methods = useForm({
@@ -57,7 +57,7 @@ const EditBlog = () => {
       try {
         const res = await apiClient.get(`/api/blogs/${id}`);
         const blog = res.data.blog;
-        console.log(res.data.blog)
+        console.log(res.data.blog);
         const mapped = {
           title: blog.title,
           author: blog.authorName,
@@ -85,7 +85,7 @@ const EditBlog = () => {
   }, [id, reset]);
 
   const onSubmit = async (data) => {
-    setbtnLoading(true)
+    setbtnLoading(true);
     try {
       const formData = new FormData();
 
@@ -122,13 +122,13 @@ const EditBlog = () => {
       });
       if (res.status === 200) {
         // alert("Blog updated successfully");
-        navigate("/blog")
-        setbtnLoading(false)
+        navigate("/blog");
+        setbtnLoading(false);
       }
     } catch (error) {
       console.error("Failed to update blog", error);
       alert("Failed to update");
-      setbtnLoading(false)
+      setbtnLoading(false);
     }
   };
 
@@ -146,7 +146,6 @@ const EditBlog = () => {
             minHeight: "100vh",
             py: 0,
             px: 0,
-            // bgcolor: "dark" ? "white" : "#F7F7F9",
             transition: "background 0.3s",
           }}
         >
@@ -257,12 +256,22 @@ const EditBlog = () => {
                         name="meta.title"
                         label="Meta Title *"
                         required={true}
+                        maxLength={60}
+                        messages={{
+                          required: "Meta title is required",
+                          maxLength: "Please do not exceed 60 characters",
+                        }}
                       />
                       <CommenTextField
                         name="meta.description"
                         label="Meta Description *"
                         multiline
                         rows={3}
+                        maxLength={160}
+                        messages={{
+                          required: "Meta description is required",
+                          maxLength: "Please do not exceed 160 characters",
+                        }}
                       />
                       <CommenTextField name="meta.keywords" label="Keywords" />
                       <CommenTextField
@@ -305,7 +314,9 @@ const EditBlog = () => {
                       </FormControl> */}
                   </Stack>
                 </Card>
-                <CommonButton type="submit" loading={btnloading}>Submit</CommonButton>
+                <CommonButton type="submit" loading={btnloading}>
+                  Submit
+                </CommonButton>
               </Grid>
             </Grid>
           </Box>
