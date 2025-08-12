@@ -9,6 +9,7 @@ const CommenTextField = ({
   required = false,
   multiline = false,
   rows = 4,
+  focused
 }) => {
   const { control } = useFormContext();
 
@@ -26,6 +27,7 @@ const CommenTextField = ({
       render={({ field, fieldState: { error } }) => (
         <TextField
           {...field}
+          size="small"
           label={label}
           type={type}
           fullWidth
@@ -35,6 +37,7 @@ const CommenTextField = ({
           error={!!error}
           helperText={error?.message}
           margin="normal"
+          focused={focused?true:false}
         />
       )}
     />

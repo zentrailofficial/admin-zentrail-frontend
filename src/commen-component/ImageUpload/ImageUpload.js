@@ -10,7 +10,6 @@ import {
 import { Controller, useFormContext } from "react-hook-form";
 import { Delete } from "@mui/icons-material";
 
-
 const ImageUpload = ({
   name,
   label = "Upload Image",
@@ -21,7 +20,7 @@ const ImageUpload = ({
   const { control, getValues } = useFormContext();
   const [previews, setPreviews] = useState([]);
   useEffect(() => {
-    console.log(getValues(name),  "getvalue" , name) 
+    console.log(getValues(name), "getvalue", name);
     const value = getValues(name);
     if (value && value.length > 0 && previews.length === 0) {
       const initial = value.map((img) =>
@@ -36,7 +35,6 @@ const ImageUpload = ({
       setPreviews(initial);
     }
   }, []);
-
 
   const handleImageChange = (e, onChange) => {
     const files = Array.from(e.target.files);
@@ -72,7 +70,15 @@ const ImageUpload = ({
       control={control}
       defaultValue={[]}
       render={({ field: { onChange } }) => (
-        <Box mt={2}>
+        <Box
+          sx={{
+            border: "2px dashed #d1d5db",
+            p: 1,
+            borderRadius: 2,
+            textAlign: "center",
+            // bgcolor: "#fff",
+          }}
+        >
           <Typography variant="subtitle1" gutterBottom>
             {label}
           </Typography>
@@ -89,23 +95,32 @@ const ImageUpload = ({
               />
             </Button>
           )}
-{console.log(previews , 'previews')}
-          <Grid container spacing={2} mt={1}>
-            {previews.map((img, index) => (
-              
-              <Grid item xs={6} sm={4} md={3} key={index}>
+          {console.log(previews, "previews")}
+          <Box mt={1} sx={{ width: "100%", overflow: "auto" }}>
+            <Box
+              sx={{
+                display: "flex",
+                gap: "10px",
+                overflowX: "auto",
+                width: "max-content",
+              }}
+            >
+              {previews.map((img, index) => (
                 <Box
+                  key={index}
                   border="1px solid #ccc"
                   borderRadius="8px"
                   p={1}
                   position="relative"
+                  minWidth={150}
+                  maxWidth={150}
                 >
                   <img
                     src={img.preview || img.url}
                     alt={`preview-${index}`}
                     style={{
                       width: "100%",
-                      height: 120,
+                      height: 80,
                       objectFit: "cover",
                       borderRadius: 6,
                     }}
@@ -116,7 +131,7 @@ const ImageUpload = ({
                       onClick={() => handleRemove(index, onChange)}
                       sx={{ position: "absolute", top: 4, right: 4 }}
                     >
-                      <Delete fontSize="small" />
+                      <Delete fontSize="small" color="error" />
                     </IconButton>
                   )}
 
@@ -134,9 +149,16 @@ const ImageUpload = ({
                     />
                   )}
                 </Box>
-              </Grid>
-            ))}
-          </Grid>
+              ))}
+            </Box>
+          </Box>
+          <Typography
+            variant="caption"
+            // color="text.secondary"
+            mt={2}
+          >
+            PNG, JPG, GIF up to 100KB
+          </Typography>
         </Box>
       )}
     />

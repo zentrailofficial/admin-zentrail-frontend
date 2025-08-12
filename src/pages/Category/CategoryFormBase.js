@@ -10,23 +10,23 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false, defaultImage }) =
     <FormProvider {...methods}>
       <Box component="form" onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <Paper sx={{ p: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <CommenTextField name="name" label="Category Name" required />
+          <Grid container spacing={3}>
+            <Grid item size={{ xs: 12, sm: 12, md: 4 }}>
+              <CommenTextField name="name" focused={isEdit} label="Category Name" required />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <ImageUpload name="image" label="Image" defaultImage={defaultImage} />
+            <Grid item size={{ xs: 12, sm: 12, md: 4 }}>
+              <CommenTextField name="metaTitle" focused={isEdit} label="Meta Title" />
             </Grid>
-            <Grid item xs={12}>
-              <CommenTextField name="description" label="Description" multiline rows={4} />
+            <Grid item size={{ xs: 12, sm: 12, md: 4 }}>
+              <CommenTextField name="metaDescription" focused={isEdit} label="Meta Description" />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <CommenTextField name="metaTitle" label="Meta Title" />
+             <Grid item size={{ xs: 12, sm: 12, md: 4 }}>
+              <CommenTextField name="description" focused={isEdit} label="Description" multiline rows={4} />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <CommenTextField name="metaDescription" label="Meta Description" />
+            <Grid item size={{ xs: 12, sm: 12, md: 4 }}>
+              <ImageUpload name="image" focused={isEdit} label="Image" defaultImage={defaultImage} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item size={{ xs: 12, sm: 12, md: 4 }}>
               <CommonButton type="submit">
                 {isEdit ? "Update Category" : "Add Category"}
               </CommonButton>

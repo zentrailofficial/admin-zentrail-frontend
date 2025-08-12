@@ -14,9 +14,13 @@ import AddIcon from "@mui/icons-material/Add";
 import { apiClient } from "../../lib/api-client";
 
 import { useNavigate } from "react-router-dom";
+import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
 export default function BlogListGrid() {
   const [listData, setListData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [IdtoDelete, setIdtoDelete] = React.useState("");
+  const [loadingForDelete, setLoadingForDelete] = React.useState(false);
   const navigate = useNavigate();
   React.useEffect(() => {
     fetchData();
@@ -32,21 +36,34 @@ export default function BlogListGrid() {
           ...blog,
           id: blog._id, // Required for DataGrid
           slNo: index + 1,
+          category: blog?.category?.name,
+          createdAt: blog?.createdAt.split("T")[0],
         }));
         setListData(formatted);
       })
       .finally(() => setLoading(false));
   };
-
+  console.log(listData);
   const handleEdit = (id) => {
     navigate(`/editblog/${id}`);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = () => {
+    setLoadingForDelete(true);
     apiClient
-      .delete(`/api/blogs/${id}`)
-      .then(() => fetchData())
-      .catch((err) => alert("Failed to delete"));
+      .delete(`/api/blogs/${IdtoDelete}`)
+      .then(() => {
+        fetchData();
+        setLoadingForDelete(false);
+        setDialogOpen(false);
+        setIdtoDelete("");
+      })
+      .catch((err) => {
+        alert("Failed to delete");
+        setLoadingForDelete(false);
+        setDialogOpen(false);
+        setIdtoDelete("");
+      });
   };
 
   const handleCreate = () => {
@@ -79,8 +96,8 @@ export default function BlogListGrid() {
       field: "createdAt",
       headerName: "Created At",
       width: 180,
-      valueGetter: (params) =>
-        new Date(params?.row?.createdAt).toLocaleString(),
+      // valueGetter: (params) =>
+      //   new Date(params?.row?.createdAt).toLocaleString(),
     },
     {
       field: "actions",
@@ -96,7 +113,11 @@ export default function BlogListGrid() {
             <EditIcon />
           </IconButton>
           <IconButton
-            onClick={() => handleDelete(params.row._id)}
+            // onClick={() => handleDelete(params.row._id)}
+            onClick={() => {
+              setDialogOpen(true);
+              setIdtoDelete(params.row._id);
+            }}
             color="error"
           >
             <DeleteIcon />
@@ -136,6 +157,17 @@ export default function BlogListGrid() {
           disableRowSelectionOnClick
         />
       )}
+       <ConfirmDelete
+        open={dialogOpen}
+        onClose={() => {
+          setDialogOpen(false);
+          setIdtoDelete("");
+        }}
+        onConfirm={handleDelete}
+        title="Delete Item?"
+        message="This action is permanent. Do you want to continue?"
+        loading={loadingForDelete}
+      />
     </Box>
   );
 }

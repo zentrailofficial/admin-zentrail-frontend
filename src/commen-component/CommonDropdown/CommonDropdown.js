@@ -22,7 +22,7 @@ const CommonDropdown = ({
   const selectId = `${name}-select`;
 
   return (
-    <FormControl fullWidth margin="normal">
+    <FormControl fullWidth margin="normal"  size="small">
       <InputLabel id={labelId}>{label}</InputLabel>
       <Controller
         name={name}
@@ -37,8 +37,9 @@ const CommonDropdown = ({
             labelId={labelId}
             label={label}
             error={!!error}
+            size="small"
             {...props}
-            MenuProps={{ PaperProps: { style: { maxHeight: 250 } } }}
+            MenuProps={{ PaperProps: { style: { maxHeight: 250 ,marginRight:0} } }}
           >
             {options.map((option, index) => (
               <MenuItem key={index} value={option.value}>

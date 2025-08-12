@@ -65,7 +65,7 @@ const AddPortfolioPage = () => {
 
   return (
     <FormProvider {...methods}>
-      <Box maxWidth="800px" mx="auto" mt={4}>
+      <Box>
         <Paper sx={{ p: 4 }}>
           <Typography variant="h5" gutterBottom>
             Add Portfolio

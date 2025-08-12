@@ -147,7 +147,7 @@ const EditBlog = () => {
           minHeight: "100vh",
           py: 4,
           px: 2,
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          // background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         }}
       >
         <Box maxWidth="600px" mx="auto">
@@ -157,11 +157,11 @@ const EditBlog = () => {
             </Typography>
 
             <form onSubmit={methods.handleSubmit(onSubmit)}>
-              <CommenTextField name="title" label="Blog Title" required />
+              <CommenTextField name="title" label="Blog Title *" required />
               <CommenTextField name="author" label="Author" required />
               <CommenQuillEditor
                 name="description"
-                label="Description"
+                label="Description *"
                 required
                 minLength={30}
                 placeholder="Write blog content here..."
@@ -179,7 +179,7 @@ const EditBlog = () => {
 
                   <CommonDropdown
                     name="category"
-                    label="Category"
+                    label="Category *"
                     options={categoryOptions}
                     required
                     showAddMore
@@ -248,19 +248,18 @@ const EditBlog = () => {
                           <Stack spacing={2}>
                             <CommenTextField
                               name="meta.title"
-                              label="Meta Title"
+                              label="Meta Title *"
                               required={true}
                             />
                             <CommenTextField
                               name="meta.description"
-                              label="Meta Description"
+                              label="Meta Description *"
                               multiline
                               rows={3}
                             />
                             <CommenTextField
                               name="meta.keywords"
                               label="Keywords"
-                              required={true}
                             />
                             <CommenTextField
                               name="meta.canonicalUrl"
@@ -285,7 +284,6 @@ const EditBlog = () => {
                           <Stack spacing={2}>
                             <CommenTextField
                               name="ogTags.title"
-                              required={true}
                               label="OG Title"
                             />
                             <CommenTextField

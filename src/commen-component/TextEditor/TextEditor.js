@@ -1,6 +1,6 @@
 // src/commen-component/QuillEditor/CommenQuillEditor.js
 
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { Typography, Box } from "@mui/material";
 import ReactQuill from "react-quill";
@@ -12,8 +12,25 @@ const CommenQuillEditor = ({
   required = false,
   minLength = 20,
   placeholder = "Write something...",
+  toolbar,
 }) => {
   const { control } = useFormContext();
+
+  const quillRef = useRef();
+  const modules = useMemo(() => ({
+    toolbar: {
+      container: [
+        [{ header: [1, 2, false] }],
+        ['bold', 'italic', 'underline'],
+        ['link', 'image'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['clean'],
+      ],
+      handlers: {
+        // image: imageHandler,
+      },
+    },
+  }), []);
 
   return (
     <Box sx={{ my: 2 }}>
@@ -39,11 +56,13 @@ const CommenQuillEditor = ({
           <>
             <ReactQuill
               {...field}
+              ref={quillRef}
               theme="snow"
+               modules={modules}
               className="custom-quill"
               placeholder={placeholder}
               onChange={(content) => field.onChange(content)}
-              style={{ backgroundColor: "#fff" }}
+              // style={{ backgroundColor: "#fff" }}
             />
             {error && (
               <Typography variant="caption" color="error" sx={{ mt: 1 }}>
@@ -52,6 +71,7 @@ const CommenQuillEditor = ({
             )}
           </>
         )}
+        
       />
     </Box>
   );

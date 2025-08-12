@@ -8,22 +8,19 @@ import {
   CardContent,
   Stack,
   Grid,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  CircularProgress,
 } from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
+import BookIcon from "@mui/icons-material/Book";
+import SettingsIcon from "@mui/icons-material/Settings";
 import {
   CloudUpload as CloudUploadIcon,
   Add as AddIcon,
   Delete as DeleteIcon,
   ExpandMore as ExpandMoreIcon,
   Article as ArticleIcon,
-  Settings as SettingsIcon,
   Image as ImageIcon,
   Tag as TagIcon,
   Person as PersonIcon,
@@ -35,8 +32,11 @@ import { v4 as uuidv4 } from "uuid";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
+import { useNavigate } from "react-router-dom";
 const AddBlogForm = () => {
   const [categoryOptions, setCategoryOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const methods = useForm({
     defaultValues: {
       title: "",
@@ -54,6 +54,7 @@ const AddBlogForm = () => {
 
   const onSubmit = async (data) => {
     console.log(data);
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("uid", uuidv4());
@@ -83,12 +84,15 @@ const AddBlogForm = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
+      
       if (response.status === 201) {
         console.log("Blog created successfully");
+        setLoading(false);
+        navigate("/blog");
       }
     } catch (error) {
       console.error("Error creating blog:", error);
+      setLoading(false);
       alert("Failed to create blog");
     }
   };
@@ -100,211 +104,198 @@ const AddBlogForm = () => {
   useEffect(() => {
     apiClient.get("/api/category").then((data) => {
       console.log(data.data);
-     const option = data.data.map((category) => ({
+
+      const option = data.data.map((category) => ({
         value: category._id,
         label: category.name,
       }));
 
-      setCategoryOptions (option)
+      setCategoryOptions(option);
     });
   }, []);
 
   return (
     <FormProvider {...methods}>
-      <CircularProgress />
+       <form onSubmit={methods.handleSubmit(onSubmit)}>
       <Box
         sx={{
-          minHeight: "100vh", 
+          minHeight: "100vh",
           py: 0,
           px: 0,
           // bgcolor: "dark" ? "white" : "#F7F7F9",
-        transition: "background 0.3s",
+          transition: "background 0.3s",
         }}
       >
         <Box maxWidth="xl" mx="auto">
-          <Grid container spacing={2} sx={{
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: "stretch",
-          }}>
+          <Grid
+            container
+            spacing={2}
+            sx={{
+              flexDirection: { xs: "column", md: "row" },
+              alignItems: "stretch",
+            }}
+          >
             {/* Left Section */}
-            <Grid item xs={12} md={6} sx={{
-              width: { xs: "100%", md: "50%" },
-              display: "flex",
-              flexDirection: "column",
-            }}>
-              <Paper sx={{ borderRadius: 3, p: { xs: 2, md: 3 }, height: "100%" }}>
-                <Typography variant="h5" gutterBottom>
-                  Add New Blog
-                </Typography>
+            <Grid
+              item
+              xs={12}
+              md={6}
+              sx={{
+                width: { xs: "100%", md: "50%" },
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {/* <Paper sx={{ borderRadius: 3, p: { xs: 2, md: 3 }, height: "100%" }}> */}
 
-                <form onSubmit={methods.handleSubmit(onSubmit)}>
-                  <Card
-                    elevation={2}
-                    sx={{ borderRadius: 3, mb: 4, padding: { xs: 3, md: 2 } }}
-                  >
-                    <CommenTextField
-                      name="title"
-                      label="Blog Title"
+             
+                <Card elevation={3} sx={{ borderRadius: 3, mb: 4, padding: 3 }}>
+                  <Stack direction="row" alignItems="center" spacing={2} mb={3}>
+                    <BookIcon color="primary" />
+                    <Typography variant="h6" gutterBottom fontWeight={600}>
+                      Add New Blog
+                    </Typography>
+                  </Stack>
+
+                  <CommenTextField
+                    name="title"
+                    label="Blog Title *"
+                    required
+                    size="small"
+                  />
+                  <CommenTextField
+                    name="author"
+                    label="Author"
+                    
+                    size="small"
+                  />
+                  <CommenQuillEditor
+                    name="description"
+                    label="Description *"
+                    required
+                    minLength={30}
+                    placeholder="Write blog content here..."
+                  />
+                </Card>
+
+                <Card elevation={2} sx={{ borderRadius: 3, mt: 4 }}>
+                  <CardContent sx={{ p: { xs: 3, md: 2 } }}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={3}
+                    >
+                      <CategoryIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        Category & Tags
+                      </Typography>
+                    </Stack>
+
+                    <CommonDropdown
+                      name="category"
+                      label="Category *"
+                      options={categoryOptions}
                       required
-                      size="small"
+                      showAddMore
+                      onAddMoreClick={handleAddMore}
                     />
-                    <CommenTextField
-                      name="author"
-                      label="Author"
-                      required
-                      size="small"
+                  </CardContent>
+                </Card>
+
+                <Card elevation={2} sx={{ borderRadius: 3, mt: 4 }}>
+                  <CardContent sx={{ p: { xs: 3, md: 2 } }}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={1}
+                    >
+                      <ImageIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        URL & Featured Image
+                      </Typography>
+                    </Stack>
+
+                    <ImageUpload
+                      name="images"
+                      label="Choose Blog Images"
+                      multiple
+                      altText
                     />
-                    <CommenQuillEditor
-                      name="description"
-                      label="Description"
-                      required
-                      minLength={30}
-                      placeholder="Write blog content here..."
-                    />
-                  </Card>
+                  </CardContent>
+                </Card>
 
-                  <Card elevation={2} sx={{ borderRadius: 3, mt: 4 }}>
-                    <CardContent sx={{ p: { xs: 3, md: 2 } }}>
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing={2}
-                        mb={3}
-                      >
-                        <CategoryIcon color="primary" />
-                        <Typography variant="h6" fontWeight={600}>
-                          Category & Tags
-                        </Typography>
-                      </Stack>
-
-                      <CommonDropdown
-                        name="category"
-                        label="Category"
-                        options={categoryOptions}
-                        required
-                        showAddMore
-                        onAddMoreClick={handleAddMore}
-                      />
-                    </CardContent>
-                  </Card>
-
-                  <Card elevation={2} sx={{ borderRadius: 3, mt: 4 }}>
-                    <CardContent sx={{ p: { xs: 3, md: 2 } }}>
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing={2}
-                        mb={1}
-                      >
-                        <ImageIcon color="primary" />
-                        <Typography variant="h6" fontWeight={600}>
-                          URL & Featured Image
-                        </Typography>
-                      </Stack>
-
-                      <Box
-                        sx={{
-                          border: "2px dashed #d1d5db",
-                          p: 4,
-                          borderRadius: 2,
-                          textAlign: "center",
-                          bgcolor: "#fff",
-                        }}
-                      >
-                        <ImageUpload
-                          name="images"
-                          label="Choose Blog Images"
-                          multiple
-                          altText
-                        />
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          mt={2}
-                        >
-                          PNG, JPG, GIF up to 100KB
-                        </Typography>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                  <Box mt={4}>
-                  <CommonButton
-                    sx={{
-                      borderRadius: 10,
-                      width: { xs: "100%", md: "50%" },
-                    }}
-                    type="submit"
-                  >
-                    Submit
-                  </CommonButton>
-                  </Box>
-                </form>
-              </Paper>
+               
+              
+              {/* </Paper> */}
             </Grid>
 
             {/* Right Section */}
-            <Grid item xs={12} md={6} sx={{
-              width: { xs: "100%", md: "45%" },
-              display: "flex",
-              flexDirection: "column",
-            }}>
-              <Card
-                elevation={1}
+            <Grid
+              item
+              xs={12}
+              md={6}
+              sx={{
+                width: { xs: "100%", md: "45%" },
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Card elevation={3} sx={{ borderRadius: 3, mb: 4, padding: 3 }}>
+                {/* elevation={1}
                 sx={{
                   borderRadius: 3,
-                 position: { md: "sticky" },
-                top: { md: 20 },
-                minHeight: { md: "calc(100vh - 40px)" },
+                  position: { md: "sticky" },
+                  top: { md: 20 },
+                  minHeight: { md: "calc(100vh - 40px)" },
                   height: "100%",
                   boxShadow: "dark" ? 8 : 2,
                 }}
-              >
-                <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                  {/* <SettingsIcon color="primary" /> */}
+              > */}
+                {/* <CardContent sx={{ p: 1}}> */}
+                <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                  <SettingsIcon color="primary" />
                   <Typography variant="h6" fontWeight="600">
                     SEO Settings
                   </Typography>
+                </Stack>
+                {/* Meta Tags Accordion */}
 
-                  {/* Meta Tags Accordion */}
-                  
+                <Box sx={{ borderRadius: 3,  padding: { xs: 3, md: 2 } }}>
+                  <Typography fontWeight="600" textAlign="center">
+                    Meta Tags
+                  </Typography>
+                  <CommenTextField
+                    name="meta.title"
+                    label="Meta Title *"
+                    required
+                  />
+                  <CommenTextField
+                    name="meta.description"
+                    label="Meta Description *"
+                    multiline
+                    required
+                    rows={3}
+                  />
+                  <CommenTextField
+                    name="meta.keywords"
+                    label="Keywords"
+                  />
+                  <CommenTextField
+                    name="meta.canonicalUrl"
+                    label="Canonical URL"
+                  />
+                </Box>
 
-                  <Card
-                    elevation={1}
-                    sx={{ borderRadius: 3, mb: 4, padding: { xs: 3, md: 2 } }}
-                  >
-                    <Typography fontWeight="600">Meta Tags</Typography>
-                    <CommenTextField
-                      name="meta.title"
-                      label="Meta Title"
-                      required
-                    />
-                    <CommenTextField
-                      name="meta.description"
-                      label="Meta Description"
-                      multiline
-                      rows={3}
-                    />
-                    <CommenTextField
-                      name="meta.keywords"
-                      label="Keywords"
-                      required
-                    />
-                    <CommenTextField
-                      name="meta.canonicalUrl"
-                      label="Canonical URL"
-                    />
-                  </Card>
+                {/* OG Tags Accordion */}
 
-                  {/* OG Tags Accordion */}
-                  
-                  <Card
-                    elevation={1}
-                    sx={{ borderRadius: 3, mb: 4, padding: { xs: 3, md: 2 } }}
-                  >
-                    <Typography fontWeight="600">Open Graph</Typography>
+                <Box sx={{ borderRadius: 3, mb: 4, padding: { xs: 3, md: 2 } }}>
+                  <Typography fontWeight="600" textAlign="center">
+                    Open Graph
+                  </Typography>
                   <CommenTextField
                     name="ogTags.title"
-                    required
                     label="OG Title"
                   />
                   <CommenTextField
@@ -314,14 +305,37 @@ const AddBlogForm = () => {
                     rows={3}
                   />
                   <CommenTextField name="ogTags.image" label="OG Image URL" />
-                  </Card>
-                </CardContent>
+                </Box>
+                {/* </CardContent> */}
               </Card>
             </Grid>
+             <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  sx={{
+                    width: { xs: "100%", md: "50%" },
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Box mt={4}>
+                    <CommonButton
+                      sx={{
+                        borderRadius: 10,
+                        width: { xs: "100%", md: "50%" },
+                      }}
+                      loading={loading}
+                      type="submit"
+                    >
+                      Submit
+                    </CommonButton>
+                  </Box>
+                </Grid>
           </Grid>
-           
         </Box>
       </Box>
+      </form>
     </FormProvider>
   );
 };
