@@ -176,6 +176,10 @@ import {
   ListItemText,
   useTheme,
   IconButton,
+  MenuItem,
+  Menu,
+  Avatar,
+  Divider,
 } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -187,8 +191,9 @@ import {
   Menu as MenuIcon,
   ChevronLeft,
 } from "@mui/icons-material";
-import { useThemeMode } from "../../utils/ThemeProvider";
+import { useThemeMode } from "../../context/ThemeProvider";
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const FULL_DRAWER_WIDTH = 240;
 const MINI_DRAWER_WIDTH = 60;
@@ -208,8 +213,24 @@ const NAV_ITEMS = [
 
 export default function Navbar() {
   const theme = useTheme();
+  const { user ,logout} = useAuth();
   const { toggleColorMode } = useThemeMode();
   const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleMenuClose();
+    navigate("/")
+  };
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [miniDrawer, setMiniDrawer] = useState(false); // For desktop
@@ -255,7 +276,7 @@ export default function Navbar() {
   );
 
   return (
-    <Box sx={{ display: "flex" ,width:"100%"}}>
+    <Box sx={{ display: "flex", width: "100%" }}>
       {/* <CssBaseline /> */}
 
       {/* Top AppBar */}
@@ -283,6 +304,34 @@ export default function Navbar() {
           <IconButton onClick={toggleColorMode} color="inherit">
             {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
+          <IconButton onClick={handleMenuOpen} color="inherit">
+            <Avatar sx={{ bgcolor: "primary.main" }}>
+              {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+            </Avatar>
+          </IconButton>
+
+          {/* Dropdown Menu */}
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <Typography sx={{ px: 2, py: 1, fontWeight: "bold" }}>
+              {user?.name || "User"}
+            </Typography>
+            <Divider />
+            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
 
