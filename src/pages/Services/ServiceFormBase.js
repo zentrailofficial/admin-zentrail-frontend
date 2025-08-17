@@ -106,6 +106,9 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
       formData.append("ogTags[image]", data.ogTags?.image || "");
 
       formData.append("faq", JSON.stringify(data.faq));
+      if (!Array.isArray(data.whyPoornam)) {
+  data.whyPoornam = [data.whyPoornam];
+}
       formData.append("whyPoornam", JSON.stringify(data.whyPoornam));
       console.log(formData);
       let response;

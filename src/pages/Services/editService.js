@@ -19,8 +19,8 @@ console.log(defaultValues , 'defaultValues')
           blogcategory: res.data?.blogcategory._id,
           whyPoornam: [
             {
-              title: res.data?.whyPoornam[0]?.title || "",
-              description: res.data?.whyPoornam[0]?.description || "",
+              title: res.data?.whyPoornam[0]?.title || res.data?.whyPoornam?.title  || "",
+              description: res.data?.whyPoornam[0]?.description || res.data?.whyPoornam?.description || "",
             },
           ],
           featuredImage:[res.data.featuredImage]
