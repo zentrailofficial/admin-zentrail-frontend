@@ -19,22 +19,27 @@ const ImageUpload = ({
 }) => {
   const { control, getValues } = useFormContext();
   const [previews, setPreviews] = useState([]);
-  useEffect(() => {
-    console.log(getValues(name), "getvalue", name);
-    const value = getValues(name);
-    if (value && value.length > 0 && previews.length === 0) {
-      const initial = value.map((img) =>
-        img.url
-          ? { url: img.url, altText: img.altText || "" }
-          : {
-              file: img.file,
-              preview: URL.createObjectURL(img.file),
-              altText: img.altText || "",
-            }
-      );
+useEffect(() => {
+    const value = getValues(name) || [];
+    if (value.length > 0 && previews.length === 0) {
+      const initial = value.map((img) => {
+        if (img.url) {
+          return { url: img.url, altText: img.altText || "" };
+        }
+        if (img.file instanceof File || img.file instanceof Blob) {
+          return {
+            file: img.file,
+            preview: URL.createObjectURL(img.file),
+            altText: img.altText || "",
+          };
+        }
+        return { altText: img.altText || "" }; 
+      });
+      console.log(initial , 'initial')
       setPreviews(initial);
     }
-  }, []);
+  }, [getValues, name, previews.length]);
+
 
   const handleImageChange = (e, onChange) => {
     const files = Array.from(e.target.files);
@@ -95,7 +100,6 @@ const ImageUpload = ({
               />
             </Button>
           )}
-          {console.log(previews, "previews")}
           <Box mt={1} sx={{ width: "100%", overflow: "auto" }}>
             <Box
               sx={{
@@ -134,7 +138,7 @@ const ImageUpload = ({
                       <Delete fontSize="small" color="error" />
                     </IconButton>
                   )}
-
+{console.log(img.altText)}
                   {altText && (
                     <TextField
                       label="Alt Text"

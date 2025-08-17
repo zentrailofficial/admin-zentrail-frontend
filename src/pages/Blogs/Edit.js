@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
-import { useForm, FormProvider , useFieldArray  } from "react-hook-form";
-import { Box, Typography, Card, Stack, Grid, IconButton, CardContent } from "@mui/material";
+import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import {
+  Box,
+  Typography,
+  Card,
+  Stack,
+  Grid,
+  IconButton,
+  CardContent,
+} from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
@@ -35,12 +43,12 @@ const EditBlog = () => {
       images: [],
       meta: {},
       ogTags: {},
-       faq: [{ question: "", answer: "" }]
+      faq: [{ question: "", answer: "" }],
     },
   });
-  const { reset, handleSubmit, getValues, formState ,control} = methods;
+  const { reset, handleSubmit, getValues, formState, control } = methods;
 
-    const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: "faq",
   });
@@ -68,7 +76,10 @@ const EditBlog = () => {
           author: blog.authorName,
           description: blog.description,
           category: blog.category?._id,
-          faq: Array.isArray(blog.faq) && blog.faq.length > 0 ? blog.faq : [{ question: "", answer: "" }],
+          faq:
+            Array.isArray(blog.faq) && blog.faq.length > 0
+              ? blog.faq
+              : [{ question: "", answer: "" }],
           images: blog.featuredImage?.url
             ? [
                 {
@@ -101,7 +112,7 @@ const EditBlog = () => {
       formData.append("category", data.category);
       formData.append("tags", JSON.stringify(data.tags || []));
       formData.append("status", "Draft");
- formData.append("faq", JSON.stringify(data.faq));
+      formData.append("faq", JSON.stringify(data.faq));
 
       // Check if a new image is uploaded
       const image = data.images?.[0];
@@ -287,11 +298,11 @@ const EditBlog = () => {
                       />
                     </Stack>
 
-                    <Typography textAlign={"center"} fontWeight="600">
+                    {/* <Typography textAlign={"center"} fontWeight="600">
                       Open Graph
                     </Typography>
                     <Stack spacing={2}>
-                      <CommenTextField name="ogTags.title" label="OG Title" />
+                      {/* <CommenTextField name="ogTags.title" label="OG Title" />
                       <CommenTextField
                         name="ogTags.description"
                         label="OG Description"
@@ -301,61 +312,71 @@ const EditBlog = () => {
                       <CommenTextField
                         name="ogTags.image"
                         label="OG Image URL"
-                      />
-                    </Stack>
-                 <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
-                  <CardContent>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      mb={2}
-                    >
-                      <Typography variant="h6" fontWeight={600}>
-                        FAQs
-                      </Typography>
-                      <IconButton color="primary" onClick={() => append({ question: "", answer: "" })}>
-                        <AddIcon />
-                      </IconButton>
-                    </Stack>
-
-                    {fields.map((item, index) => (
-                      <Box
-                        key={item.id}
-                        sx={{
-                          border: "1px solid #ddd",
-                          borderRadius: 2,
-                          p: 2,
-                          mb: 2,
-                          background: "#fafafa",
-                        }}
-                      >
+                      /> */}
+                    {/* </Stack> */}
+                    <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
+                      <CardContent>
                         <Stack
                           direction="row"
-                          justifyContent="space-between"
                           alignItems="center"
-                          mb={1}
+                          justifyContent="space-between"
+                          mb={2}
                         >
-                          <Typography variant="subtitle1">FAQ {index + 1}</Typography>
-                          {fields.length > 1 && (
-                            <IconButton color="error" onClick={() => remove(index)}>
-                              <DeleteIcon />
-                            </IconButton>
-                          )}
+                          <Typography variant="h6" fontWeight={600}>
+                            FAQs
+                          </Typography>
+                          <IconButton
+                            color="primary"
+                            onClick={() => append({ question: "", answer: "" })}
+                          >
+                            <AddIcon />
+                          </IconButton>
                         </Stack>
 
-                        <CommenTextField name={`faq.${index}.question`} label="Question *" />
-                        <CommenTextField
-                          name={`faq.${index}.answer`}
-                          label="Answer *"
-                          multiline
-                          rows={3}
-                        />
-                      </Box>
-                    ))}
-                  </CardContent>
-                </Card>
+                        {fields.map((item, index) => (
+                          <Box
+                            key={item.id}
+                            sx={{
+                              border: "1px solid #ddd",
+                              borderRadius: 2,
+                              p: 2,
+                              mb: 2,
+                              background: "#fafafa",
+                            }}
+                          >
+                            <Stack
+                              direction="row"
+                              justifyContent="space-between"
+                              alignItems="center"
+                              mb={1}
+                            >
+                              <Typography variant="subtitle1">
+                                FAQ {index + 1}
+                              </Typography>
+                              {fields.length > 1 && (
+                                <IconButton
+                                  color="error"
+                                  onClick={() => remove(index)}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              )}
+                            </Stack>
 
+                            <CommenTextField
+                              name={`faq.${index}.question`}
+                              label="Question *"
+                            />
+                            <CommenTextField
+                              name={`faq.${index}.answer`}
+                              label="Answer *"
+                              multiline
+                              rows={3}
+                            />
+                          </Box>
+                        ))}
+                      </CardContent>
+                    </Card>
                   </Stack>
                 </Card>
                 <CommonButton type="submit" loading={btnloading}>

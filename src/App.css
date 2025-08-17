@@ -6,6 +6,15 @@ body{
   text-align: center;
 }
 
+.ql-container {
+  height: 200px !important;  /* Fixed height */
+  overflow-y: auto;          /* Vertical scroll */
+}
+
+.ql-editor {
+  min-height: 180px;         /* Inner editor height */
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

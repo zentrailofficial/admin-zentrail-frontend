@@ -1,78 +1,101 @@
 import React, { useEffect, useState } from "react";
-import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import {
   Box,
-  Paper,
-  Typography,
   Card,
   CardContent,
-  Stack,
   Grid,
+  Stack,
+  Typography,
   IconButton,
 } from "@mui/material";
-import CommenTextField from "../../commen-component/TextField/TextField";
-import CommonButton from "../../commen-component/CommenButton/CommenButton";
-import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
-import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
-import BookIcon from "@mui/icons-material/Book";
-import SettingsIcon from "@mui/icons-material/Settings";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import {
-  CloudUpload as CloudUploadIcon,
   Add as AddIcon,
   Delete as DeleteIcon,
-  ExpandMore as ExpandMoreIcon,
-  Article as ArticleIcon,
-  Image as ImageIcon,
-  Tag as TagIcon,
-  Person as PersonIcon,
+  Book as BookIcon,
   Category as CategoryIcon,
+  Image as ImageIcon,
+  Settings as SettingsIcon,
 } from "@mui/icons-material";
 
-import { apiClient } from "../../lib/api-client";
-import { v4 as uuidv4 } from "uuid";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
-import { useNavigate } from "react-router-dom";
-const AddBlogForm = () => {
-  const [categoryOptions, setCategoryOptions] = useState([]);
-  const [loading, setLoading] = useState(false);
+import CommenTextField from "../../commen-component/TextField/TextField";
+import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
+import CommonButton from "../../commen-component/CommenButton/CommenButton";
+import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
+import { apiClient } from "../../lib/api-client";
+
+const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
   const navigate = useNavigate();
-  const methods = useForm({
-    defaultValues: {
-      title: "",
-      author: "",
-      description: "",
-      category: "",
-      images: [],
-      faq: [{ question: "", answer: "" }],
-    },
-  });
-  const { watch, setValue, control } = methods;
-  const titleValue = watch("title");
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "faq",
-  });
+  const [loading, setLoading] = useState(false);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [portfolioOptions, setPortfolioOptions] = useState([]);
+  const [serviceOptions, setServiceOptions] = useState([]);
+
+  const methods = useForm({ defaultValues });
+  const { setValue, control, handleSubmit, getValues } = methods;
+  console.log(methods.getValues("serviceCategory"), serviceOptions);
+  const { fields, append, remove } = useFieldArray({ control, name: "faq" });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resCategory = await apiClient.get("/api/category");
+        setCategoryOptions(
+          resCategory.data.map((c) => ({ value: c._id, label: c.name }))
+        );
+        setPortfolioOptions(
+          resCategory.data.map((c) => ({ value: c._id, label: c.name }))
+        );
+
+        const resServices = await apiClient.get("/api/service");
+        setServiceOptions(
+          resServices.data.services.map((s) => ({
+            value: s._id,
+            label: s.name,
+          }))
+        );
+      } catch (err) {
+        console.error("Error fetching dropdown data", err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const textToSlug = (text) =>
+    text
+      .toString()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "");
 
   const onSubmit = async (data) => {
-    console.log(data);
     setLoading(true);
+    console.log(data, data.serviceCategory, " ;;;;;;;;;;;;;;");
     try {
       const formData = new FormData();
       formData.append("uid", data.uid);
       formData.append("title", data.title);
-      formData.append("authorName", data.author);
       formData.append("description", data.description);
-      formData.append("category", data.category);
-      formData.append("tags", JSON.stringify(data.tags || []));
-      formData.append("status", "Draft");
+      formData.append("blogcategory", data.blogcategory);
+      formData.append("serviceCategory", data.serviceCategory);
+      formData.append("Portfolio", data.Portfolio);
+      formData.append("status", data.status);
+      if (data?.featuredImage?.length > 0) {
+        const img = data.featuredImage[0];
 
-      if (data.images?.[0]?.file) {
-        formData.append("featuredImage", data.images[0].file);
-        formData.append("featuredImageAlt", data.images[0].altText || "");
+        if (img.file instanceof File) {
+          formData.append("featuredImage", img.file);
+          formData.append("featuredImageAlt", img.altText || "");
+        } else if (img.url) {
+          formData.append("featuredImageAlt", img.altText || "");
+        }
       }
-
       formData.append("meta[title]", data.meta?.title || "");
       formData.append("meta[description]", data.meta?.description || "");
       formData.append("meta[keywords]", data.meta?.keywords || "");
@@ -81,57 +104,39 @@ const AddBlogForm = () => {
       formData.append("ogTags[title]", data.ogTags?.title || "");
       formData.append("ogTags[description]", data.ogTags?.description || "");
       formData.append("ogTags[image]", data.ogTags?.image || "");
-      formData.append("faq", JSON.stringify(data.faq));
-      const response = await apiClient.post("/api/blogs", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
 
-      if (response.status === 201) {
-        console.log("Blog created successfully");
+      formData.append("faq", JSON.stringify(data.faq));
+      formData.append("whyPoornam", JSON.stringify(data.whyPoornam));
+      console.log(formData);
+      let response;
+      if (mode === "add") {
+        response = await apiClient.post("/api/service/servicepage", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } else {
+        response = await apiClient.put(
+          `/api/service/editservice/${serviceId}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+      }
+
+      if ([200, 201].includes(response.status)) {
         setLoading(false);
-        navigate("/blog");
+        navigate("/services");
       }
     } catch (error) {
-      console.error("Error creating blog:", error);
+      console.error("Error saving service:", error);
       setLoading(false);
-      alert("Failed to create blog");
+      alert("Failed to save service");
     }
   };
-
-  const handleAddMore = () => {
-    alert("Add more clicked!");
-  };
-
-  useEffect(() => {
-    if (titleValue) {
-      const slug = titleValue
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s]/gi, "")
-        .replace(/\s+/g, "_");
-
-      setValue("uid", slug);
-    }
-  }, [titleValue, setValue]);
-
-  useEffect(() => {
-    apiClient.get("/api/category").then((data) => {
-      console.log(data.data);
-
-      const option = data.data.map((category) => ({
-        value: category._id,
-        label: category.name,
-      }));
-
-      setCategoryOptions(option);
-    });
-  }, []);
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Box
           sx={{
             minHeight: "100vh",
@@ -161,25 +166,23 @@ const AddBlogForm = () => {
                   flexDirection: "column",
                 }}
               >
-                {/* <Paper sx={{ borderRadius: 3, p: { xs: 2, md: 3 }, height: "100%" }}> */}
-
                 <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
                   <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                     <BookIcon color="primary" />
                     <Typography variant="h6" gutterBottom fontWeight={600}>
-                      Add New Blog
+                      Add New Service
                     </Typography>
                   </Stack>
 
                   <CommenTextField
                     name="title"
-                    label="Blog Title *"
+                    label="Service Title *"
                     required
                     size="small"
+                    onChange={(val) => setValue("uid", textToSlug(val))}
                   />
-                  <CommenTextField name="author" label="Author" size="small" />
-                  <CommenTextField name="uid" label="uid" size="small" />
 
+                  <CommenTextField name="uid" label="uid" size="small" />
                   <CommenQuillEditor
                     name="description"
                     label="Description *"
@@ -189,7 +192,7 @@ const AddBlogForm = () => {
                   />
                 </Card>
 
-                <Card elevation={2} sx={{ borderRadius: 3, mb: 2 }}>
+                <Card elevation={2} sx={{ borderRadius: 3 }}>
                   <CardContent sx={{ p: { xs: 3, md: 2 } }}>
                     <Stack
                       direction="row"
@@ -199,20 +202,159 @@ const AddBlogForm = () => {
                     >
                       <CategoryIcon color="primary" />
                       <Typography variant="h6" fontWeight={600}>
-                        Category & Tags
+                        Select Blog Category
                       </Typography>
                     </Stack>
 
                     <CommonDropdown
-                      name="category"
-                      label="Category *"
+                      name="blogcategory"
+                      label="Blog Category *"
                       options={categoryOptions}
                       required
                     />
                   </CardContent>
                 </Card>
+                <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
+                  <CardContent sx={{ p: { xs: 3, md: 2 } }}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={3}
+                    >
+                      <CategoryIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        Service feature
+                      </Typography>
+                    </Stack>
+                    {console.log("serviceOptions", serviceOptions, methods)}
+                    <CommonDropdown
+                      name="serviceCategory"
+                      label="Service Category *"
+                      multiple
+                      options={serviceOptions}
+                      required
+                    />
+                  </CardContent>
+                </Card>
 
-                <Card elevation={2} sx={{ borderRadius: 3, mb: 2 }}>
+                <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
+                  <CardContent sx={{ p: { xs: 3, md: 2 } }}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={3}
+                    >
+                      <CategoryIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        Gallery
+                      </Typography>
+                    </Stack>
+                    <CommonDropdown
+                      name="Portfolio"
+                      label="Portfolio *"
+                      options={portfolioOptions}
+                      required
+                    />
+                  </CardContent>
+                </Card>
+                {/* Why Poornam Section */}
+                <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
+                  <CardContent>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      mb={2}
+                    >
+                      <Typography variant="h6" fontWeight={600}>
+                        Why Poornam ?
+                      </Typography>
+                    </Stack>
+
+                    <CommenTextField
+                      name="whyPoornam[0].title"
+                      label="Title *"
+                      required
+                    />
+                    <CommenTextField
+                      name="whyPoornam[0].description"
+                      label="Description *"
+                      required
+                      multiline
+                      rows={3}
+                    />
+                  </CardContent>
+                </Card>
+
+                <CommonDropdown
+                  name="status"
+                  label="Status"
+                  required
+                  options={[
+                    { value: "Draft", label: "Draft" },
+                    { value: "Published", label: "Published" },
+                    { value: "Scheduled", label: "Scheduled" },
+                  ]}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                md={6}
+                sx={{
+                  width: { xs: "100%", md: "45%" },
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
+                  <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                    <SettingsIcon color="primary" />
+                    <Typography variant="h6" fontWeight="600">
+                      SEO Settings
+                    </Typography>
+                  </Stack>
+                  {/* Meta Tags Accordion */}
+
+                  <Box sx={{ borderRadius: 3 }}>
+                    <Typography fontWeight="600" textAlign="center">
+                      Meta Tags
+                    </Typography>
+                    <CommenTextField
+                      name="meta.title"
+                      label="Meta Title *"
+                      required
+                    />
+                    <CommenTextField
+                      name="meta.description"
+                      label="Meta Description *"
+                      multiline
+                      required
+                      rows={3}
+                    />
+                    <CommenTextField name="meta.keywords" label="Keywords" />
+                  </Box>
+
+                  {/* OG Tags Accordion */}
+
+                  <Box sx={{ borderRadius: 3 }}>
+                    <Typography fontWeight="600" textAlign="center">
+                      Open Graph
+                    </Typography>
+                    <CommenTextField name="ogTags.title" label="OG Title" />
+                    <CommenTextField
+                      name="ogTags.description"
+                      label="OG Description"
+                      multiline
+                      rows={3}
+                    />
+                    <CommenTextField name="ogTags.image" label="OG Image URL" />
+                  </Box>
+                  {/* </CardContent> */}
+                </Card>
+                <Card elevation={2} sx={{ borderRadius: 3 }}>
                   <CardContent sx={{ p: { xs: 3, md: 2 } }}>
                     <Stack
                       direction="row"
@@ -227,96 +369,11 @@ const AddBlogForm = () => {
                     </Stack>
 
                     <ImageUpload
-                      name="images"
-                      label="Choose Blog Images"
-                      multiple
+                      name="featuredImage"
+                      label="Choose Service Images"
                       altText
                     />
                   </CardContent>
-                </Card>
-
-                {/* </Paper> */}
-              </Grid>
-
-              {/* Right Section */}
-              <Grid
-                item
-                xs={12}
-                md={6}
-                sx={{
-                  width: { xs: "100%", md: "45%" },
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Card elevation={3} sx={{ borderRadius: 3, mb: 4, padding: 3 }}>
-                  {/* elevation={1}
-                sx={{
-                  borderRadius: 3,
-                  position: { md: "sticky" },
-                  top: { md: 20 },
-                  minHeight: { md: "calc(100vh - 40px)" },
-                  height: "100%",
-                  boxShadow: "dark" ? 8 : 2,
-                }}
-              > */}
-                  {/* <CardContent sx={{ p: 1}}> */}
-                  <Stack direction="row" alignItems="center" spacing={2} mb={1}>
-                    <SettingsIcon color="primary" />
-                    <Typography variant="h6" fontWeight="600">
-                      SEO Settings
-                    </Typography>
-                  </Stack>
-                  {/* Meta Tags Accordion */}
-
-                  <Box sx={{ borderRadius: 3, padding: { xs: 3, md: 2 } }}>
-                    <Typography fontWeight="600" textAlign="center">
-                      Meta Tags
-                    </Typography>
-                    <CommenTextField
-                      name="meta.title"
-                      label="Meta Title *"
-                      required
-                      maxLength={60}
-                      messages={{
-                        required: "Meta title is required",
-                        maxLength: "Please do not exceed 60 characters",
-                      }}
-                    />
-                    <CommenTextField
-                      name="meta.description"
-                      label="Meta Description *"
-                      multiline
-                      required
-                      rows={3}
-                      maxLength={160}
-                      messages={{
-                        required: "Meta description is required",
-                        maxLength: "Please do not exceed 160 characters",
-                      }}
-                    />
-                    <CommenTextField name="meta.keywords" label="Keywords" />
-                    {/* <CommenTextField
-                      name="meta.canonicalUrl"
-                      label="Canonical URL"
-                    /> */}
-                  </Box>
-                  <Box
-                    sx={{ borderRadius: 3, mb: 4, padding: { xs: 3, md: 2 } }}
-                  >
-                    {/* <Typography fontWeight="600" textAlign="center">
-                      Open Graph
-                    </Typography> */}
-                    {/* <CommenTextField name="ogTags.title" label="OG Title" />
-                    <CommenTextField
-                      name="ogTags.description"
-                      label="OG Description"
-                      multiline
-                      rows={3}
-                    /> */}
-                    {/* <CommenTextField name="ogTags.image" label="OG Image URL" /> */}
-                  </Box>
-                  {/* </CardContent> */}
                 </Card>
 
                 {/* FAQ Section */}
@@ -372,10 +429,12 @@ const AddBlogForm = () => {
                         <CommenTextField
                           name={`faq.${index}.question`}
                           label="Question *"
+                          required
                         />
                         <CommenTextField
                           name={`faq.${index}.answer`}
                           label="Answer *"
+                          required
                           multiline
                           rows={3}
                         />
@@ -383,22 +442,12 @@ const AddBlogForm = () => {
                     ))}
                   </CardContent>
                 </Card>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                md={12}
-                sx={{
-                  width: { xs: "100%", md: "50%" },
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Box>
+
+                <Box mt={4}>
                   <CommonButton
                     sx={{
                       borderRadius: 10,
-                      width: { xs: "100%", md: "50%" },
+                      width: "100%",
                     }}
                     loading={loading}
                     type="submit"
@@ -415,4 +464,4 @@ const AddBlogForm = () => {
   );
 };
 
-export default AddBlogForm;
+export default ServiceFormBase;

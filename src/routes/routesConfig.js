@@ -18,6 +18,7 @@ import CreateCategoryServices from "../pages/CategoryServices/CreateCategoryServ
 import EditCategoryServices from "../pages/CategoryServices/EditCategoryServices";
 import AddServices from "../pages/Services/AddServices";
 import ServicesList from "../pages/Services/ServicesList";
+import EditService from "../pages/Services/editService";
 const routesConfig = [
   {
     element: <Layout1 />,
@@ -71,6 +72,10 @@ const routesConfig = [
       {
         path: "/addservices",
         element: <RoutingList Component={AddServices} />,
+      },
+        {
+        path: "/editservices/:id",
+        element: <RoutingList Component={EditService} />,
       },
       {
         path: "/categoryedit/:id",

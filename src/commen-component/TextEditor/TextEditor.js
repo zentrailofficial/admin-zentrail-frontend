@@ -20,7 +20,7 @@ const CommenQuillEditor = ({
   const modules = useMemo(() => ({
     toolbar: {
       container: [
-        [{ header: [1, 2, false] }],
+        [{ header: [1, 2, 3,4,5,false] }],
         ['bold', 'italic', 'underline'],
         ['link', 'image'],
         [{ list: 'ordered' }, { list: 'bullet' }],
