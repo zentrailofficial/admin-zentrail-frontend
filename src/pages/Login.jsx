@@ -178,10 +178,10 @@ const Login = () => {
                   variant="outlined"
                   {...register('password', {
                     required: 'Password is required',
-                    minLength: {
-                      value: 8,
-                      message: 'Password must be at least 8 characters'
-                    }
+                    // minLength: {
+                    //   value: 8,
+                    //   message: 'Password must be at least 8 characters'
+                    // }
                   })}
                   error={!!errors.password}
                   helperText={errors.password?.message}
