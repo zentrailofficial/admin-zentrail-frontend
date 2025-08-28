@@ -271,7 +271,6 @@ const Login = () => {
           <Box
             sx={{
               flex: 1,
-              backgroundColor: "#000D1E",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
