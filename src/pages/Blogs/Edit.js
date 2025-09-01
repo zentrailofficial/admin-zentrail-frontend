@@ -75,6 +75,7 @@ const EditBlog = () => {
           title: blog.title,
           author: blog.authorName,
           description: blog.description,
+           uid: blog?.uid,
           category: blog.category?._id,
           faq:
             Array.isArray(blog.faq) && blog.faq.length > 0
@@ -107,6 +108,7 @@ const EditBlog = () => {
       const formData = new FormData();
 
       formData.append("title", data.title);
+       formData.append("uid", data.uid);
       formData.append("authorName", data.author);
       formData.append("description", data.description);
       formData.append("category", data.category);
@@ -197,6 +199,7 @@ const EditBlog = () => {
 
                   <CommenTextField name="title" label="Blog Title *" required />
                   <CommenTextField name="author" label="Author" required />
+                    <CommenTextField name="uid" label="uid" size="small" />
                   <CommenQuillEditor
                     name="description"
                     label="Description *"
@@ -292,10 +295,10 @@ const EditBlog = () => {
                         }}
                       />
                       <CommenTextField name="meta.keywords" label="Keywords" />
-                      <CommenTextField
+                      {/* <CommenTextField
                         name="meta.canonicalUrl"
                         label="Canonical URL"
-                      />
+                      /> */}
                     </Stack>
 
                     {/* <Typography textAlign={"center"} fontWeight="600">
