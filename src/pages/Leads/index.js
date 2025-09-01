@@ -1,0 +1,59 @@
+import React, { useEffect, useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import { CircularProgress, Box } from "@mui/material";
+import axios from "axios";
+import { apiClient } from "../../lib/api-client";
+
+export default function InquiryTable() {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const columns = [
+    { field: "fullName", headerName: "Full Name", flex: 1 },
+    { field: "email", headerName: "Email", flex: 1 },
+    { field: "phoneNo", headerName: "Phone No", flex: 1 },
+    { field: "message", headerName: "Message", flex: 2 },
+  ];
+
+  useEffect(() => {
+    const fetchInquiries = async () => {
+      try {
+        setLoading(true);
+        const res = await apiClient.get("/api/inquiryform"); 
+        setRows(res.data.data || []);
+      } catch (error) {
+        console.error("Error fetching inquiries:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInquiries();
+  }, []);
+
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="400px"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ height: 500, width: "100%" }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        getRowId={(row) => row._id} 
+        pageSize={5}
+        rowsPerPageOptions={[5, 10, 20]}
+        disableSelectionOnClick
+      />
+    </Box>
+  );
+}

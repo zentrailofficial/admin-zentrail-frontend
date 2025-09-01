@@ -242,7 +242,7 @@ export default function Navbar() {
   const handleMiniDrawerToggle = () => {
     setMiniDrawer(!miniDrawer);
   };
-
+console.log(user)
   const drawerContent = (
     <div>
       <Toolbar sx={{ justifyContent: "center" }} />
@@ -299,7 +299,7 @@ export default function Navbar() {
             {miniDrawer ? <MenuIcon /> : <ChevronLeft />}
           </IconButton>
           <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
-            Admin Panel
+           {user.panel === "travel" ? 'Zentrail' : user.panel } Admin Panel
           </Typography>
           <IconButton onClick={toggleColorMode} color="inherit">
             {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}

@@ -19,6 +19,7 @@ import EditCategoryServices from "../pages/CategoryServices/EditCategoryServices
 import AddServices from "../pages/Services/AddServices";
 import ServicesList from "../pages/Services/ServicesList";
 import EditService from "../pages/Services/editService";
+import Leads from "../pages/Leads";
 const routesConfig = [
   {
     element: <Layout1 />,
@@ -144,6 +145,20 @@ const routesConfig = [
         path: "/editcategoryservices/:id",
         element: <RoutingList Component={EditCategoryServices} />,
       },
+    ],
+  },
+    {
+    element: (
+      <ProtectedRoute>
+        <Layout2 />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "/leads",
+        element: <RoutingList Component={Leads} />,
+      },
+
     ],
   },
 ];

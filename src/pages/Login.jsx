@@ -32,7 +32,7 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       const res = await apiClient.post("/api/auth/login", data);
-      login(res?.data?.user);
+      login({ ...res?.data?.user, panel: res?.data?.panel });
 
       const { token } = res.data;
 
