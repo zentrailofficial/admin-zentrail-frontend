@@ -208,6 +208,10 @@ const NAV_ITEMS = [
     title: "Category Feature",
     icon: <DashboardIcon />,
     path: "/categoryservices",
+  },  {
+    title: "Leads",
+    icon: <DashboardIcon />,
+    path: "/leads",
   },
 ];
 
