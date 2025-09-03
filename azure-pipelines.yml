@@ -5,7 +5,7 @@ pool:
   name: zentrail-agent
 
 variables:
-  VERCEL_PROJECT_ID: 'prj_tigHXxySKZsgJJnBwQX4XhkJuDNW'
+  VERCEL_PROJECT_ID: 'prj_7XqBuF9ZTF864kcdKH24vxlOlAV7'
   VERCEL_ORG_ID: 'gPLVlvJxaFI0eeU4D9A2btu2'
   VERCEL_TOKEN: 'ARyuWAO6SJoPOyVWycwuqALp'
 
