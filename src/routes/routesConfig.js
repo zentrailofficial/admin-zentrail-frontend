@@ -20,6 +20,10 @@ import AddServices from "../pages/Services/AddServices";
 import ServicesList from "../pages/Services/ServicesList";
 import EditService from "../pages/Services/editService";
 import Leads from "../pages/Leads";
+import ListingTravelPackage from "../pages/TravelPackage/ListingTravelPackage";
+import AddTravelPackage from "../pages/TravelPackage/AddTravelPackage";
+import { Edit } from "@mui/icons-material";
+import EditTravelPackage from "../pages/TravelPackage/EditTravelPackage";
 const routesConfig = [
   {
     element: <Layout1 />,
@@ -57,6 +61,7 @@ const routesConfig = [
         path: "/editblog/:id",
         element: <RoutingList Component={EditBlog} />,
       },
+      
     ],
   },
    {
@@ -159,6 +164,31 @@ const routesConfig = [
         element: <RoutingList Component={Leads} />,
       },
 
+    ],
+  },
+   {
+    element: (
+      <ProtectedRoute>
+        <Layout2 />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "/travelpackage",
+        element: <RoutingList Component={ListingTravelPackage} />,
+      },
+      {
+        path: "/addtour",
+        element: <RoutingList Component={AddTravelPackage} />,
+      },
+      {
+        path: "/edittour/:id",
+        element: <RoutingList Component={EditTravelPackage} />,
+      },
+      // {
+      //   path: "/categoryedit/:id",
+      //   element: <RoutingList Component={EditCategory} />,
+      // },
     ],
   },
 ];
