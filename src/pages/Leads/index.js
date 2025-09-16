@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { CircularProgress, Box } from "@mui/material";
+import { CircularProgress, Box, Stack, Typography, Button } from "@mui/material";
 import axios from "axios";
 import { apiClient } from "../../lib/api-client";
+import { handleDownloadCSV } from "../../utils/helperFunctions";
 
 export default function InquiryTable() {
   const [rows, setRows] = useState([]);
@@ -44,8 +45,24 @@ export default function InquiryTable() {
     );
   }
 
+  const handleExport = ()=>{
+    handleDownloadCSV(columns ,rows , "Lead");
+  }
+
   return (
     <Box sx={{ height: 500, width: "100%" }}>
+    <Stack direction="row" justifyContent="space-between" mb={2}>
+            <Typography variant="h5">Leads</Typography>
+           <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleExport}
+            >
+              export
+            </Button>
+            </Stack>
+          </Stack>
       <DataGrid
         rows={rows}
         columns={columns}
