@@ -1,0 +1,32 @@
+trigger:
+- dev-main
+
+pool:
+  name: zentrail-agent
+
+variables:
+  VERCEL_PROJECT_ID: 'prj_tigHXxySKZsgJJnBwQX4XhkJuDNW'
+  VERCEL_ORG_ID: 'gPLVlvJxaFI0eeU4D9A2btu2'
+  VERCEL_TOKEN: 'ARyuWAO6SJoPOyVWycwuqALp'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '22.x'
+    displayName: 'Install Node.js 22'
+
+  - script: npm install
+    displayName: 'Install dependencies'
+
+  - script: npm run build
+    displayName: 'Build project'
+
+ 
+
+  - script: |
+      vercel pull --yes --environment=production --token ARyuWAO6SJoPOyVWycwuqALp
+    displayName: 'Pull Vercel environment variables'
+
+  - script: |
+      vercel deploy --prod --token ARyuWAO6SJoPOyVWycwuqALp
+    displayName: 'Deploy to Vercel (production)'
