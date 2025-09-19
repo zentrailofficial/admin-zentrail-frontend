@@ -5,12 +5,14 @@ import { Edit, Delete } from "@mui/icons-material";
 import { apiClient } from "../../lib/api-client";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
+import CommonButton from "../../commen-component/CommenButton/CommenButton";
 const CategoryDataGrid = () => {
   const [rows, setRows] = useState([]);
   const navigate = useNavigate();
 
   const fetchCategories = async () => {
     const res = await apiClient.get("/api/category");
+    console.log(res.data);
     const formatted = res.data.map((item, index) => ({
       id: item._id,
       sr: index + 1,
@@ -63,7 +65,7 @@ const CategoryDataGrid = () => {
             <IconButton
               size="small"
               color="error"
-              onClick={() => handleDelete(params.row.id)}
+              onClick={() => handleDelete(params.row._id)}
             >
               <Delete fontSize="small" />
             </IconButton>
@@ -80,6 +82,14 @@ const CategoryDataGrid = () => {
     <Box sx={{ height: 600, width: "100%", p: 2 }}>
          <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Category</Typography>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <CommonButton
+        fullWidth={false}
+        variant="contained"
+        onClick={() => navigate("/listsubcategory")}
+      >
+        List Sub Category
+      </CommonButton>
         <Button
           variant="contained"
           color="primary"
@@ -88,7 +98,9 @@ const CategoryDataGrid = () => {
         >
           Create Category
         </Button>
+        </Box>
       </Stack>
+      
 
       <DataGrid
         rows={rows}

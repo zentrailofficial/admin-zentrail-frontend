@@ -3,55 +3,35 @@ import { useForm } from "react-hook-form";
 import CategoryFormBase from "./CategoryFormBase";
 import { apiClient } from "../../lib/api-client";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AddCategory = () => {
   const navigate = useNavigate();
   const methods = useForm({
     defaultValues: {
       name: "",
+      slug: "",
       description: "",
       metaTitle: "",
       metaDescription: "",
       image: "",
+      isblog: false,
+      faq: [{ question: "", answer: "" }],
     },
   });
-
-  //  name: {
-  //   type: String,
-  //   required: true,
-  //   unique: true,
-  //   trim: true,
-  //   lowercase: true,
-  // },
-  // description: {
-  //   type: String,
-  //   default: '',
-  //   trim: true,
-  // },
-  // metaTitle: {
-  //   type: String,
-  //   default: '',
-  //   trim: true,
-  // },
-  // metaDescription: {
-  //   type: String,
-  //   default: '',
-  //   trim: true,
-  // },
-  // image: {
-  //   type: String,
-  //   default: '',
-  //   trim: true,
-  // },
+  
 
   const onSubmit = async (data) => {
     try {
-      console.log(data.image[0].file);
       const formData = new FormData();
       formData.append("name", data?.name);
+      formData.append("uid", data.slug);
       formData.append("description", data?.description);
       formData.append("metaTitle", data?.metaTitle);
       formData.append("metaDescription", data?.metaDescription);
+      formData.append("metaKeyword", data?.metakeywords);
+      formData.append("faq", JSON.stringify(data?.faq));
+      formData.append("isblog", data?.isblog);
       // formData.append("image", data?.image);
       // if (data.image[0]?.file) {
       formData.append("image", data?.image[0]?.file);
@@ -62,9 +42,10 @@ const AddCategory = () => {
       });
       methods.reset();
       navigate("/category");
+     toast.success("Create Successful")
     } catch (error) {
       console.error(error);
-      alert(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message)
     }
   };
 

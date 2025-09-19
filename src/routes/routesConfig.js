@@ -24,6 +24,9 @@ import ListingTravelPackage from "../pages/TravelPackage/ListingTravelPackage";
 import AddTravelPackage from "../pages/TravelPackage/AddTravelPackage";
 import { Edit } from "@mui/icons-material";
 import EditTravelPackage from "../pages/TravelPackage/EditTravelPackage";
+import AddSubCategory from "../pages/SubCategory/AddSubCategory";
+import ListSubCategory from "../pages/SubCategory/ListSubCategory";
+import EditSubCategory from "../pages/SubCategory/EditSubCategory";
 const routesConfig = [
   {
     element: <Layout1 />,
@@ -149,6 +152,18 @@ const routesConfig = [
       {
         path: "/editcategoryservices/:id",
         element: <RoutingList Component={EditCategoryServices} />,
+      },
+      {
+        path: "/addsubcategory",
+        element: <RoutingList Component={AddSubCategory} />,
+      },
+      {
+        path: "/listsubcategory",
+        element: <RoutingList Component={ListSubCategory} />,
+      },
+        {
+        path: "/editsubcategory/:id",
+        element: <RoutingList Component={EditSubCategory} />,
       },
     ],
   },

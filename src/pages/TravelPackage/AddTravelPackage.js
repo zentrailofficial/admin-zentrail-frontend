@@ -1,4 +1,5 @@
 import { Box, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import {
@@ -16,21 +17,22 @@ import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import CommonButton from "../../commen-component/CommenButton/CommenButton.js";
 import { Switch, FormControlLabel } from "@mui/material";
 import { apiClient } from "../../lib/api-client.js";
+import { useNavigate } from "react-router-dom";
 
 const seasonOptions = [
-  { value: "Summer", label: "Summer" },
-  { value: "Winter", label: "Winter" },
-  { value: "Monsoon", label: "Monsoon" },
-  { value: "Autumn", label: "Autumn" },
-  { value: "Rainy", label: "Rainy" },
+  { value: "summer-trips", label: "Summer-trips" },
+  { value: "winter-trips", label: "Winter-trips" },
+  { value: "monsoon-trips", label: "Monsoon-trips" },
+  { value: "autumn-trips", label: "Autumn-trips" },
 ];
 const AddTravelPackage = () => {
   const [loading, setLoading] = useState(false);
   const methods = useForm({
     defaultValues: {
       type: "",
+      offbeat: false,
       isActive: true,
-      difficultyLevel:"Easy",
+      difficultyLevel: "Easy",
       altitude: "",
       itinerary: [{ title: "", description: "" }],
       faq: [{ question: "", answer: "" }],
@@ -55,6 +57,7 @@ const AddTravelPackage = () => {
   } = methods;
   const [exclusions, setExclusions] = useState([""]);
   const [inclusions, setInclusions] = useState([""]);
+  const navigate = useNavigate();
   const [moodBasedList, setMoodBasedList] = useState([]);
   const {
     fields: faqFields,
@@ -129,32 +132,36 @@ const AddTravelPackage = () => {
 
     fetchMoodBased();
   }, []);
-  const onSubmit = (data) => {
-    setLoading(true)
+  const onSubmit = async (data) => {
+    setLoading(true);
     console.log(data);
-    if(data.featuredImage?.length==0){
-      alert("featuredImage is required")
-      return 
+    if (data.featuredImage?.length == 0) {
+      toast.error("Featured image is required");
+      return;
     }
-     if(data.gallery?.length<3){
-      alert("Gallery image require atleast 3 image ")
-      return 
+    if (data.gallery?.length < 3) {
+      toast.error("Gallery requires at least 3 images");
+
+      return;
     }
 
     try {
       const formData = new FormData();
       // Add Travel Package
       formData.append("type", data.type);
+      formData.append("offbeat", data.offbeat);
       formData.append("title", data.title);
       formData.append("slug", data.slug);
       formData.append("description", data.description);
       formData.append("price", data.price);
-      formData.append("discount", Number(data.discount||0));
+      formData.append("discount", Number(data.discount || 0));
       // Package Details
       formData.append("duration", data.duration);
       formData.append("altitude", data.altitude);
-      formData.append("difficultyLevel", data.difficultyLevel||"");
+      formData.append("difficultyLevel", data.difficultyLevel || "");
       formData.append("season", data.season);
+      formData.append("startLocation", data.startLocation);
+      formData.append("endLocation",data.endLocation);
       formData.append("groupMembers", JSON.stringify(data.groupMembers));
       formData.append("itinerary", JSON.stringify(data.itinerary));
       formData.append("exclusions", JSON.stringify(data.exclusions));
@@ -179,28 +186,31 @@ const AddTravelPackage = () => {
           formData.append("gallery", item.file);
         }
       });
+      formData.append("isActive", data.isActive || false);
       //Faq
       formData.append("faq", JSON.stringify(data.faq));
       //meta
       formData.append("seo", JSON.stringify(data.seo) || "");
       // formData.append("meta[description]", data.meta?.description || "");
       // formData.append("meta[keywords]", data.meta?.keywords || "");
-      const response = apiClient.post("/api/travel-packages/", formData, {
+      const response = await apiClient.post("/api/travel-packages/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       console.log(response, "dadsda");
-      if (response.status === 201) {
-        console.log("Travel Package created successfully");
-        // navigate("/");
+      if (response) {
+        toast.success("Travel Package created successfully!");
+        navigate("/travelpackage");
       }
     } catch (error) {
-      console.error("Error creating travel package:", error?.response?.data);
-
-      alert("Failed to create travel package. Please try again.");
-    }finally{
-      setLoading(false)
+      console.error("Error creating travel package:", error?.response);
+      toast.error(
+        "Failed to create travel package. Please try again: ",
+        error?.response
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -219,16 +229,31 @@ const AddTravelPackage = () => {
                 <Typography variant="h6" gutterBottom fontWeight={600}>
                   Add Travel Package
                 </Typography>
-                <CommonDropdown
-                  options={[
-                    { value: "tour", label: "Tour" },
-                    { value: "trek", label: "Trek" },
-                  ]}
-                  name="type"
-                  label="Type of Package *"
-                  required
-                />
+                <Box sx={travelPackageStyle.customBox3}>
+                  <CommonDropdown
+                    options={[
+                      { value: "tour", label: "Tour" },
+                      { value: "trek", label: "Trek" },
+                    ]}
+                    name="type"
+                    label="Type of Package *"
+                    required
+                  />
 
+                  <FormControlLabel
+                    control={
+                      <Controller
+                        name="offbeat"
+                        control={methods.control}
+                        render={({ field }) => (
+                          <Switch {...field} checked={field.value} />
+                        )}
+                      />
+                    }
+                    label="Off Beat"
+                    sx={{ whiteSpace: "nowrap" }}
+                  />
+                </Box>
                 <CommenTextField
                   name="title"
                   label="Package Name *"
@@ -452,6 +477,21 @@ const AddTravelPackage = () => {
                     required
                   />
                 </Box>
+                <Box sx={travelPackageStyle.customBox3}>
+                  <CommenTextField
+                    name="startLocation"
+                    label="Start Location *"
+                    size="small"
+                   
+                    required
+                  />
+                  <CommenTextField
+                    name="endLocation"
+                    label="End Location "
+                    size="small"
+                    required
+                  />
+                </Box>
               </Paper>
               {/* itinerary */}
 
@@ -571,6 +611,7 @@ const AddTravelPackage = () => {
               </Paper>
             </Grid>
           </Grid>
+         
         </Box>
       </form>
     </FormProvider>

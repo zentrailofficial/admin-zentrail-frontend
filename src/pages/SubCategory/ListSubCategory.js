@@ -1,33 +1,30 @@
 import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import travelPackageStyle from "../../styles/travelPackage";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
-import { useNavigate } from "react-router-dom";
-import travelPackageStyle from "../../styles/travelPackage.js";
+import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
 import { DataGrid } from "@mui/x-data-grid";
+import { useNavigate } from "react-router-dom";
 import { Delete, Edit } from "@mui/icons-material";
-import { useEffect, useState } from "react";
-import { apiClient } from "../../lib/api-client.js";
-import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete.jsx";
-import { toast } from "react-toastify";
-const ListingTravelPackage = () => {
+import { apiClient } from "../../lib/api-client";
+const ListSubCategory = () => {
   const [listData, setListData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [IdtoDelete, setIdtoDelete] = useState("");
   const [loadingForDelete, setLoadingForDelete] = useState(false);
 
-  console.log(listData);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchData();
   }, []);
-
   const fetchData = () => {
     setLoading(true);
     apiClient
-      .get(`/api/travel-packages/all`)
+      .get(`/api/subcategory`)
       .then((res) => {
-        console.log(res?.data?.data);
-        const tourList = res?.data?.data || [];
+        console.log(res?.data);
+        const tourList = res?.data || [];
         const formatted = tourList.map((val, index) => ({
           ...val,
           id: val._id, // Required for DataGrid
@@ -43,32 +40,29 @@ const ListingTravelPackage = () => {
       })
       .finally(() => setLoading(false));
   };
-
+  const handleAddNewTour = () => {
+    navigate("/addsubcategory");
+  };
+    const handleEdit= async  (onEdit) =>{
+    navigate(`/editsubcategory/${onEdit._id}`)
+  }
   const handleDelete = () => {
     setLoadingForDelete(true);
-    apiClient
-      .delete(`/api/travel-packages/soft-delete/${IdtoDelete}`)
-      .then(() => {
-        fetchData();
-        setLoadingForDelete(false);
-        toast.success("Deleted successfully");
-        setDialogOpen(false);
-        setIdtoDelete("");
-        
-      })
-      .catch((err) => {
-        alert("Failed to delete");
-        setLoadingForDelete(false);
-        setDialogOpen(false);
-        setIdtoDelete("");
-      });
+    // apiClient
+    //   .delete(`/api/travel-packages/travel/permanent-delete/${IdtoDelete}`)
+    //   .then(() => {
+    //     fetchData();
+    //     setLoadingForDelete(false);
+    //     setDialogOpen(false);
+    //     setIdtoDelete("");
+    //   })
+    //   .catch((err) => {
+    //     alert("Failed to delete");
+    //     setLoadingForDelete(false);
+    //     setDialogOpen(false);
+    //     setIdtoDelete("");
+    //   });
   };
-
-  const navigate = useNavigate();
-  const handleAddNewTour = () => {
-    navigate("/addtour");
-  };
- 
 
   const columns = [
     { field: "sr", headerName: "Sr", width: 70 },
@@ -90,7 +84,7 @@ const ListingTravelPackage = () => {
             <IconButton
               size="small"
               color="primary"
-              // onClick={() =>  handleEdit(params.row)}
+              onClick={() =>  handleEdit(params.row)}
             >
               <Edit fontSize="small" />
             </IconButton>
@@ -118,7 +112,7 @@ const ListingTravelPackage = () => {
           Travel Package
         </Typography>
         <CommonButton onClick={handleAddNewTour} fullWidth={false}>
-          Add New Tour
+          Add SubCategory
         </CommonButton>
       </Stack>
       <DataGrid
@@ -128,7 +122,7 @@ const ListingTravelPackage = () => {
         pageSizeOptions={[5, 10, 20, 50]}
         initialState={{
           pagination: {
-            paginationModel: { pageSize: 5, page: 0 }, 
+            paginationModel: { pageSize: 5, page: 0 },
           },
         }}
       />
@@ -148,4 +142,4 @@ const ListingTravelPackage = () => {
   );
 };
 
-export default ListingTravelPackage;
+export default ListSubCategory;
