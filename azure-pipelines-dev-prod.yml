@@ -17,9 +17,6 @@ stages:
           VERCEL_ORG_ID: 'gPLVlvJxaFI0eeU4D9A2btu2'
           VERCEL_TOKEN: 'ARyuWAO6SJoPOyVWycwuqALp'
         steps:
-     
-
-
           
           
           - script: |
@@ -48,9 +45,7 @@ stages:
             deploy:
              
               steps:
-                
-
-               
+                               
                 - script: |
                     vercel pull --yes --environment=production --token ARyuWAO6SJoPOyVWycwuqALp
                   displayName: 'Pull Vercel environment variables'
