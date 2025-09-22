@@ -34,6 +34,9 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
+import commoncss from "../../styles/commoncss";
 const AddBlogForm = () => {
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -92,11 +95,12 @@ const AddBlogForm = () => {
         console.log("Blog created successfully");
         setLoading(false);
         navigate("/blog");
+        toast.success("Blog created successfully");
       }
     } catch (error) {
       console.error("Error creating blog:", error);
       setLoading(false);
-      alert("Failed to create blog");
+      toast.error("Failed to create blog");
     }
   };
 
@@ -169,6 +173,7 @@ const AddBlogForm = () => {
                     <Typography variant="h6" gutterBottom fontWeight={600}>
                       Add New Blog
                     </Typography>
+                     <CommonToolTip title="Blog" />
                   </Stack>
 
                   <CommenTextField
@@ -201,6 +206,7 @@ const AddBlogForm = () => {
                       <Typography variant="h6" fontWeight={600}>
                         Category & Tags
                       </Typography>
+                        <CommonToolTip title="Category & Tags" />
                     </Stack>
 
                     <CommonDropdown
@@ -224,6 +230,7 @@ const AddBlogForm = () => {
                       <Typography variant="h6" fontWeight={600}>
                         URL & Featured Image
                       </Typography>
+                        <CommonToolTip title=" URL & Featured Image" />
                     </Stack>
 
                     <ImageUpload
@@ -266,6 +273,7 @@ const AddBlogForm = () => {
                     <Typography variant="h6" fontWeight="600">
                       SEO Settings
                     </Typography>
+                      <CommonToolTip title="Category & Tags" />
                   </Stack>
                   {/* Meta Tags Accordion */}
 
@@ -331,6 +339,7 @@ const AddBlogForm = () => {
                       <Typography variant="h6" fontWeight={600}>
                         FAQs
                       </Typography>
+                      
                       <IconButton
                         color="primary"
                         onClick={() => append({ question: "", answer: "" })}
@@ -338,11 +347,11 @@ const AddBlogForm = () => {
                         <AddIcon />
                       </IconButton>
                     </Stack>
-
+<Box sx={commoncss.faqBox}>
                     {fields.map((item, index) => (
                       <Box
                         key={item.id}
-                        sx={{
+                        sx={{ 
                           border: "1px solid #ddd",
                           borderRadius: 2,
                           p: 2,
@@ -381,6 +390,7 @@ const AddBlogForm = () => {
                         />
                       </Box>
                     ))}
+                    </Box>
                   </CardContent>
                 </Card>
               </Grid>

@@ -38,8 +38,11 @@ const ListingTravelPackage = () => {
           moodOfJourney: val?.moodOfJourney?.title,
           season: val?.season,
           weatherLocation: val?.weatherLocation,
+          isActive: val?.isActive ? "Active " : "Inactive",
+          discount: val?.discount.amount ? `₹ ${val?.discount.amount}` :val?.discount?.percentage?`${val?.discount?.percentage} %`: "No Discount",
         }));
         setListData(formatted);
+
       })
       .finally(() => setLoading(false));
   };
@@ -54,7 +57,7 @@ const ListingTravelPackage = () => {
         toast.success("Deleted successfully");
         setDialogOpen(false);
         setIdtoDelete("");
-        
+
       })
       .catch((err) => {
         alert("Failed to delete");
@@ -68,16 +71,47 @@ const ListingTravelPackage = () => {
   const handleAddNewTour = () => {
     navigate("/addtour");
   };
- 
 
+console.log(listData)
   const columns = [
     { field: "sr", headerName: "Sr", width: 70 },
-    { field: "name", headerName: "Package Name", flex: 2 },
-    { field: "duration", headerName: "Duration", flex: 1 },
-    { field: "moodOfJourney", headerName: "Mood of journey", flex: 1 },
-    { field: "season", headerName: "Season", flex: 1 },
-    { field: "price", headerName: "Price", flex: 1 },
-    { field: "weatherLocation", headerName: "Weather location", flex: 1 },
+    { field: "name", headerName: "Package Name", width: 180 ,flex: 1,},
+    // { field: "duration", headerName: "Duration", flex: 1 },
+    { field: "moodOfJourney", headerName: "Category", width: 200, },
+    // { field: "season", headerName: "Season", flex: 1 },
+    { field: "price", headerName: "Price", width: 150, },
+    {
+      field: "discount", headerName: "Discount", width: 150,
+      renderCell: (params,i) => (
+        <span
+          style={{
+            color: params.value == "No Discount"?"red":"green",
+            fontWeight: "bold",
+            padding: "5px 15px",
+            borderRadius: "5px",
+          }}
+        >
+          {params.value}
+        </span>
+      ),
+    },
+
+    {
+      field: "isActive", headerName: "Status", width: 150,
+      renderCell: (params) => (
+        <span
+          style={{
+            color: params.value === "Active" ? "red" : "green",
+            backgroundColor: params.value === "Active" ? "#FFDCD1" : "#E9FFDB",
+            fontWeight: "bold",
+            padding: "5px 15px",
+            borderRadius: "5px"
+          }}
+        >
+          {params.value}
+        </span>
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",
@@ -90,7 +124,7 @@ const ListingTravelPackage = () => {
             <IconButton
               size="small"
               color="primary"
-              // onClick={() =>  handleEdit(params.row)}
+            // onClick={() =>  handleEdit(params.row)}
             >
               <Edit fontSize="small" />
             </IconButton>
@@ -117,6 +151,10 @@ const ListingTravelPackage = () => {
         <Typography variant="h5" fontWeight={600}>
           Travel Package
         </Typography>
+        <Box sx={travelPackageStyle.filterButton}>
+          <CommonButton fullWidth={false}>Tour</CommonButton>
+          <CommonButton fullWidth={false}>Trek</CommonButton>
+        </Box>
         <CommonButton onClick={handleAddNewTour} fullWidth={false}>
           Add New Tour
         </CommonButton>
@@ -125,10 +163,10 @@ const ListingTravelPackage = () => {
         rows={listData}
         columns={columns}
         pagination
-        pageSizeOptions={[5, 10, 20, 50]}
+        pageSizeOptions={[10, 20, 50]}
         initialState={{
           pagination: {
-            paginationModel: { pageSize: 5, page: 0 }, 
+            paginationModel: { pageSize: 10, page: 0 },
           },
         }}
       />

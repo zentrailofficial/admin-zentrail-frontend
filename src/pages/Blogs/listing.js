@@ -36,7 +36,7 @@ export default function BlogListGrid() {
           ...blog,
           id: blog._id, // Required for DataGrid
           slNo: index + 1,
-          category: blog?.category?.name,
+          category: blog?.category?.name || "No Category",
           createdAt: blog?.createdAt.split("T")[0],
         }));
         setListData(formatted);
@@ -91,6 +91,36 @@ export default function BlogListGrid() {
       field: "status",
       headerName: "Status",
       width: 100,
+      renderCell: (params) => {
+        const status = params.value;
+        let color = 'black';
+        let backgroundColor = '#E0E0E0';
+
+        if (status === 'Published') {
+          color = 'green';
+          backgroundColor = '#E9FFDB'; //  green
+        } else if (status === 'Draft') {
+          color = '#b77d62';
+          backgroundColor = '#fff5cc'; // orange
+        } else if (status === 'Scheduled') {
+          color = '#617e9c';
+          backgroundColor = '#cafdf5'; // blue
+        }
+
+        return (
+          <span
+            style={{
+              color: color,
+              backgroundColor: backgroundColor,
+              fontWeight: 'bold',
+              padding: '5px 15px',
+              borderRadius: '5px',
+            }}
+          >
+            {status}
+          </span>
+        );
+      }
     },
     {
       field: "createdAt",
@@ -149,15 +179,15 @@ export default function BlogListGrid() {
         <DataGrid
           rows={listData}
           columns={columns}
-          pageSizeOptions={[5, 10, 20]}
+          pageSizeOptions={[10, 20]}
           initialState={{
-            pagination: { paginationModel: { pageSize: 5, page: 0 } },
+            pagination: { paginationModel: { pageSize: 10, page: 0 } },
           }}
           checkboxSelection
           disableRowSelectionOnClick
         />
       )}
-       <ConfirmDelete
+      <ConfirmDelete
         open={dialogOpen}
         onClose={() => {
           setDialogOpen(false);
