@@ -34,6 +34,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const AddBlogForm = () => {
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -92,11 +93,12 @@ const AddBlogForm = () => {
         console.log("Blog created successfully");
         setLoading(false);
         navigate("/blog");
+        toast.success("Blog created successfully");
       }
     } catch (error) {
       console.error("Error creating blog:", error);
       setLoading(false);
-      alert("Failed to create blog");
+      toast.error("Failed to create blog");
     }
   };
 

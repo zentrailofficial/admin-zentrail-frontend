@@ -41,6 +41,11 @@ const travelPackageStyle = {
     width: { xs: "100%", md: "50%" },
     mt: 2,
   },
+  filterButton : {
+    display:"flex" ,
+     justifyContent:"space-between" , 
+     gap:"10px"
+  }
 };
 
 export default travelPackageStyle;

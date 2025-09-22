@@ -13,14 +13,30 @@ export default function InquiryTable() {
     { field: "fullName", headerName: "Full Name", flex: 1 },
     { field: "email", headerName: "Email", flex: 1 },
     { field: "phoneNo", headerName: "Phone No", flex: 1 },
-    { field: "message", headerName: "Message", flex: 2 },
+    { field: "message", headerName: "Message", flex: 2,
+       renderCell: (params) => (
+        <span
+          style={{
+             color: params.value == "No Discount"?"red":"green",
+            // backgroundColor: params.value === "Active" ? "#FFDCD1" : "#E9FFDB",
+            fontWeight: "bold",
+            padding: "5px 15px",
+            borderRadius: "5px"
+          }}
+        >
+          {params.value}
+        </span>
+       )
+     },
   ];
 
   useEffect(() => {
     const fetchInquiries = async () => {
+    
       try {
         setLoading(true);
         const res = await apiClient.get("/api/inquiryform"); 
+           console.log(res?.data?.data);
         setRows(res.data.data || []);
       } catch (error) {
         console.error("Error fetching inquiries:", error);
