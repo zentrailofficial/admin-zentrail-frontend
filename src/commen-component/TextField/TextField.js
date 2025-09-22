@@ -56,14 +56,14 @@ const CommenTextField = ({
           helperText={error?.message}
           margin="normal"
           focused={!!focused}
-   onChange={(e) => {
+          onChange={(e) => {
             const inputValue = e.target.value;
             field.onChange(e);
             if (onChange) {
               onChange(inputValue);
             }
           }}
-              {...rest}
+          {...rest}
           // inputProps={{
           //   maxLength: maxLength || undefined, // prevent typing over limit
           // }}

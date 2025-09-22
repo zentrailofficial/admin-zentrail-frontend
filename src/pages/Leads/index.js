@@ -13,30 +13,23 @@ export default function InquiryTable() {
     { field: "fullName", headerName: "Full Name", flex: 1 },
     { field: "email", headerName: "Email", flex: 1 },
     { field: "phoneNo", headerName: "Phone No", flex: 1 },
-    { field: "message", headerName: "Message", flex: 2,
-       renderCell: (params) => (
-        <span
-          style={{
-             color: params.value == "No Discount"?"red":"green",
-            // backgroundColor: params.value === "Active" ? "#FFDCD1" : "#E9FFDB",
-            fontWeight: "bold",
-            padding: "5px 15px",
-            borderRadius: "5px"
-          }}
-        >
-          {params.value}
+    {
+      field: "message", headerName: "Message", flex: 2,
+      renderCell: (params) => (
+        <span style={{ color: params.value ? "black" : "red" }}>
+          {params.value ? params.value : "No message"}
         </span>
-       )
-     },
+      )
+    },
   ];
 
   useEffect(() => {
     const fetchInquiries = async () => {
-    
+
       try {
         setLoading(true);
-        const res = await apiClient.get("/api/inquiryform"); 
-           console.log(res?.data?.data);
+        const res = await apiClient.get("/api/inquiryform");
+        console.log(res?.data?.data);
         setRows(res.data.data || []);
       } catch (error) {
         console.error("Error fetching inquiries:", error);
@@ -61,28 +54,28 @@ export default function InquiryTable() {
     );
   }
 
-  const handleExport = ()=>{
-    handleDownloadCSV(columns ,rows , "Lead");
+  const handleExport = () => {
+    handleDownloadCSV(columns, rows, "Lead");
   }
 
   return (
     <Box sx={{ height: 500, width: "100%" }}>
-    <Stack direction="row" justifyContent="space-between" mb={2}>
-            <Typography variant="h5">Leads</Typography>
-           <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleExport}
-            >
-              export
-            </Button>
-            </Stack>
-          </Stack>
+      <Stack direction="row" justifyContent="space-between" mb={2}>
+        <Typography variant="h5">Leads</Typography>
+        <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleExport}
+          >
+            export
+          </Button>
+        </Stack>
+      </Stack>
       <DataGrid
         rows={rows}
         columns={columns}
-        getRowId={(row) => row._id} 
+        getRowId={(row) => row._id}
         pageSize={5}
         rowsPerPageOptions={[5, 10, 20]}
         disableSelectionOnClick
