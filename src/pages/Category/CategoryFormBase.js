@@ -18,16 +18,9 @@ import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import ImageIcon from "@mui/icons-material/Image";
 import travelPackageStyle from "../../styles/travelPackage";
 import categoryStyle from "../../styles/category";
-import commoncss from "../../styles/commoncss";
-import addBlogStyle from "../../styles/blogcss";
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
-const CategoryFormBase = ({
-  methods,
-  onSubmit,
-  isEdit = false,
-  defaultImage,
-}) => {
+import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
+
+const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
   const {
     formState: { isSubmitting },
     control,
@@ -43,7 +36,7 @@ const CategoryFormBase = ({
     control,
     name: "faq",
   });
-  const titleValue = watch("name");
+  const titleValue = !isEdit && watch("name");
   useEffect(() => {
     if (titleValue) {
       const slug = titleValue
@@ -55,212 +48,93 @@ const CategoryFormBase = ({
       setValue("slug", slug);
     }
   }, [titleValue, setValue]);
-
+  console.log(!watch("isblog"));
   return (
     <>
       <FormProvider {...methods}>
-        {/* <Box
-        component="form"
-        onSubmit={methods.handleSubmit(onSubmit)}
-        noValidate
-      > */}
-
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <Box>
-            <Stack direction="row" alignItems="center" spacing={2} mb={2}>
-              <BookIcon color="primary" />
-              <Typography variant="h6" fontWeight={600}>
-                Add New Category
-              </Typography>
-              <CommonToolTip title=" Add New Category" />
-            </Stack>
-            <Paper elevation={3}
-              sx={commoncss.cardlineargradient}>
-              <Grid
-                container
-                spacing={{ xs: 2, md: 3 }}
-                columns={{ xs: 12, sm: 6, md: 12 }}
-              >
-                <Grid size={{ xs: 12, sm: 6, md: 8 }}>
-                  <Grid
-                    container
-                    spacing={{ xs: 1, md: 3 }}
-                    columns={{ xs: 12, sm: 12, md: 12 }}
-                  >
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <CommenTextField
-                        name="name"
-                        focused={isEdit}
-                        label="Category Name"
-                        required
+          <Grid container spacing={2}>
+            <Grid size={6}>
+              <Box sx={categoryStyle.customBox}>
+                <Stack direction="row" justifyContent={"space-between"}>
+                  <Stack direction="row" spacing={2}>
+                    <BookIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Add Category
+                    </Typography>
+                  </Stack>
+                  <FormControlLabel
+                    control={
+                      <Controller
+                        name="isblog"
+                        control={methods.control}
+                        render={({ field }) => (
+                          <Switch {...field} checked={field.value} />
+                        )}
                       />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <CommenTextField
-                        name="slug"
-                        // focused={isEdit}
-                        label="slug"
-                        required
-                        focused={watch("name")?.length}
-                      />
-                    </Grid>
-                  </Grid>
-                  {/* <Grid
-                    container
-                    spacing={{ xs: 1, md: 3 }}
-                    columns={{ xs: 12, sm: 12, md: 12 }}
-                  >
-                    <Grid size={{ xs: 12, md: 12 }}>
-                      <Box sx={addBlogStyle.customBox1}>
-                        <label>Meta Title</label>
-                        <CommonToolTip title="Meta Title" />
-                        <CommenTextField
-                          name="meta.title"
-                          label="Meta Title *"
-                          required
-                          maxLength={60}
-                          messages={{
-                            required: "Meta title is required",
-                            maxLength: "Please do not exceed 60 characters",
-                          }}
-                        />
-                      </Box>
-                      <Box sx={addBlogStyle.customBox1}>
-                      <label>Keywords</label>
-                      <CommonToolTip title="Keywords" />
-                      <CommenTextField name="meta.keywords" label="Keywords" />
-                    </Box>
-                    </Grid>
-                  </Grid> */}
-                   <Grid
-                    container
-                    spacing={{ xs: 1, md: 3 }}
-                    columns={{ xs: 12, sm: 12, md: 12 }}
-                  >
-                    <Grid size={{ xs: 12, md: 6 }}>
-                     <Box sx={addBlogStyle.customBox1}>
-                        <label>Meta Title</label>
-                        <CommonToolTip title="Meta Title" />
-                        <CommenTextField
-                          name="meta.title"
-                          label="Meta Title *"
-                          required
-                          maxLength={60}
-                          messages={{
-                            required: "Meta title is required",
-                            maxLength: "Please do not exceed 60 characters",
-                          }}
-                        />
-                      </Box>
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                    <Box sx={addBlogStyle.customBox1}>
-                      <label>Keywords</label>
-                      <CommonToolTip title="Keywords" />
-                      <CommenTextField name="meta.keywords" label="Keywords" />
-                    </Box>
-                    </Grid>
-                  </Grid>
+                    }
+                    label="category for blog"
+                    sx={{ whiteSpace: "nowrap" }}
+                  />
+                </Stack>
+                <CommenTextField
+                  name="name"
+                  focused={isEdit}
+                  label="Category Name"
+                  required
+                />
+                <CommenQuillEditor name="description" required minLength={30} label="Category description"/>
+                <ImageUpload
+                  name="image"
+                  focused={isEdit}
+                  label="Image"
+                  altText
+                  // defaultImage={defaultImage}
+                />
+              </Box>
 
-                  <Grid
-                    container
-                    spacing={{ xs: 1, md: 3 }}
-                    columns={{ xs: 12, sm: 12, md: 12 }}
-                  >
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <Box sx={{ gap: 1 }}>
-                        <label>Meta Description *</label>
-                        <CommenTextField
-                          name="meta.description"
-                          label="Meta Description *"
-                          multiline
-                          required
-                          rows={3}
-                          maxLength={160}
-                          messages={{
-                            required: "Meta description is required",
-                            maxLength: "Please do not exceed 160 characters",
-                          }}
-                        /></Box>
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <label> Description *</label>
-                      <CommenTextField
-                        name="description"
-                        label="Description"
-                        focused={isEdit}
-                        multiline
-                        rows={3}
-                        required
-                        minLength={30}
-                        placeholder="Write blog content here..."
-                      />
-                    </Grid>
-                  </Grid>
-
-                  <Grid
-                    container
-                    spacing={{ xs: 1, md: 3 }}
-                    columns={{ xs: 12, sm: 12, md: 12 }}
-                  >
-                    <Grid size={{ xs: 12, md: 12 }}>
-                       {/*  */}
-                      <Box marginTop={1}>
-                        <FormControlLabel
-                          control={
-                            <Controller
-                              name="isblog"
-                              control={methods.control}
-                              render={({ field }) => (
-                                <Switch {...field} checked={field.value} />
-                              )}
-                            />
-                          }
-                          label="category for blog"
-                          sx={{ whiteSpace: "nowrap" }}
-                        />
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                  <Grid size={{ xs: 12, sm:6, md: 12 }}>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={2}
-                      mb={1}
-                    >
-                      <ImageIcon color="primary" />
-                      <Typography variant="h6" fontWeight={600}>
-                        URL & Featured Image
-                      </Typography>
-                      <CommonToolTip title=" URL & Featured Image" />
-                    </Stack>
-
-                    <ImageUpload
-                      name="images"
-                      label="Choose Blog Images"
-                      multiple
-                      altText
-                      background="green"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Box>
-
-          {/* FAQ */}
-          <Paper elevation={3}
-            sx={commoncss.cardlineargradient}>
-            <Grid
-              container
-              spacing={{ xs: 2, md: 3 }}
-              columns={{ xs: 12, sm: 12, md: 12 }}
-              sx={commoncss.faqBox}
-            >
-              <Grid size={{ xs: 12, md: 12 }}>
+              <Box sx={[categoryStyle.customBox, { marginTop: "30px" }]}>
+                <Stack direction="row" spacing={2}>
+                  <BookIcon color="primary" />
+                  <Typography variant="h6" fontWeight={600}>
+                    Add Seo Tags
+                  </Typography>
+                </Stack>
+                <CommenTextField
+                  name="metaTitle"
+                  focused={isEdit}
+                  label="Meta Title"
+                  required={!watch("isblog")}
+maxLength={60}
+                />
+              
+                <CommenTextField
+                  name="metaDescription"
+                  focused={isEdit}
+                  label="Meta Description"
+                  required={!watch("isblog")}
+                  multiline
+                  rows={3}
+                  maxLength={160}
+                />
+                <CommenTextField
+                  name="metaKeyword"
+                  focused={isEdit}
+                  label="meta keywords"
+                  required={!watch("isblog")}
+                />
+                  <CommenTextField
+                  name="slug"
+                  label="slug"
+                  required
+                  focused={isEdit}
+                  disabled={isEdit}
+                  readOnly={isEdit && true}
+                />
+              </Box>
+            </Grid>
+            <Grid size={6}>
+              <Box sx={categoryStyle.customBox}>
                 <Stack sx={travelPackageStyle.customFaq}>
                   <Box sx={addBlogStyle.customBox2}>
                     <QuestionAnswerIcon color="primary" />
@@ -296,19 +170,19 @@ const CategoryFormBase = ({
                     <CommenTextField
                       name={`faq.${index}.question`}
                       label="Question *"
+                      required={!watch("isblog")}
                     />
                     <CommenTextField
                       name={`faq.${index}.answer`}
                       label="Answer *"
                       multiline
                       rows={3}
+                      required={!watch("isblog")}
                     />
                   </Box>
                 ))}
-              </Grid>
-            </Grid>
-            <Box sx={categoryStyle.buttonBox}>
-              <CommonButton
+
+                 <CommonButton
                 type="submit"
                 disabled={isSubmitting}
                 loading={isSubmitting}
@@ -316,8 +190,10 @@ const CategoryFormBase = ({
               >
                 {isEdit ? "Update Category" : "Add Category"}
               </CommonButton>
-            </Box>
-          </Paper>
+              </Box>
+            </Grid>
+          </Grid>
+
         </form>
         {/* </Box> */}
       </FormProvider>

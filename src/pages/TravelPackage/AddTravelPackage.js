@@ -177,7 +177,7 @@ const AddTravelPackage = () => {
       formData.append("country", data.country);
       formData.append("state", data.state);
       formData.append("city", data.city);
-      formData.append("weatherLocation", data.weatherLocation);
+      formData.append("locationAddress", data.locationAddress);
       //moodBased
       formData.append("moodOfJourney", JSON.stringify(data.moodOfJourney));
       //image
@@ -342,6 +342,8 @@ const AddTravelPackage = () => {
                     setValue("city", data.city || "");
                     setValue("state", data.state || "");
                     setValue("country", data.country || "");
+                    setValue("locationAddress", data?.formatted_address || "");
+                    console.log(data)
                   }}
                 ></LocationSearch>
                 <CommenTextField

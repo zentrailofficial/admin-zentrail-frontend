@@ -45,6 +45,10 @@ const CommonDropdown = ({
                 onChangeValues( selectedValues );
               }
             }}
+            defaultValue={{
+              value: "item._id",
+                label: "item.name",
+            }}
             {...props}
             MenuProps={{
               PaperProps: { style: { maxHeight: 250, marginRight: 0 } },

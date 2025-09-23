@@ -95,6 +95,9 @@ const AddSubCategory = () => {
  
   const onSubmit = async (data) => {
     console.log(data);
+    if(!data?.image[0]?.file){
+     return toast.error("Image is required")
+    }
     try {
       console.log(data.image[0].file);
       const formData = new FormData();
@@ -316,6 +319,7 @@ const AddSubCategory = () => {
                   name="metaTitle"
                   focused={isEdit}
                   label="Meta Title"
+                  required
                 />
                     </Grid>
                   </Grid>
@@ -331,6 +335,7 @@ const AddSubCategory = () => {
                   label="Meta Description"
                   multiline
                   rows={4}
+                  required
                 />
                     </Grid>
                     <Grid size={{ xs: 12, md: 6 }}>
@@ -340,6 +345,7 @@ const AddSubCategory = () => {
                   label="Description"
                   multiline
                   rows={4}
+                  required
                 />
                     </Grid>
                   </Grid>
@@ -354,6 +360,7 @@ const AddSubCategory = () => {
                         name="metakeywords"
                         focused={isEdit}
                         label="meta keywords"
+                        required
                       />
                     </Grid>
                   </Grid>
@@ -410,12 +417,14 @@ const AddSubCategory = () => {
                     <CommenTextField
                       name={`faq.${index}.question`}
                       label="Question *"
+                      required
                     />
                     <CommenTextField
                       name={`faq.${index}.answer`}
                       label="Answer *"
                       multiline
                       rows={3}
+                      required
                     />
                   </Box>
                 ))}

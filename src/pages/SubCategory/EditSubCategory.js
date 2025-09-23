@@ -99,24 +99,24 @@ const EditSubCategory = () => {
         try {
           console.log(data.image[0].file);
           const formData = new FormData();
-          formData.append("categoryId", data.category);
-          formData.append("title", data?.name);
-          formData.append("uid", data.slug);
+          formData.append("categoryId", data.categoryId[0]?.value);
+          formData.append("title", data?.title);
+          formData.append("uid", data.uid);
           formData.append("description", data?.description);
           formData.append("metaTitle", data?.metaTitle);
           formData.append("metaDescription", data?.metaDescription);
-          formData.append("metaKeyword", data?.metakeywords);
+          formData.append("metaKeyword", data?.metaKeyword);
           formData.append("faq", JSON.stringify(data?.faq));
           // formData.append("image", data?.image);
           // if (data.image[0]?.file) {
           formData.append("image", data?.image[0]?.file);
           formData.append("imageAlt", data?.image[0]?.altText || "");
           // }
-          await apiClient.put("/api/subcategory/:id", formData, {
+          await apiClient.put(`/api/subcategory/${id}`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
           // methods.reset();
-          // navigate("/listsubcategory");
+          navigate("/listsubcategory");
         } catch (error) {
           console.error(error);
           alert(error?.response?.data?.message);
@@ -134,10 +134,10 @@ const EditSubCategory = () => {
               console.log(res?.data)
 // setCategoriesList([{value:res?.data?.categoryId?._id, label:res?.data?.categoryId?.name}]);
                  methods.reset({
-        ...res.data,categoryId: {
+        ...res.data,categoryId: [{
         label: res?.data?.categoryId?.name,
         value: res?.data?.categoryId?._id,
-      },
+      }],
     //     set
     //    categoryId: res.data.categoryId 
         
@@ -195,9 +195,10 @@ const EditSubCategory = () => {
                      name="categoryId"
                      label="Select of Category *"
                      options={categoriesList}
-                     focused={isEdit}
                      // onChangeValues={handleMoodOfJourneyChange}
                      required
+                    //  defaultValues={{name:"mweh wcwc",value:"mwqhdbjh "}}
+                     disabled
                    />
    
                        </Grid>
@@ -205,18 +206,17 @@ const EditSubCategory = () => {
                        <Grid size={{ xs: 12, md: 4 }}>
                              <CommenTextField
                      name="title"
-                     focused= {true}
                      label="SubCategory Name"
+                     focused={true}
                      required
                    />
                        </Grid>
                        <Grid size={{ xs: 12, md: 4 }}>
                        <CommenTextField
                      name="uid"
-                     // focused={isEdit}
                      label="slug"
                      required
-                     
+                     disabled
                      focused={watch("name")?.length}
                    />
                        </Grid>
@@ -267,7 +267,7 @@ const EditSubCategory = () => {
                        <Grid size={{ xs: 12, md: 12 }}>
                          <CommenTextField
                            name="metaKeyword"
-                           focused={isEdit}
+                           focused={true}
                            label="meta keywords"
                          />
                        </Grid>

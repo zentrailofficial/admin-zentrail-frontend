@@ -13,6 +13,7 @@ const CommenTextField = ({
   maxLength,
   messages = {},
   onChange,
+  readOnly=false,
   ...rest
 }) => {
   const { control } = useFormContext();
@@ -49,6 +50,7 @@ const CommenTextField = ({
           label={label}
           type={type}
           fullWidth
+          contentEditable={false}
           variant="outlined"
           multiline={multiline}
           rows={multiline ? rows : undefined}
