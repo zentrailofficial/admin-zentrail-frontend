@@ -8,6 +8,7 @@ import {
   Grid,
   IconButton,
   CardContent,
+  Paper,
 } from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
@@ -29,6 +30,11 @@ import BookIcon from "@mui/icons-material/Book";
 import { apiClient } from "../../lib/api-client";
 import { useNavigate, useParams } from "react-router-dom";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
+import addBlogStyle from "../../styles/blogcss";
+import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
+import { toast } from "react-toastify";
+import commoncss from "../../styles/commoncss";
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 
 const EditBlog = () => {
   const navigate = useNavigate();
@@ -75,7 +81,7 @@ const EditBlog = () => {
           title: blog.title,
           author: blog.authorName,
           description: blog.description,
-           uid: blog?.uid,
+          uid: blog?.uid,
           category: blog.category?._id,
           faq:
             Array.isArray(blog.faq) && blog.faq.length > 0
@@ -83,11 +89,11 @@ const EditBlog = () => {
               : [{ question: "", answer: "" }],
           images: blog.featuredImage?.url
             ? [
-                {
-                  url: blog.featuredImage.url,
-                  altText: blog.featuredImage.altText,
-                },
-              ]
+              {
+                url: blog.featuredImage.url,
+                altText: blog.featuredImage.altText,
+              },
+            ]
             : [],
           meta: blog.meta,
           ogTags: blog.ogTags,
@@ -108,7 +114,7 @@ const EditBlog = () => {
       const formData = new FormData();
 
       formData.append("title", data.title);
-       formData.append("uid", data.uid);
+      formData.append("uid", data.uid);
       formData.append("authorName", data.author);
       formData.append("description", data.description);
       formData.append("category", data.category);
@@ -141,13 +147,13 @@ const EditBlog = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       if (res.status === 200) {
-        // alert("Blog updated successfully");
+        toast.success("Blog updated successfully");
         navigate("/blog");
         setbtnLoading(false);
       }
     } catch (error) {
       console.error("Failed to update blog", error);
-      alert("Failed to update");
+      toast.error("Failed to update");
       setbtnLoading(false);
     }
   };
@@ -183,23 +189,44 @@ const EditBlog = () => {
                 item
                 xs={12}
                 md={6}
-                sx={{
-                  width: { xs: "100%", md: "50%" },
-                  display: "flex",
-                  flexDirection: "column",
-                }}
+                sx={commoncss.leftGrid}
               >
-                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
+                <Paper elevation={3}
+                  sx={commoncss.cardlineargradient}>
                   <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                     <BookIcon color="primary" />
                     <Typography variant="h6" fontWeight={600}>
                       Update Blog
                     </Typography>
+                    <CommonToolTip title="Update Blog" />
                   </Stack>
-
-                  <CommenTextField name="title" label="Blog Title *" required />
-                  <CommenTextField name="author" label="Author" required />
+                  <Box sx={addBlogStyle.customBox1}>
+                    <Box sx={addBlogStyle.customBox2}>
+                      <label >Blog Title  </label>
+                      <CommonToolTip title="Blog" />
+                    </Box>
+                    <CommenTextField
+                      name="title"
+                      label="Blog Title *"
+                      required
+                      size="small"
+                      maxLength={70}
+                    />
+                  </Box>
+                  <Box sx={{ ...addBlogStyle.customBox1, gap: 3.5 }}>
+                    <Box sx={addBlogStyle.customBox2}>
+                      <label >Author </label>
+                      <CommonToolTip title="Blog" />
+                    </Box>
+                    <CommenTextField name="author" label="Author" required />
+                  </Box>
+                  <Box sx={{ ...addBlogStyle.customBox1, gap: 6.5 }}>
+                    <Box sx={addBlogStyle.customBox2}>
+                      <label>uid </label>
+                      <CommonToolTip title="uid" />
+                    </Box>
                     <CommenTextField name="uid" label="uid" size="small" />
+                  </Box>
                   <CommenQuillEditor
                     name="description"
                     label="Description *"
@@ -207,14 +234,15 @@ const EditBlog = () => {
                     minLength={30}
                     placeholder="Write blog content here..."
                   />
-                </Card>
-                {/* Category and Tags */}
-                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
+
+                  {/* Category and Tags */}
+
                   <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                     <CategoryIcon color="primary" />
                     <Typography variant="h6" fontWeight={600}>
                       Category & Tags
                     </Typography>
+                    <CommonToolTip title="Category & Tags" />
                   </Stack>
 
                   <CommonDropdown
@@ -225,15 +253,18 @@ const EditBlog = () => {
                     showAddMore
                     onAddMoreClick={handleAddMore}
                   />
-                </Card>
+                </Paper>
 
                 {/* URL and Image */}
-                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
+                <Paper elevation={3}
+                  sx={commoncss.cardlineargradient}>
+
                   <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                     <ImageIcon color="primary" />
                     <Typography variant="h6" fontWeight={600}>
                       URL & Featured Image
                     </Typography>
+                    <CommonToolTip title=" URL & Featured Image" />
                   </Stack>
 
                   <Stack spacing={3}>
@@ -244,19 +275,16 @@ const EditBlog = () => {
                       altText
                     />
                   </Stack>
-                </Card>
+                </Paper>
               </Grid>
               <Grid
                 item
                 xs={12}
                 md={6}
-                sx={{
-                  width: { xs: "100%", md: "45%" },
-                  display: "flex",
-                  flexDirection: "column",
-                }}
+                sx={commoncss.rightGrid}
               >
-                <Card elevation={3} sx={{ borderRadius: 3, mb: 4, padding: 3 }}>
+                <Paper elevation={3}
+                  sx={commoncss.cardlineargradient}>
                   <Stack spacing={3}>
                     <Stack
                       direction="row"
@@ -268,40 +296,54 @@ const EditBlog = () => {
                       <Typography variant="h6" fontWeight="600">
                         SEO Settings
                       </Typography>
+                      <CommonToolTip title=" SEO Settings" />
                     </Stack>
-                    <Typography fontWeight="600" textAlign={"center"}>
-                      Meta Tags
-                    </Typography>
-                    <Stack spacing={2}>
-                      <CommenTextField
-                        name="meta.title"
-                        label="Meta Title *"
-                        required={true}
-                        maxLength={60}
-                        messages={{
-                          required: "Meta title is required",
-                          maxLength: "Please do not exceed 60 characters",
-                        }}
-                      />
-                      <CommenTextField
-                        name="meta.description"
-                        label="Meta Description *"
-                        multiline
-                        rows={3}
-                        maxLength={160}
-                        messages={{
-                          required: "Meta description is required",
-                          maxLength: "Please do not exceed 160 characters",
-                        }}
-                      />
-                      <CommenTextField name="meta.keywords" label="Keywords" />
-                      {/* <CommenTextField
+                    <Box sx={commoncss.meta}>
+                      <Typography fontWeight="600" textAlign={"center"}>
+                        Meta Tags
+                      </Typography>
+                      <Box sx={addBlogStyle.customBox1}>
+                        <label>Meta Title</label>
+                        <CommonToolTip title="Meta Title" />
+
+                        <CommenTextField
+                          name="meta.title"
+                          label="Meta Title *"
+                          required={true}
+                          maxLength={60}
+                          messages={{
+                            required: "Meta title is required",
+                            maxLength: "Please do not exceed 60 characters",
+                          }}
+                        />
+                      </Box>
+
+                      <Box sx={addBlogStyle.customBox1}>
+                        <label>Keywords</label>
+                        <CommonToolTip title="Keywords" />
+                        <CommenTextField name="meta.keywords" label="Keywords" />
+                        {/* <CommenTextField
                         name="meta.canonicalUrl"
                         label="Canonical URL"
                       /> */}
-                    </Stack>
+                      </Box>
+                      <Box sx={{ gap: 1 }}>
+                        <label>Meta Description *</label>
+                        <CommenTextField
+                          name="meta.description"
+                          label="Meta Description *"
+                          multiline
+                          rows={3}
+                          maxLength={160}
+                          messages={{
+                            required: "Meta description is required",
+                            maxLength: "Please do not exceed 160 characters",
+                          }}
+                        />
+                      </Box>
 
-                    {/* <Typography textAlign={"center"} fontWeight="600">
+
+                      {/* <Typography textAlign={"center"} fontWeight="600">
                       Open Graph
                     </Typography>
                     <Stack spacing={2}>
@@ -316,72 +358,71 @@ const EditBlog = () => {
                         name="ogTags.image"
                         label="OG Image URL"
                       /> */}
-                    {/* </Stack> */}
-                    <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
-                      <CardContent>
+                      {/* </Stack> */}
+                    </Box>
+                  </Stack>
+                </Paper>
+
+                <Paper elevation={3}
+                  sx={commoncss.cardlineargradient}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    mb={2}
+                  >
+                    <Box sx={addBlogStyle.customBox2}>
+                      <QuestionAnswerIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        FAQs
+                      </Typography>
+                      <CommonToolTip title="Keywords" />
+                    </Box>
+                    <IconButton
+                      color="primary"
+                      onClick={() => append({ question: "", answer: "" })}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Stack>
+                  <Box sx={commoncss.faqBox}>
+                    {fields.map((item, index) => (
+                      <Box
+                        key={item.id}
+                        sx={commoncss.faq}
+                      >
                         <Stack
                           direction="row"
-                          alignItems="center"
                           justifyContent="space-between"
-                          mb={2}
+                          alignItems="center"
+                          mb={1}
                         >
-                          <Typography variant="h6" fontWeight={600}>
-                            FAQs
+                          <Typography variant="subtitle1">
+                            FAQ {index + 1}
                           </Typography>
-                          <IconButton
-                            color="primary"
-                            onClick={() => append({ question: "", answer: "" })}
-                          >
-                            <AddIcon />
-                          </IconButton>
-                        </Stack>
-
-                        {fields.map((item, index) => (
-                          <Box
-                            key={item.id}
-                            sx={{
-                              border: "1px solid #ddd",
-                              borderRadius: 2,
-                              p: 2,
-                              mb: 2,
-                              background: "#fafafa",
-                            }}
-                          >
-                            <Stack
-                              direction="row"
-                              justifyContent="space-between"
-                              alignItems="center"
-                              mb={1}
+                          {fields.length > 1 && (
+                            <IconButton
+                              color="error"
+                              onClick={() => remove(index)}
                             >
-                              <Typography variant="subtitle1">
-                                FAQ {index + 1}
-                              </Typography>
-                              {fields.length > 1 && (
-                                <IconButton
-                                  color="error"
-                                  onClick={() => remove(index)}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              )}
-                            </Stack>
-
-                            <CommenTextField
-                              name={`faq.${index}.question`}
-                              label="Question *"
-                            />
-                            <CommenTextField
-                              name={`faq.${index}.answer`}
-                              label="Answer *"
-                              multiline
-                              rows={3}
-                            />
-                          </Box>
-                        ))}
-                      </CardContent>
-                    </Card>
-                  </Stack>
-                </Card>
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                        </Stack>
+                        <CommenTextField
+                          name={`faq.${index}.question`}
+                          label="Question *"
+                        />
+                        <CommenTextField
+                          name={`faq.${index}.answer`}
+                          label="Answer *"
+                          multiline
+                          rows={3}
+                        />
+                      </Box>
+                    ))}
+                  </Box>
+                </Paper>
                 <CommonButton type="submit" loading={btnloading}>
                   Submit
                 </CommonButton>

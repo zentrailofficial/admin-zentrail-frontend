@@ -37,6 +37,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import commoncss from "../../styles/commoncss";
+import addBlogStyle from "../../styles/blogcss";
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+
 const AddBlogForm = () => {
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -154,37 +157,55 @@ const AddBlogForm = () => {
                 alignItems: "stretch",
               }}
             >
+
               {/* Left Section */}
+
               <Grid
                 item
                 xs={12}
                 md={6}
-                sx={{
-                  width: { xs: "100%", md: "50%" },
-                  display: "flex",
-                  flexDirection: "column",
-                }}
+                sx={commoncss.leftGrid}
               >
-                {/* <Paper sx={{ borderRadius: 3, p: { xs: 2, md: 3 }, height: "100%" }}> */}
-
-                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
+                <Paper elevation={3}
+                   sx={commoncss.cardlineargradient}>
                   <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                     <BookIcon color="primary" />
                     <Typography variant="h6" gutterBottom fontWeight={600}>
                       Add New Blog
                     </Typography>
-                     <CommonToolTip title="Blog" />
+                    <CommonToolTip title="Blog" />
                   </Stack>
+                  <Box sx={addBlogStyle.customBox1}>
+                    <Box sx={addBlogStyle.customBox2}>
+                      <label >Blog Title  </label>
+                      <CommonToolTip title="Blog" />
+                    </Box>
 
-                  <CommenTextField
-                    name="title"
-                    label="Blog Title *"
-                    required
-                    size="small"
-                  />
-                  <CommenTextField name="author" label="Author" size="small" />
-                  <CommenTextField name="uid" label="uid" size="small" />
 
+                    <CommenTextField
+                      name="title"
+                      label="Blog Title *"
+                      required
+                      size="small"
+                      maxLength={70}
+                    />
+                  </Box>
+                  <Box sx={{ ...addBlogStyle.customBox1, gap: 3.5 }}>
+                    <Box sx={addBlogStyle.customBox2}>
+                      <label >Author </label>
+                      <CommonToolTip title="Blog" />
+                    </Box>
+
+                    <CommenTextField name="author" label="Author" size="small" />
+                  </Box>
+                  <Box sx={{ ...addBlogStyle.customBox1, gap: 6.5 }}>
+                    <Box sx={addBlogStyle.customBox2}>
+                      <label>uid </label>
+                      <CommonToolTip title="uid" />
+                    </Box>
+
+                    <CommenTextField name="uid" label="uid" size="small" />
+                  </Box>
                   <CommenQuillEditor
                     name="description"
                     label="Description *"
@@ -192,71 +213,65 @@ const AddBlogForm = () => {
                     minLength={30}
                     placeholder="Write blog content here..."
                   />
-                </Card>
 
-                <Card elevation={2} sx={{ borderRadius: 3, mb: 2 }}>
-                  <CardContent sx={{ p: { xs: 3, md: 2 } }}>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={2}
-                      mb={3}
-                    >
-                      <CategoryIcon color="primary" />
-                      <Typography variant="h6" fontWeight={600}>
-                        Category & Tags
-                      </Typography>
-                        <CommonToolTip title="Category & Tags" />
-                    </Stack>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    mb={1}
+                  >
+                    <CategoryIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Category & Tags
+                    </Typography>
+                    <CommonToolTip title="Category & Tags" />
+                  </Stack>
 
-                    <CommonDropdown
-                      name="category"
-                      label="Category *"
-                      options={categoryOptions}
-                      required
-                    />
-                  </CardContent>
-                </Card>
+                  <CommonDropdown
+                    name="category"
+                    label="Category *"
+                    options={categoryOptions}
+                    required
+                  />
 
-                <Card elevation={2} sx={{ borderRadius: 3, mb: 2 }}>
-                  <CardContent sx={{ p: { xs: 3, md: 2 } }}>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={2}
-                      mb={1}
-                    >
-                      <ImageIcon color="primary" />
-                      <Typography variant="h6" fontWeight={600}>
-                        URL & Featured Image
-                      </Typography>
-                        <CommonToolTip title=" URL & Featured Image" />
-                    </Stack>
+                </Paper>
+                <Paper elevation={3}
+                 sx={commoncss.cardlineargradient}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    mb={1}
+                  >
+                    <ImageIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      URL & Featured Image
+                    </Typography>
+                    <CommonToolTip title=" URL & Featured Image" />
+                  </Stack>
 
-                    <ImageUpload
-                      name="images"
-                      label="Choose Blog Images"
-                      multiple
-                      altText
-                    />
-                  </CardContent>
-                </Card>
+                  <ImageUpload
+                    name="images"
+                    label="Choose Blog Images"
+                    multiple
+                    altText
+                    background="green"
+                  />
 
-                {/* </Paper> */}
+
+                </Paper>
               </Grid>
 
               {/* Right Section */}
+
               <Grid
                 item
                 xs={12}
                 md={6}
-                sx={{
-                  width: { xs: "100%", md: "45%" },
-                  display: "flex",
-                  flexDirection: "column",
-                }}
+                sx={commoncss.rightGrid}
               >
-                <Card elevation={3} sx={{ borderRadius: 3, mb: 4, padding: 3 }}>
+                <Paper elevation={3}
+                  sx={commoncss.cardlineargradient}>
                   {/* elevation={1}
                 sx={{
                   borderRadius: 3,
@@ -273,91 +288,100 @@ const AddBlogForm = () => {
                     <Typography variant="h6" fontWeight="600">
                       SEO Settings
                     </Typography>
-                      <CommonToolTip title="Category & Tags" />
+                    <CommonToolTip title=" SEO Settings" />
                   </Stack>
                   {/* Meta Tags Accordion */}
 
-                  <Box sx={{ borderRadius: 3, padding: { xs: 3, md: 2 } }}>
+                  <Box sx={commoncss.meta}>
                     <Typography fontWeight="600" textAlign="center">
                       Meta Tags
                     </Typography>
-                    <CommenTextField
-                      name="meta.title"
-                      label="Meta Title *"
-                      required
-                      maxLength={60}
-                      messages={{
-                        required: "Meta title is required",
-                        maxLength: "Please do not exceed 60 characters",
-                      }}
-                    />
-                    <CommenTextField
-                      name="meta.description"
-                      label="Meta Description *"
-                      multiline
-                      required
-                      rows={3}
-                      maxLength={160}
-                      messages={{
-                        required: "Meta description is required",
-                        maxLength: "Please do not exceed 160 characters",
-                      }}
-                    />
-                    <CommenTextField name="meta.keywords" label="Keywords" />
+                    <Box sx={addBlogStyle.customBox1}>
+                      <label>Meta Title</label>
+                      <CommonToolTip title="Meta Title" />
+                      <CommenTextField
+                        name="meta.title"
+                        label="Meta Title *"
+                        required
+                        maxLength={60}
+                        messages={{
+                          required: "Meta title is required",
+                          maxLength: "Please do not exceed 60 characters",
+                        }}
+                      />
+                    </Box>
+                    <Box sx={addBlogStyle.customBox1}>
+                      <label>Keywords</label>
+                      <CommonToolTip title="Keywords" />
+                      <CommenTextField name="meta.keywords" label="Keywords" />
+                    </Box>
+                    <Box sx={{ gap: 1 }}>
+                      <label>Meta Description *</label>
+                      <CommenTextField
+                        name="meta.description"
+                        label="Meta Description *"
+                        multiline
+                        required
+                        rows={3}
+                        maxLength={160}
+                        messages={{
+                          required: "Meta description is required",
+                          maxLength: "Please do not exceed 160 characters",
+                        }}
+                      /></Box>
+
                     {/* <CommenTextField
                       name="meta.canonicalUrl"
                       label="Canonical URL"
                     /> */}
                   </Box>
-                  <Box
+                  {/* <Box
                     sx={{ borderRadius: 3, mb: 4, padding: { xs: 3, md: 2 } }}
                   >
-                    {/* <Typography fontWeight="600" textAlign="center">
+                    <Typography fontWeight="600" textAlign="center">
                       Open Graph
-                    </Typography> */}
-                    {/* <CommenTextField name="ogTags.title" label="OG Title" />
+                    </Typography>
+                    <CommenTextField name="ogTags.title" label="OG Title" />
                     <CommenTextField
                       name="ogTags.description"
                       label="OG Description"
                       multiline
                       rows={3}
-                    /> */}
-                    {/* <CommenTextField name="ogTags.image" label="OG Image URL" /> */}
-                  </Box>
-                  {/* </CardContent> */}
-                </Card>
+                    />
+                    <CommenTextField name="ogTags.image" label="OG Image URL" />
+                  </Box> */}
+
+                </Paper>
 
                 {/* FAQ Section */}
-                <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
-                  <CardContent>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      mb={2}
-                    >
+                <Paper elevation={3}
+                 sx={commoncss.cardlineargradient}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    mb={2}
+                  >
+                     <Box sx={addBlogStyle.customBox2}>
+                      <QuestionAnswerIcon color="primary" />
                       <Typography variant="h6" fontWeight={600}>
                         FAQs
                       </Typography>
-                      
-                      <IconButton
-                        color="primary"
-                        onClick={() => append({ question: "", answer: "" })}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </Stack>
-<Box sx={commoncss.faqBox}>
+                      <CommonToolTip title="Keywords" />
+                    </Box>
+
+                    <IconButton
+                      color="primary"
+                      onClick={() => append({ question: "", answer: "" })}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Stack>
+                  <Box sx={commoncss.faqBox}>
                     {fields.map((item, index) => (
                       <Box
                         key={item.id}
-                        sx={{ 
-                          border: "1px solid #ddd",
-                          borderRadius: 2,
-                          p: 2,
-                          mb: 2,
-                          background: "#fafafa",
-                        }}
+                        sx={commoncss.faq}
                       >
                         <Stack
                           direction="row"
@@ -390,32 +414,12 @@ const AddBlogForm = () => {
                         />
                       </Box>
                     ))}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                md={12}
-                sx={{
-                  width: { xs: "100%", md: "50%" },
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Box>
-                  <CommonButton
-                    sx={{
-                      borderRadius: 10,
-                      width: { xs: "100%", md: "50%" },
-                    }}
-                    loading={loading}
-                    type="submit"
-                  >
-                    Submit
-                  </CommonButton>
-                </Box>
+                  </Box>
+
+                </Paper>
+                <CommonButton type="submit" loading={loading}>
+                  Submit
+                </CommonButton>
               </Grid>
             </Grid>
           </Box>

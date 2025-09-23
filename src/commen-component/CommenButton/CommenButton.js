@@ -11,21 +11,30 @@ const CommonButton = ({
   loading = false,
   ...rest
 }) => {
-  
+
   return (
     <Button
       type={type}
       variant={variant}
       fullWidth={fullWidth}
       onClick={onClick}
-      sx={{ ...sx }}
+      sx={{
+        background: " linear-gradient(180deg, #0095ffbe, #d24bff)", // gradient here
+        color: "#fff",
+        fontWeight: "600",
+        textTransform: "none",
+        "&:hover": {
+          background: " linear-gradient(180deg, #5959b9be, #d24bff)", // reverse gradient on hover
+        },
+        ...sx,
+      }}
       disabled={loading || rest.disabled}
       loading={loading}
       {...rest}
     >
-    {/* {loading ? (<><CircularProgress size={20} sx={{mr:1}}/>Loading...</>) : (children)} */}
-    {children}
-     
+      {/* {loading ? (<><CircularProgress size={20} sx={{mr:1}}/>Loading...</>) : (children)} */}
+      {children}
+
     </Button>
   );
 };
