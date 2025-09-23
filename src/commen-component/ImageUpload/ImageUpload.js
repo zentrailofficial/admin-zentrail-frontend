@@ -19,27 +19,27 @@ const ImageUpload = ({
 }) => {
   const { control, getValues } = useFormContext();
   const [previews, setPreviews] = useState([]);
-useEffect(() => {
+  useEffect(() => {
     const value = getValues(name) || [];
     if (value.length > 0 && previews.length === 0) {
       const initial = value.map((img) => {
         if (img.url) {
-          return { url: img.url, altText: img.altText || "" };
+          return { url: img.url, altText: img.altText || "" , error: ""};
         }
         if (img.file instanceof File || img.file instanceof Blob) {
           return {
             file: img.file,
             preview: URL.createObjectURL(img.file),
             altText: img.altText || "",
+            error: "",
           };
         }
-        return { altText: img.altText || "" }; 
+        return { altText: img.altText || "", error: "" };
       });
-      console.log(initial , 'initial')
+      console.log(initial, "initial");
       setPreviews(initial);
     }
   }, [getValues, name, previews.length]);
-
 
   const handleImageChange = (e, onChange) => {
     const files = Array.from(e.target.files);
@@ -47,6 +47,7 @@ useEffect(() => {
       file,
       preview: URL.createObjectURL(file),
       altText: "",
+       error: "Alt text is required", // new uploads need alt text
     }));
 
     const updated = multiple ? [...previews, ...newPreviews] : newPreviews;
@@ -62,8 +63,14 @@ useEffect(() => {
   };
 
   const handleAltChange = (index, value, onChange) => {
+     let error = "";
+  if (!value.trim()) {
+    error = "Alt text is required";
+  } else if (value.length > 70) {
+    error = "Alt text cannot exceed 70 characters";
+  }
     const updated = previews.map((item, i) =>
-      i === index ? { ...item, altText: value } : item
+      i === index ? { ...item, altText: value,error } : item
     );
     setPreviews(updated);
     onChange(updated);
@@ -138,7 +145,7 @@ useEffect(() => {
                       <Delete fontSize="small" color="error" />
                     </IconButton>
                   )}
-{console.log(img.altText)}
+                  {console.log(img.altText)}
                   {altText && (
                     <TextField
                       label="Alt Text"
@@ -149,6 +156,9 @@ useEffect(() => {
                       onChange={(e) =>
                         handleAltChange(index, e.target.value, onChange)
                       }
+                       error={!!img.error}
+                      helperText={img.error || `${img.altText.length}/70`}
+                      inputProps={{ maxLength: 70 }}
                       disabled={disabled}
                     />
                   )}

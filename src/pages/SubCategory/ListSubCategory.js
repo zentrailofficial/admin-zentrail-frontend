@@ -30,11 +30,8 @@ const ListSubCategory = () => {
           id: val._id, // Required for DataGrid
           sr: index + 1,
           name: val?.title,
-          duration: val?.duration,
-          price: val?.price,
-          moodOfJourney: val?.moodOfJourney?.title,
-          season: val?.season,
-          weatherLocation: val?.weatherLocation,
+          category: val?.categoryId?.name,
+          createdAt: val?.createdAt?.split("T")[0],
         }));
         setListData(formatted);
       })
@@ -43,35 +40,30 @@ const ListSubCategory = () => {
   const handleAddNewTour = () => {
     navigate("/addsubcategory");
   };
-    const handleEdit= async  (onEdit) =>{
-    navigate(`/editsubcategory/${onEdit._id}`)
-  }
+  const handleEdit = async (onEdit) => {
+    navigate(`/editsubcategory/${onEdit._id}`);
+  };
   const handleDelete = () => {
     setLoadingForDelete(true);
-    // apiClient
-    //   .delete(`/api/travel-packages/travel/permanent-delete/${IdtoDelete}`)
-    //   .then(() => {
-    //     fetchData();
-    //     setLoadingForDelete(false);
-    //     setDialogOpen(false);
-    //     setIdtoDelete("");
-    //   })
-    //   .catch((err) => {
-    //     alert("Failed to delete");
-    //     setLoadingForDelete(false);
-    //     setDialogOpen(false);
-    //     setIdtoDelete("");
-    //   });
+    try {
+      apiClient.delete(`/api/subcategory/${IdtoDelete}`);
+      setListData((prev) => prev.filter((row) => row.id !== IdtoDelete));
+    } catch (error) {
+      console.log(error.response?.data?.message);
+    }finally{
+      setIdtoDelete("")
+      setLoadingForDelete(false)
+      setDialogOpen(false)
+    }
+    
   };
 
   const columns = [
     { field: "sr", headerName: "Sr", width: 70 },
-    { field: "name", headerName: "Package Name", flex: 2 },
-    { field: "duration", headerName: "Duration", flex: 1 },
-    { field: "moodOfJourney", headerName: "Mood of journey", flex: 1 },
-    { field: "season", headerName: "Season", flex: 1 },
-    { field: "price", headerName: "Price", flex: 1 },
-    { field: "weatherLocation", headerName: "Weather location", flex: 1 },
+    { field: "name", headerName: "subcategory Name", flex: 2 },
+    { field: "category", headerName: "category", flex: 2 },
+    { field: "createdAt", headerName: "created at", flex: 2 },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -84,7 +76,7 @@ const ListSubCategory = () => {
             <IconButton
               size="small"
               color="primary"
-              onClick={() =>  handleEdit(params.row)}
+              onClick={() => handleEdit(params.row)}
             >
               <Edit fontSize="small" />
             </IconButton>
@@ -95,7 +87,7 @@ const ListSubCategory = () => {
               color="error"
               onClick={() => {
                 setDialogOpen(true);
-                setIdtoDelete(params.row._id);
+                setIdtoDelete(params.row.id);
               }}
             >
               <Delete fontSize="small" />
@@ -119,10 +111,10 @@ const ListSubCategory = () => {
         rows={listData}
         columns={columns}
         pagination
-        pageSizeOptions={[5, 10, 20, 50]}
+        pageSizeOptions={[10, 20, 50]}
         initialState={{
           pagination: {
-            paginationModel: { pageSize: 5, page: 0 },
+            paginationModel: { pageSize: 10, page: 0 },
           },
         }}
       />

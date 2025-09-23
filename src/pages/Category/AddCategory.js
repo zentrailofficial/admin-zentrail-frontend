@@ -23,13 +23,17 @@ const AddCategory = () => {
 
   const onSubmit = async (data) => {
     try {
+      console.log(data?.image);
+      if(!data?.image){
+        return toast.error("image is required")
+      }
       const formData = new FormData();
       formData.append("name", data?.name);
       formData.append("uid", data.slug);
       formData.append("description", data?.description);
       formData.append("metaTitle", data?.metaTitle);
       formData.append("metaDescription", data?.metaDescription);
-      formData.append("metaKeyword", data?.metakeywords);
+      formData.append("metaKeyword", data?.metaKeyword);
       formData.append("faq", JSON.stringify(data?.faq));
       formData.append("isblog", data?.isblog);
       // formData.append("image", data?.image);
