@@ -22,6 +22,7 @@ import categoryStyle from "../../styles/category";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import addBlogStyle from "../../styles/blogcss";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
+import { isAllowedKey, sanitizeSlug } from "../../utils/helperFunctions";
 
 const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
   const {
@@ -40,19 +41,32 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
     name: "faq",
   });
   const titleValue = !isEdit && watch("name");
+  // useEffect(() => {
+  //   if (titleValue) {
+  //     const slug = titleValue
+  //       .toLowerCase()
+  //       .trim()
+  //       .replace(/[^\w\s]/gi, "")
+  //       .replace(/\s+/g, "-");
+
+  //     setValue("slug", slug);
+  //   }
+  // }, [titleValue, setValue]);
   useEffect(() => {
-    if (titleValue) {
+    if (!isEdit && titleValue) {
       const slug = titleValue
         .toLowerCase()
         .trim()
-        .replace(/[^\w\s]/gi, "")
-        .replace(/\s+/g, "-");
+        .replace(/&/g, "and")   
+        .replace(/[^\w\s]/gi, "-")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-+|-+$/g, "");
 
-      setValue("slug", slug);
+      setValue("slug", slug, { shouldValidate: true });
     }
-  }, [titleValue, setValue]);
-  
-  console.log(!watch("isblog"));
+  }, [titleValue, isEdit, setValue]);
+
   return (
     <>
       <FormProvider {...methods}>
@@ -87,13 +101,13 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                   label="Category Name"
                   required
                 />
-                <CommenQuillEditor name="description" required minLength={30} label="Category description"/>
+                <CommenQuillEditor name="description" required minLength={160} label="Category description" />
                 <ImageUpload
                   name="image"
                   focused={isEdit}
                   label="Image"
                   altText
-                  // defaultImage={defaultImage}
+                // defaultImage={defaultImage}
                 />
               </Box>
 
@@ -109,9 +123,9 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                   focused={isEdit}
                   label="Meta Title"
                   required={!watch("isblog")}
-maxLength={60}
+                  maxLength={60}
                 />
-              
+
                 <CommenTextField
                   name="metaDescription"
                   focused={isEdit}
@@ -127,13 +141,22 @@ maxLength={60}
                   label="meta keywords"
                   required={!watch("isblog")}
                 />
-                  <CommenTextField
+                <CommenTextField
                   name="slug"
                   label="slug"
-                  // required={!watch("name")}
+                  required={!watch("name")}
                   focused={isEdit}
                   disabled={isEdit}
                   readOnly={isEdit && true}
+                  onChange={(input) => {
+                    const sanitizedSlug = sanitizeSlug(input);
+                    setValue("slug", sanitizedSlug);
+                  }}
+                  onKeyDown={(e) => {
+                    if (!isAllowedKey(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                 />
               </Box>
             </Grid>
@@ -186,14 +209,14 @@ maxLength={60}
                   </Box>
                 ))}
 
-                 <CommonButton
-                type="submit"
-                disabled={isSubmitting}
-                loading={isSubmitting}
-                fullWidth={false}
-              >
-                {isEdit ? "Update Category" : "Add Category"}
-              </CommonButton>
+                <CommonButton
+                  type="submit"
+                  disabled={isSubmitting}
+                  loading={isSubmitting}
+                  fullWidth={false}
+                >
+                  {isEdit ? "Update Category" : "Add Category"}
+                </CommonButton>
               </Box>
             </Grid>
           </Grid>

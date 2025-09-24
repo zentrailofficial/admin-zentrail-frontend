@@ -23,9 +23,11 @@ const AddCategory = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data?.image);
-      if(!data?.image){
+      if(!data?.image?.length){
         return toast.error("image is required")
+      }
+      if(!data?.image[0]?.altText){
+        return toast.error("altText of every images is required")
       }
       const formData = new FormData();
       formData.append("name", data?.name);

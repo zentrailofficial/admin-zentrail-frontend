@@ -19,22 +19,25 @@ const CategoryDataGrid = () => {
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setloading] = useState(false);
+  const [loadinglist, setloadinglist] = useState(false);
   const [deleteId, setdeleteId] = useState(null);
   const navigate = useNavigate();
 
   const fetchCategories = async () => {
+    setloadinglist(true)
     const res = await apiClient.get("/api/category");
     const formatted = res.data.map((item, index) => ({
       id: item._id,
       sr: index + 1,
       name: item.name,
-      isblog: item.isblog?"for blog":"for package",
-      updatedAt:item.updatedAt.split("T")[0]
+      isblog: item.isblog ? "for blog" : "for package",
+      updatedAt: item.updatedAt.split("T")[0]
       // metaTitle: item.metaTitle,
       // metaDescription: item.metaDescription,
       // image: item.image,
     }));
     setRows(formatted);
+    setloadinglist(false)
   };
 
   useEffect(() => {
@@ -133,14 +136,22 @@ const CategoryDataGrid = () => {
           rows={rows}
           columns={columns}
           pageSize={10}
-          rowsPerPageOptions={[10, 20, 50]}
-          disableRowSelectionOnClick
+          loading={loadinglist}
+          pagination
+          pageSizeOptions={[10, 20, 50]}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10, page: 0 },
+            },
+          }}
         />
       </Box>
       <ConfirmDelete
         open={open}
-        onClose={() => {setOpen(false)
-        setdeleteId(null)}}
+        onClose={() => {
+          setOpen(false)
+          setdeleteId(null)
+        }}
         onConfirm={deleteHandeler}
         title="Delete Confirmation"
         message="Are you sure you want to delete this item? This action cannot be undone."
