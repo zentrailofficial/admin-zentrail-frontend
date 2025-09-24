@@ -34,7 +34,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import commoncss from "../../styles/commoncss";
-import addBlogStyle from "../../styles/blogcss";
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 
 const AddBlogForm = () => {
@@ -132,14 +131,16 @@ const AddBlogForm = () => {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Box
-          sx={addBlogStyle.box}
+          sx={commoncss.mainbox}
         >
           <Box maxWidth="xl" mx="auto" >
             <Grid
               container
-              sx={addBlogStyle.grid1}
+              sx={commoncss.grid1}
             >
+
               {/* Left Section */}
+
               <Grid
                 item
                 xs={12}
@@ -153,34 +154,23 @@ const AddBlogForm = () => {
                     <Typography variant="h6" gutterBottom fontWeight={600}>
                       Add New Blog
                     </Typography>
-                    <CommonToolTip title="Add New Blog" />
                   </Stack>
-                  <Box sx={addBlogStyle.customBox1}>
-                    <Box sx={addBlogStyle.customBox2}>
-                      <label >Blog Title  </label>
-                      <CommonToolTip title="70 characters only" />
-                    </Box>
-                    <CommenTextField
+                  <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.labelbox}><label >Blog Title  </label> </Box>
+                    <Box sx={commoncss.tooltipbox}> <CommonToolTip title="70 characters only" /></Box>
+                    <Box sx={commoncss.fieldbox1}> <CommenTextField
                       name="title"
                       label="Blog Title *"
                       required
                       size="small"
                       maxLength={70}
-                    />
+                    /></Box>
+
                   </Box>
-                  <Box sx={{ ...addBlogStyle.customBox1, gap: 3.5 }}>
-                    <Box sx={addBlogStyle.customBox2}>
-                      <label >Author </label>
-                      <CommonToolTip title="Author's Name" />
-                    </Box>
-                    <CommenTextField name="author" label="Author" size="small" />
-                  </Box>
-                  <Box sx={{ ...addBlogStyle.customBox1, gap: 6.5 }}>
-                    <Box sx={addBlogStyle.customBox2}>
-                      <label>uid </label>
-                      <CommonToolTip title="uid" />
-                    </Box>
-                    <CommenTextField name="uid" label="uid" size="small" />
+                  <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.labelbox}> <label >Author </label> </Box>
+                    <Box sx={commoncss.tooltipbox}> <CommonToolTip title="Author's Name" /></Box>
+                    <Box sx={commoncss.fieldbox1}>  <CommenTextField name="author" label="Author" size="small" /></Box>
                   </Box>
                   <CommenQuillEditor
                     name="description"
@@ -232,12 +222,14 @@ const AddBlogForm = () => {
                 </Paper>
               </Grid>
               {/* Right Section */}
+
               <Grid
                 item
                 xs={12}
                 md={6}
                 sx={commoncss.rightGrid}
               >
+
                 <Paper elevation={3}
                   sx={commoncss.cardlineargradient}>
                   {/* elevation={1}
@@ -260,10 +252,10 @@ const AddBlogForm = () => {
                   </Stack>
                   {/* Meta Tags Accordion */}
                   <Box sx={commoncss.meta}>
-                    <Box sx={addBlogStyle.customBox1}>
-                      <label>Meta Title</label>
-                      <CommonToolTip title="60 characters only" />
-                      <CommenTextField
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}>  <label>Meta Title</label> </Box>
+                      <Box sx={commoncss.tooltipbox}> <CommonToolTip title="60 characters only" /></Box>
+                      <Box sx={commoncss.fieldbox}>  <CommenTextField
                         name="meta.title"
                         label="Meta Title *"
                         required
@@ -272,16 +264,17 @@ const AddBlogForm = () => {
                           required: "Meta title is required",
                           maxLength: "Please do not exceed 60 characters",
                         }}
-                      />
+                      /></Box>
                     </Box>
-                    <Box sx={addBlogStyle.customBox1}>
-                      <label>Keywords</label>
-                      <CommonToolTip title="Keywords" />
-                      <CommenTextField name="meta.keywords" label="Keywords" />
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}><label>Keywords</label></Box>
+                      <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Keywords" /></Box>
+                      <Box sx={commoncss.fieldbox}>    <CommenTextField name="meta.keywords" label="Keywords" /></Box>
                     </Box>
-                    <Box sx={{ gap: 1 }}>
-                      <label>Meta Description *</label>
-                      <CommenTextField
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}> <label>Meta Description </label></Box>
+                      <Box sx={commoncss.tooltipbox}><CommonToolTip title="160 characters only" /></Box>
+                      <Box sx={commoncss.fieldbox}> <CommenTextField
                         name="meta.description"
                         label="Meta Description *"
                         multiline
@@ -292,7 +285,12 @@ const AddBlogForm = () => {
                           required: "Meta description is required",
                           maxLength: "Please do not exceed 160 characters",
                         }}
-                      />
+                      /></Box>
+                    </Box>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}> <label>uid </label> </Box>
+                      <Box sx={commoncss.tooltipbox}> <CommonToolTip title="uid" /> </Box>
+                      <Box sx={commoncss.fieldbox}> <CommenTextField name="uid" label="uid" size="small" /></Box>
                     </Box>
                     {/* <CommenTextField
                       name="meta.canonicalUrl"
@@ -300,10 +298,14 @@ const AddBlogForm = () => {
                     /> */}
                   </Box>
                   {/* <Box
+                  {/* <Box
                     sx={{ borderRadius: 3, mb: 4, padding: { xs: 3, md: 2 } }}
                   >
                     <Typography fontWeight="600" textAlign="center">
+                    <Typography fontWeight="600" textAlign="center">
                       Open Graph
+                    </Typography>
+                    <CommenTextField name="ogTags.title" label="OG Title" />
                     </Typography>
                     <CommenTextField name="ogTags.title" label="OG Title" />
                     <CommenTextField
@@ -324,7 +326,7 @@ const AddBlogForm = () => {
                     justifyContent="space-between"
                     mb={2}
                   >
-                    <Box sx={addBlogStyle.customBox2}>
+                    <Box sx={commoncss.customBox2}>
                       <QuestionAnswerIcon color="primary" />
                       <Typography variant="h6" fontWeight={600}>
                         FAQs
@@ -343,6 +345,7 @@ const AddBlogForm = () => {
                       <Box
                         key={item.id}
                         sx={commoncss.faq}
+
                       >
                         <Stack
                           direction="row"

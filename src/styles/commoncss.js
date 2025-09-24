@@ -1,5 +1,3 @@
-import { colors } from "@mui/material";
-
 const commoncss = {
   paperShadow: {
     p: 3,
@@ -97,6 +95,44 @@ const commoncss = {
     p: 2,
     mb: 2,
   },
+   mainbox: {
+    minHeight: "100vh",
+    py: 0,
+    px: 0,
+    // bgcolor: "dark" ? "white" : "#F7F7F9",
+    transition: "background 0.3s",
+  },
+  grid1: {
+    flexDirection: { xs: "column", md: "row" },
+    alignItems: "stretch",
+    gap: 2,
+  },
+   customBox1: {
+    display: "flex",
+    alignItems: "center",
+    whiteSpace: "nowrap",
+    gap: 1,
+  },
+  customBox2: {
+    display: "flex",
+    alignItems: 'center',
+    gap: 1
+  },
+  metabox1 :{
+    display: "flex ", alignItems:"center", gap: 1
+  },
+  labelbox :{
+    width:"100px"
+  }, 
+  tooltipbox :{
+    width: "20px"
+  },
+  fieldbox :{
+    width: "520px"
+  },
+  fieldbox1 :{
+    width: "630px"
+  }
 };
 
-export default commoncss;
+  export default commoncss;

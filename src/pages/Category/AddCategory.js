@@ -48,7 +48,6 @@ const AddCategory = () => {
       navigate("/category");
      toast.success("Create Successful")
     } catch (error) {
-      console.error(error);
       toast.error(error?.response?.data?.message)
     }
   };

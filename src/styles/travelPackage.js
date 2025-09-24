@@ -41,11 +41,18 @@ const travelPackageStyle = {
     width: { xs: "100%", md: "50%" },
     mt: 2,
   },
-  filterButton : {
-    display:"flex" ,
-     justifyContent:"space-between" , 
-     gap:"10px"
-  }
+  inclusionsContainer: {
+    maxHeight: 150,
+    overflowY: "auto",
+    pr: 1,
+  },
+  inclusionsBox: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 1,
+  
+  },
 };
 
 export default travelPackageStyle;
