@@ -15,8 +15,6 @@ const ListingTravelPackage = () => {
   const [IdtoDelete, setIdtoDelete] = useState("");
   const [loadingForDelete, setLoadingForDelete] = useState(false);
 
-  console.log(listData);
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -26,7 +24,6 @@ const ListingTravelPackage = () => {
     apiClient
       .get(`/api/travel-packages/all`)
       .then((res) => {
-        console.log(res?.data?.data);
         const tourList = res?.data?.data || [];
         const formatted = tourList.map((val, index) => ({
           ...val,
@@ -39,10 +36,13 @@ const ListingTravelPackage = () => {
           season: val?.season,
           weatherLocation: val?.weatherLocation,
           isActive: val?.isActive ? "Active " : "Inactive",
-          discount: val?.discount.amount ? `₹ ${val?.discount.amount}` :val?.discount?.percentage?`${val?.discount?.percentage} %`: "No Discount",
+          discount: val?.discount.amount
+            ? `₹ ${val?.discount.amount}`
+            : val?.discount?.percentage
+              ? `${val?.discount?.percentage} %`
+              : "No Discount",
         }));
         setListData(formatted);
-
       })
       .finally(() => setLoading(false));
   };
@@ -57,7 +57,6 @@ const ListingTravelPackage = () => {
         toast.success("Deleted successfully");
         setDialogOpen(false);
         setIdtoDelete("");
-
       })
       .catch((err) => {
         alert("Failed to delete");
@@ -71,21 +70,27 @@ const ListingTravelPackage = () => {
   const handleAddNewTour = () => {
     navigate("/addtour");
   };
+  const handleEdit = async (onEdit) => {
+    navigate(`/edittour/${onEdit._id}`);
+  };
 
-console.log(listData)
   const columns = [
     { field: "sr", headerName: "Sr", width: 70 },
-    { field: "name", headerName: "Package Name", width: 180 ,flex: 1,},
+    { field: "name", headerName: "Package Name", width: 180, flex: 1 },
     // { field: "duration", headerName: "Duration", flex: 1 },
-    { field: "moodOfJourney", headerName: "Category", width: 200, },
+    { field: "moodOfJourney", headerName: "Category", width: 200 },
+    { field: "type", headerName: "Type", width: 200 },
+
     // { field: "season", headerName: "Season", flex: 1 },
-    { field: "price", headerName: "Price", width: 150, },
+    { field: "price", headerName: "Price", width: 150 },
     {
-      field: "discount", headerName: "Discount", width: 150,
-      renderCell: (params,i) => (
+      field: "discount",
+      headerName: "Discount",
+      width: 150,
+      renderCell: (params, i) => (
         <span
           style={{
-            color: params.value == "No Discount"?"red":"green",
+            color: params.value == "No Discount" ? "red" : "green",
             fontWeight: "bold",
             padding: "5px 15px",
             borderRadius: "5px",
@@ -97,7 +102,9 @@ console.log(listData)
     },
 
     {
-      field: "isActive", headerName: "Status", width: 150,
+      field: "isActive",
+      headerName: "Status",
+      width: 150,
       renderCell: (params) => (
         <span
           style={{
@@ -105,7 +112,7 @@ console.log(listData)
             backgroundColor: params.value === "Active" ? "#FFDCD1" : "#E9FFDB",
             fontWeight: "bold",
             padding: "5px 15px",
-            borderRadius: "5px"
+            borderRadius: "5px",
           }}
         >
           {params.value}
@@ -124,7 +131,7 @@ console.log(listData)
             <IconButton
               size="small"
               color="primary"
-            // onClick={() =>  handleEdit(params.row)}
+              onClick={() => handleEdit(params.row)}
             >
               <Edit fontSize="small" />
             </IconButton>
@@ -151,12 +158,12 @@ console.log(listData)
         <Typography variant="h5" fontWeight={600}>
           Travel Package
         </Typography>
-        <Box sx={travelPackageStyle.filterButton}>
+        {/* <Box sx={travelPackageStyle.filterButton}>
           <CommonButton fullWidth={false}>Tour</CommonButton>
           <CommonButton fullWidth={false}>Trek</CommonButton>
-        </Box>
+        </Box> */}
         <CommonButton onClick={handleAddNewTour} fullWidth={false}>
-          Add New Tour
+          Add New Trip
         </CommonButton>
       </Stack>
       <DataGrid
