@@ -15,6 +15,7 @@ import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import BookIcon from "@mui/icons-material/Book";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import ImageIcon from "@mui/icons-material/Image";
 import travelPackageStyle from "../../styles/travelPackage";
 import categoryStyle from "../../styles/category";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
@@ -136,9 +137,13 @@ maxLength={60}
             <Grid size={6}>
               <Box sx={categoryStyle.customBox}>
                 <Stack sx={travelPackageStyle.customFaq}>
-                  <Typography variant="h6" fontWeight={600}>
-                    FAQs
-                  </Typography>
+                  <Box sx={addBlogStyle.customBox2}>
+                    <QuestionAnswerIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      FAQs
+                    </Typography>
+                    <CommonToolTip title="Keywords" />
+                  </Box>
                   <IconButton
                     color="primary"
                     onClick={() => appendFaq({ question: "", answer: "" })}
