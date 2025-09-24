@@ -47,6 +47,7 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
       setValue("slug", slug);
     }
   }, [titleValue, setValue]);
+  
   console.log(!watch("isblog"));
   return (
     <>
@@ -125,7 +126,7 @@ maxLength={60}
                   <CommenTextField
                   name="slug"
                   label="slug"
-                  required
+                  // required={!watch("name")}
                   focused={isEdit}
                   disabled={isEdit}
                   readOnly={isEdit && true}

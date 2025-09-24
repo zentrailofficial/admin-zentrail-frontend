@@ -286,6 +286,7 @@ const AddSubCategory = () => {
                   label="Select of Category *"
                   options={categoriesList}
                   // onChangeValues={handleMoodOfJourneyChange}
+                  focused={false}
                   required
                 />
 
@@ -371,6 +372,7 @@ const AddSubCategory = () => {
                   name="image"
                   focused={isEdit}
                   label="Image"
+                  altText
                   // defaultImage={defaultImage}
                 />
                   </Grid>

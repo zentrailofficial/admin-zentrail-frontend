@@ -28,6 +28,7 @@ const CategoryDataGrid = () => {
       id: item._id,
       sr: index + 1,
       name: item.name,
+      isblog: item.isblog?"for blog":"for package",
       updatedAt:item.updatedAt.split("T")[0]
       // metaTitle: item.metaTitle,
       // metaDescription: item.metaDescription,
@@ -66,6 +67,7 @@ const CategoryDataGrid = () => {
   const columns = [
     { field: "sr", headerName: "Sr", width: 70 },
     { field: "name", headerName: "Name", flex: 1 },
+    { field: "isblog", headerName: "isblog", flex: 1 },
     { field: "updatedAt", headerName: "updatedAt", flex: 1 },
     // { field: "metaTitle", headerName: "Meta Title", flex: 1 },
     // { field: "metaDescription", headerName: "Meta Description", flex: 1.5 },
