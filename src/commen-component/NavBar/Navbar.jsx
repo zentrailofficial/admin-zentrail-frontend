@@ -30,6 +30,11 @@ import { useThemeMode } from "../../context/ThemeProvider";
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import HikingIcon from '@mui/icons-material/Hiking';
+import commoncss from "../../styles/commoncss";
+import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
+import CategoryIcon from '@mui/icons-material/Category';
+import SatelliteIcon from '@mui/icons-material/Satellite';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
 const FULL_DRAWER_WIDTH = 240;
 const MINI_DRAWER_WIDTH = 60;
 
@@ -37,11 +42,11 @@ const NAV_ITEMS = [
   { title: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
   { title: "Blog", icon: <AutoStoriesIcon />, path: "/blog" },
   { title: "Portfolio", icon: <WorkIcon />, path: "/portfolio" },
-  { title: "Services", icon: <DashboardIcon />, path: "/services" },
-  { title: "Category", icon: <DashboardIcon />, path: "/category" },
+  { title: "Services", icon: <MiscellaneousServicesIcon />, path: "/services" },
+  { title: "Category", icon: <CategoryIcon />, path: "/category" },
   {
     title: "Category Feature",
-    icon: <DashboardIcon />,
+    icon: <SatelliteIcon />,
     path: "/categoryservices",
   },
   {
@@ -49,17 +54,17 @@ const NAV_ITEMS = [
     icon: <HikingIcon />,
     path: "/travelpackage",
   },
-  
+
   {
     title: "Leads",
-    icon: <DashboardIcon />,
+    icon: <NewReleasesIcon />,
     path: "/leads",
   },
 ];
 
 export default function Navbar() {
   const theme = useTheme();
-  const { user ,logout} = useAuth();
+  const { user, logout } = useAuth();
   const { toggleColorMode } = useThemeMode();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -88,7 +93,7 @@ export default function Navbar() {
   const handleMiniDrawerToggle = () => {
     setMiniDrawer(!miniDrawer);
   };
-console.log(user)
+  console.log(user)
   const drawerContent = (
     <div>
       <Toolbar sx={{ justifyContent: "center" }} />
@@ -103,6 +108,7 @@ console.log(user)
             sx={{
               justifyContent: miniDrawer ? "center" : "flex-start",
               px: miniDrawer ? 2 : 3,
+              
             }}
           >
             <ListItemIcon
@@ -110,6 +116,7 @@ console.log(user)
                 minWidth: 0,
                 mr: miniDrawer ? 0 : 2,
                 justifyContent: "center",
+                color :"#c843ff"
               }}
             >
               {item.icon}
@@ -126,28 +133,30 @@ console.log(user)
       {/* <CssBaseline /> */}
 
       {/* Top AppBar */}
-      <AppBar position="fixed" sx={{ zIndex: 1201 }}>
+      <AppBar sx={commoncss.apptop}>
         <Toolbar>
           <IconButton
-            color="inherit"
+            color="red"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
-          >
+            sx={commoncss.iconbtn2}>
             <MenuIcon />
           </IconButton>
           <IconButton
-            color="inherit"
             edge="start"
             onClick={handleMiniDrawerToggle}
-            sx={{ mr: 2, display: { xs: "none", sm: "inline-flex" } }}
+            sx={commoncss.iconbtn}
           >
             {miniDrawer ? <MenuIcon /> : <ChevronLeft />}
           </IconButton>
-          <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
-           {user.panel === "travel" ? 'Zentrail' : user.panel } Admin Panel
+          <Typography
+            variant="h6"
+           
+            sx={commoncss.navtypography }>
+            {user.panel === "travel" ? 'Zentrail' : user.panel} Admin Panel
           </Typography>
-          <IconButton onClick={toggleColorMode} color="inherit">
+          <IconButton onClick={toggleColorMode}
+            sx={commoncss.iconbtn}>
             {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
           <IconButton onClick={handleMenuOpen} color="inherit">

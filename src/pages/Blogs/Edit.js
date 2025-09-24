@@ -3,11 +3,9 @@ import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import {
   Box,
   Typography,
-  Card,
   Stack,
   Grid,
   IconButton,
-  CardContent,
   Paper,
 } from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
@@ -101,7 +99,6 @@ const EditBlog = () => {
         reset(mapped);
         setLoading(false);
       } catch (err) {
-        console.error("Failed to fetch blog:", err);
       }
     };
 
@@ -152,7 +149,6 @@ const EditBlog = () => {
         setbtnLoading(false);
       }
     } catch (error) {
-      console.error("Failed to update blog", error);
       toast.error("Failed to update");
       setbtnLoading(false);
     }
@@ -168,21 +164,12 @@ const EditBlog = () => {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Box
-          sx={{
-            minHeight: "100vh",
-            py: 0,
-            px: 0,
-            transition: "background 0.3s",
-          }}
+          sx={addBlogStyle.box}
         >
           <Box maxWidth="xl" mx="auto">
             <Grid
               container
-              spacing={2}
-              sx={{
-                flexDirection: { xs: "column", md: "row" },
-                alignItems: "stretch",
-              }}
+              sx={addBlogStyle.grid1}
             >
               {/* Left Section */}
               <Grid
