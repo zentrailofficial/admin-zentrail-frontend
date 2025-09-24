@@ -11,6 +11,7 @@ import {
   IconButton,
   useTheme,
   useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { apiClient } from "../lib/api-client";
@@ -22,6 +23,7 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const {
@@ -30,6 +32,7 @@ const Login = () => {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       const res = await apiClient.post("/api/auth/login", data);
       login({ ...res?.data?.user, panel: res?.data?.panel });
@@ -41,6 +44,9 @@ const Login = () => {
       navigate("/dashboard");
     } catch (err) {
       console.error("Login error:", err.response?.data || err.message);
+    }
+    finally {
+      setLoading(false);  
     }
   };
 
@@ -247,6 +253,7 @@ const Login = () => {
                 fullWidth
                 variant="contained"
                 type="submit"
+                disabled={loading} 
                 sx={{
                   backgroundColor: "#D7A10F",
                   color: "#ffffff",
@@ -262,7 +269,12 @@ const Login = () => {
                   },
                 }}
               >
-                Login
+                 {loading ? (
+                  <CircularProgress size={24} sx={{ color: "#fff" }} />
+                ) : (
+                  "Login"
+                )}
+                
               </Button>
             </form>
           </Box>

@@ -125,13 +125,11 @@ const EditTravelPackage = () => {
       try {
         const response = await apiClient.get("api/Moodbasejourney");
         const moodBased = response.data.data;
-        console.log(moodBased);
         if (Array.isArray(moodBased)) {
           const data = moodBased.map((item) => ({
             value: item,
             label: item.title,
-          }));
-          console.log(data);
+          }))
           setMoodBasedList(data);
         }
       } catch (error) {
@@ -149,7 +147,6 @@ const EditTravelPackage = () => {
           `api/travel-packages/${travelPackageId}`
         );
         const travelPackage = response.data.data;
-        console.log(travelPackage.locationAddress, "dadad");
         methods.reset({
           ...travelPackage,
           moodOfJourney: travelPackage.moodOfJourney?.title.toLowerCase(),
@@ -175,7 +172,6 @@ const EditTravelPackage = () => {
             type: travelPackage.discount.amount ? "amount" : "percentage",
           },
         });
-        console.log(travelPackage, "response");
         setFormKey((prev) => prev + 1);
       } catch (error) {
         console.error(error);
@@ -188,7 +184,7 @@ const EditTravelPackage = () => {
   }, [param?.id, moodBasedList]);
 
   const onSubmit = async (data) => {
-    setLoading(true);
+    
     if (data.featuredImage?.length == 0) {
       toast.error("Featured image is required");
       return;
@@ -198,7 +194,7 @@ const EditTravelPackage = () => {
 
       return;
     }
-    console.log(data.gallery);
+    setLoading(true);
     try {
       const formData = new FormData();
       // Add Travel Package
@@ -257,7 +253,6 @@ const EditTravelPackage = () => {
           },
         }
       );
-      console.log(response, "dadsda");
       if (response) {
         toast.success("Travel Package Update successfully!");
         navigate("/travelpackage");

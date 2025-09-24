@@ -36,7 +36,6 @@ const ImageUpload = ({
         }
         return { altText: img.altText || "", error: "" };
       });
-      console.log(initial, "initial");
       setPreviews(initial);
     }
   }, [getValues, name, previews.length]);
@@ -145,7 +144,6 @@ const ImageUpload = ({
                       <Delete fontSize="small" color="error" />
                     </IconButton>
                   )}
-                  {console.log(img.altText)}
                   {altText && (
                     <TextField
                       label="Alt Text"

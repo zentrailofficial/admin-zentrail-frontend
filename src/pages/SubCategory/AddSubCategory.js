@@ -90,14 +90,12 @@ const AddSubCategory = () => {
       try {
         const response = await apiClient.get("api/category");
         const category = response.data;
-        console.log(category);
 
         if (Array.isArray(category)) {
           const data = category.map((item) => ({
             value: item._id,
             label: item.name,
           }));
-          console.log(data);
           setCategoriesList(data);
         }
       } catch (error) {
@@ -109,7 +107,6 @@ const AddSubCategory = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(data);
     if (!data?.image) {
       return toast.error("Image is required")
     }
@@ -117,7 +114,6 @@ const AddSubCategory = () => {
             return toast.error("altText of every images is required")
           }
     try {
-      console.log(data.image[0].file);
       const formData = new FormData();
       formData.append("categoryId", data.category);
       formData.append("title", data?.name);

@@ -63,13 +63,26 @@ const AddTravelPackage = () => {
     watch,
     setValue,
     handleSubmit,
-
+    setFocus,
     formState: { isSubmitting, errors },
   } = methods;
   const [exclusions, setExclusions] = useState([""]);
   const [inclusions, setInclusions] = useState([""]);
   const navigate = useNavigate();
   const [moodBasedList, setMoodBasedList] = useState([]);
+
+  const onError = (errors) => {
+    const firstErrorField = Object.keys(errors)[0]; 
+    if (firstErrorField) {
+      setFocus(firstErrorField); 
+      document.querySelector(`[name="${firstErrorField}"]`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      toast.error(`Please check "${firstErrorField}" field`);
+    }
+  };
+
   const {
     fields: faqFields,
     append: appendFaq,
@@ -97,11 +110,12 @@ const AddTravelPackage = () => {
     if (titleValue) {
       const slug = titleValue
         .toLowerCase()
+        .trim()
         .replace(/&/g, "and")
-        .replace(/[^\w\s-]/g, "")
+        .replace(/[^\w\s]/gi, "-")
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-")
-        .trim();
+        .replace(/^-+|-+$/g, "");
 
       setValue("slug", slug);
     }
@@ -150,17 +164,17 @@ const AddTravelPackage = () => {
     fetchMoodBased();
   }, []);
   const onSubmit = async (data) => {
-    setLoading(true);
     if (data.featuredImage?.length == 0) {
       toast.error("Featured image is required");
+      setFocus("featuredImage"); 
       return;
     }
     if (data.gallery?.length < 3) {
       toast.error("Gallery requires at least 3 images");
-
+       setFocus("gallery");
       return;
     }
-
+    setLoading(true);
     try {
       const formData = new FormData();
       // Add Travel Package
@@ -192,14 +206,12 @@ const AddTravelPackage = () => {
       //image
       if (data.featuredImage[0]?.file) {
         formData.append("featuredImage", data.featuredImage[0].file);
-        formData.append(
-          "featuredImageAlt",
-          data.featuredImage[0].altText || ""
-        );
+        formData.append("featuredAlt", data.featuredImage[0].altText || "");
       }
       data.gallery.forEach((item, index) => {
         if (item.file) {
           formData.append("gallery", item.file);
+          formData.append(`galleryAlt_${item?.file?.name}`, item.altText || "");
         }
       });
       formData.append("isActive", data.isActive || false);
@@ -217,13 +229,11 @@ const AddTravelPackage = () => {
       if (response) {
         toast.success("Travel Package created successfully!");
         navigate("/travelpackage");
+       
       }
     } catch (error) {
       console.error("Error creating travel package:", error?.response);
-      toast.error(
-        "Failed to create travel package. Please try again: ",
-        error?.response
-      );
+      toast.error(error?.response.data.message|| "Failed to create travel package. Please try again: ");
     } finally {
       setLoading(false);
     }
@@ -231,7 +241,7 @@ const AddTravelPackage = () => {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit, onError)}>
         <Box>
           <Grid
             container
@@ -287,6 +297,7 @@ const AddTravelPackage = () => {
                     name="moodOfJourney"
                     label="Select Category *"
                     options={moodBasedList}
+
                     // onChangeValues={handleMoodOfJourneyChange}
                     required
                   />
@@ -385,7 +396,6 @@ const AddTravelPackage = () => {
                   label="Choose Package Images"
                   multiple
                   altText
-                  required
                 />
               </Paper>
 
@@ -483,7 +493,7 @@ const AddTravelPackage = () => {
                         { value: "Moderate", label: "Moderate" },
                         { value: "Difficult", label: "Difficult" },
                       ]}
-                      // required
+                     
                     />
                   </>
                 )}
@@ -631,7 +641,7 @@ const AddTravelPackage = () => {
                   required
                   maxLength={60}
                   messages={{
-                    required: "Meta title is ////required",
+                    required: "Meta title is required",
                     maxLength: "Please do not exceed 60 characters",
                   }}
                 />
@@ -643,37 +653,11 @@ const AddTravelPackage = () => {
                   rows={3}
                   maxLength={160}
                   messages={{
-                    required: "Meta description is ////required",
+                    required: "Meta description is required",
                     maxLength: "Please do not exceed 160 characters",
                   }}
                 />
                 <CommenTextField name="seo.keywords" label="keywords" />
-                {/* <CommenTextField
-                  name="slug"
-                  label="slug"
-                  size="small"
-                  focused={watch("title")?.length}
-                  onChange={(e) => {
-                    const input = e.target.value;
-
-                    const sanitizedSlug = input
-                      .toLowerCase()
-                      .replace(/&/g, "and") // replace & with 'and'
-                      .replace(/[^\w\s-]/g, "") // remove special characters except space and hyphen
-                      .replace(/\s+/g, "-") // replace spaces with hyphens
-                      .replace(/-+/g, "-") // remove multiple hyphens
-                      .trim();
-
-                    setValue("slug", sanitizedSlug);
-                  }}
-                  onKeyDown={(e) => {
-                    const allowed = /^[a-zA-Z0-9\s-]$/;
-
-                    if (!allowed.test(e.key)) {
-                      e.preventDefault(); // block special character key
-                    }
-                  }}
-                /> */}
 
                 <CommenTextField
                   name="slug"

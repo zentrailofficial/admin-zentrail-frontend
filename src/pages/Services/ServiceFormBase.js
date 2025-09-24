@@ -35,7 +35,6 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
 
   const methods = useForm({ defaultValues });
   const { setValue, control, handleSubmit, getValues } = methods;
-  console.log(methods.getValues("serviceCategory"), serviceOptions);
   const { fields, append, remove } = useFieldArray({ control, name: "faq" });
   useEffect(() => {
     const fetchData = async () => {
@@ -76,7 +75,6 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    console.log(data, data.serviceCategory, " ;;;;;;;;;;;;;;");
     try {
       const formData = new FormData();
       formData.append("uid", data.uid);
@@ -110,7 +108,6 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
   data.whyPoornam = [data.whyPoornam];
 }
       formData.append("whyPoornam", JSON.stringify(data.whyPoornam));
-      console.log(formData);
       let response;
       if (mode === "add") {
         response = await apiClient.post("/api/service/servicepage", formData, {
@@ -230,7 +227,6 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                         Service feature
                       </Typography>
                     </Stack>
-                    {console.log("serviceOptions", serviceOptions, methods)}
                     <CommonDropdown
                       name="serviceCategory"
                       label="Service Category *"

@@ -29,7 +29,6 @@ export default function InquiryTable() {
       try {
         setLoading(true);
         const res = await apiClient.get("/api/inquiryform");
-        console.log(res?.data?.data);
         setRows(res.data.data || []);
       } catch (error) {
         console.error("Error fetching inquiries:", error);

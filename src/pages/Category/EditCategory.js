@@ -66,13 +66,13 @@ const EditCategory = () => {
       //     if (imgObj.file instanceof File) {
       //       formData.append("image", imgObj.file);
       //       formData.append(`imageAlt`, imgObj.altText || "");
-      //       console.log("1");
+     
 
       //     } else if (imgObj.url) {
       //       appendImagesToFormData(imgObj?.url, formData)
       //       // formData.append("image", imgObj.url);
       //       // formData.append(`imageAlt`, imgObj.altText || "");
-      //       console.log("2");
+  
 
       //     }
       //   });

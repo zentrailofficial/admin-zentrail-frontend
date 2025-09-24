@@ -39,10 +39,8 @@ const PortfolioPage = () => {
   // handle deletee
   const handleDelete = async () => {
     setLoadingForDelete(true);
-    console.log(IdtoDelete);
     try {
       const res = await apiClient.delete(`api/portfolio/${IdtoDelete}`);
-      console.log(res?.data);
       if (res?.data) {
         setAllPortfolioData(
           allPortfolioData?.filter((val) => val?._id !== IdtoDelete)
@@ -85,7 +83,6 @@ const PortfolioPage = () => {
     }
   };
 
-  console.log(allPortfolioData);
 
   // Filter images on category change
   useEffect(() => {

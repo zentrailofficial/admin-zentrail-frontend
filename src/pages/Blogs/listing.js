@@ -42,7 +42,6 @@ export default function BlogListGrid() {
       })
       .finally(() => setLoading(false));
   };
-  console.log(listData);
   const handleEdit = (id) => {
     navigate(`/editblog/${id}`);
   };
@@ -170,22 +169,18 @@ export default function BlogListGrid() {
         </Button>
       </Stack>
 
-      {loading ? (
-        <Stack justifyContent="center" alignItems="center" height="100%">
-          <CircularProgress />
-        </Stack>
-      ) : (
         <DataGrid
           rows={listData}
           columns={columns}
           pageSizeOptions={[10, 20]}
+          loading={loading}
           initialState={{
             pagination: { paginationModel: { pageSize: 10, page: 0 } },
           }}
           checkboxSelection
           disableRowSelectionOnClick
         />
-      )}
+      
       <ConfirmDelete
         open={dialogOpen}
         onClose={() => {
