@@ -293,9 +293,7 @@ const AddBlogForm = () => {
                   {/* Meta Tags Accordion */}
 
                   <Box sx={commoncss.meta}>
-                    <Typography fontWeight="600" textAlign="center">
-                      Meta Tags
-                    </Typography>
+                  
                     <Box sx={addBlogStyle.customBox1}>
                       <label>Meta Title</label>
                       <CommonToolTip title="Meta Title" />

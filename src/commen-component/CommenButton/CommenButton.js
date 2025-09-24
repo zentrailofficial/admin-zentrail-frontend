@@ -1,5 +1,6 @@
 import React, { use, useState } from "react";
 import { Button, CircularProgress } from "@mui/material";
+import commoncss from "../../styles/commoncss";
 
 const CommonButton = ({
   children,
@@ -18,16 +19,7 @@ const CommonButton = ({
       variant={variant}
       fullWidth={fullWidth}
       onClick={onClick}
-      sx={{
-        background: " linear-gradient(180deg, #0095ffbe, #d24bff)", // gradient here
-        color: "#fff",
-        fontWeight: "600",
-        textTransform: "none",
-        "&:hover": {
-          background: " linear-gradient(180deg, #5959b9be, #d24bff)", // reverse gradient on hover
-        },
-        ...sx,
-      }}
+      sx={commoncss.commonBtn}
       disabled={loading || rest.disabled}
       loading={loading}
       {...rest}
