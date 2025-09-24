@@ -25,6 +25,8 @@ import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import travelPackageStyle from "../../styles/travelPackage";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import categoryStyle from "../../styles/category";
+import { appendImagesToFormData } from "../../utils/helperFunctions";
+import { toast } from "react-toastify";
 
 const EditSubCategory = () => {
   const [formKey, setFormKey] = useState(0);
@@ -105,9 +107,17 @@ const EditSubCategory = () => {
       formData.append("faq", JSON.stringify(data?.faq));
       // formData.append("image", data?.image);
       // if (data.image[0]?.file) {
-      formData.append("image", data?.image[0]?.file);
-      formData.append("imageAlt", data?.image[0]?.altText || "");
+      // formData.append("image", data?.image[0]?.file);
+      // formData.append("imageAlt", data?.image[0]?.altText || "");
       // }
+      try {
+        if (Array.isArray(data.image)) {
+          await appendImagesToFormData(data.image, formData);
+        }
+      } catch (imageError) {
+        toast.error(imageError.message || "Please provide alt text for all images.");
+        return;
+      }
       await apiClient.put(`/api/subcategory/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -127,14 +137,22 @@ const EditSubCategory = () => {
         );
         // setCategoriesList([{value:res?.data?.categoryId?._id, label:res?.data?.categoryId?.name}]);
         methods.reset({
-          ...res.data, categoryId:res?.data?.categoryId?._id,
-           
+          ...res.data, categoryId: res?.data?.categoryId?._id,
+
           image: res?.data?.image ? [
             {
               url: res?.data?.image,
-              altText: `image${res?.data?.image}`,
+              altText: res?.data?.imageAlt,
             },
           ] : []
+          //    image: res?.data[0]?.image
+          // ? [
+          //   {
+          //     url: res?.data[0]?.image,
+          //     altText: res?.data[0]?.imageAlt || "",
+          //   },
+          // ]
+          // : [],
           //     set
           //    categoryId: res.data.categoryId 
 
@@ -148,7 +166,7 @@ const EditSubCategory = () => {
           //     ]
           //   : [],
         });
-         setFormKey(prev => prev + 1); 
+        setFormKey(prev => prev + 1);
       } catch (err) {
         console.error("Error fetching service", err);
       }
@@ -195,7 +213,7 @@ const EditSubCategory = () => {
                           options={categoriesList}
                           // onChangeValues={handleMoodOfJourneyChange}
                           required
-                          //  defaultValues={{name:"mweh wcwc",value:"mwqhdbjh "}}
+                        //  defaultValues={{name:"mweh wcwc",value:"mwqhdbjh "}}
                         />
 
                       </Grid>

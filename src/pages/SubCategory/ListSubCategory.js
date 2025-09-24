@@ -117,6 +117,7 @@ const ListSubCategory = () => {
             paginationModel: { pageSize: 10, page: 0 },
           },
         }}
+        loading={loading}
       />
 
       <ConfirmDelete

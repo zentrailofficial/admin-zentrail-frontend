@@ -53,3 +53,35 @@ export const controlKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "T
 export const isAllowedKey = (key) => {
   return allowedPattern.test(key) || controlKeys.includes(key);
 };
+
+export async function appendImagesToFormData(images, formData) {
+  for (const imgObj of images) {
+    const altText = imgObj.altText?.trim();
+
+    if (!altText) {
+      throw new Error("Image alt text is required for all images.");
+    }
+
+    if (imgObj.file instanceof File) {
+      formData.append("image", imgObj.file);
+      formData.append("imageAlt", altText);
+    } else if (imgObj.url) {
+      try {
+        const response = await fetch(imgObj.url);
+        const blob = await response.blob();
+
+        const filename = imgObj.url.split("/").pop() || "image.jpg";
+        const file = new File([blob], filename, { type: blob.type });
+
+        formData.append("image", file);
+        formData.append("imageAlt", altText);
+      } catch (error) {
+        console.error("Failed to fetch image:", imgObj.url, error);
+        throw new Error("Failed to load image from URL.");
+      }
+    }
+  }
+}
+
+
+

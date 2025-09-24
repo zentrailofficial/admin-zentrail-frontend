@@ -26,9 +26,10 @@ import travelPackageStyle from "../../styles/travelPackage";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import categoryStyle from "../../styles/category";
 import { toast } from "react-toastify";
+import { isAllowedKey, sanitizeSlug } from "../../utils/helperFunctions";
 const AddSubCategory = () => {
   const [categoriesList, setCategoriesList] = useState([]);
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const methods = useForm({
     defaultValues: {
       name: "",
@@ -58,15 +59,29 @@ const AddSubCategory = () => {
     name: "faq",
   });
   const titleValue = watch("name");
+  // useEffect(() => {
+  //   if (titleValue) {
+  //     const slug = titleValue
+  //       .toLowerCase()
+  //       .trim()
+  //       .replace(/[^\w\s]/gi, "")
+  //       .replace(/\s+/g, "-");
+
+  //     setValue("slug", slug);
+  //   }
+  // }, [titleValue, setValue]);
   useEffect(() => {
     if (titleValue) {
       const slug = titleValue
         .toLowerCase()
         .trim()
-        .replace(/[^\w\s]/gi, "")
-        .replace(/\s+/g, "-");
+        .replace(/&/g, "and")
+        .replace(/[^\w\s]/gi, "-")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-+|-+$/g, "");
 
-      setValue("slug", slug);
+      setValue("slug", slug, { shouldValidate: true });
     }
   }, [titleValue, setValue]);
 
@@ -92,12 +107,15 @@ const AddSubCategory = () => {
 
     fetchCategories();
   }, []);
- 
+
   const onSubmit = async (data) => {
     console.log(data);
-    if(!data?.image[0]?.file){
-     return toast.error("Image is required")
+    if (!data?.image) {
+      return toast.error("Image is required")
     }
+        if(!data?.image[0]?.altText){
+            return toast.error("altText of every images is required")
+          }
     try {
       console.log(data.image[0].file);
       const formData = new FormData();
@@ -260,190 +278,198 @@ const AddSubCategory = () => {
           </Paper> */}
 
           <>
-           <Box>
-            <Stack direction="row" spacing={2} mb={2}>
-              <BookIcon color="primary" />
-              <Typography variant="h6" fontWeight={600}>
-                Add New SubCategory
-              </Typography>
-            </Stack>
-            <Paper elevation={3} sx={categoryStyle.paperShadow}>
-              <Grid
-                container
-                spacing={{ xs: 2, md: 3 }}
-                columns={{ xs: 12, sm: 12, md: 12 }}
-              >
-                <Grid size={{ xs: 12, sm: 6, md: 8 }}>
-                  <Grid
-                    container
-                    spacing={{ xs: 1, md: 3 }}
-                    columns={{ xs: 12, sm: 12, md: 12 }}
-                  >
+            <Box>
+              <Stack direction="row" spacing={2} mb={2}>
+                <BookIcon color="primary" />
+                <Typography variant="h6" fontWeight={600}>
+                  Add New SubCategory
+                </Typography>
+              </Stack>
+              <Paper elevation={3} sx={categoryStyle.paperShadow}>
+                <Grid
+                  container
+                  spacing={{ xs: 2, md: 3 }}
+                  columns={{ xs: 12, sm: 12, md: 12 }}
+                >
+                  <Grid size={{ xs: 12, sm: 6, md: 8 }}>
+                    <Grid
+                      container
+                      spacing={{ xs: 1, md: 3 }}
+                      columns={{ xs: 12, sm: 12, md: 12 }}
+                    >
 
-                    <Grid size={{ xs: 12, md: 4 }}>
-                      <CommonDropdown
-                  name="category"
-                  label="Select of Category *"
-                  options={categoriesList}
-                  // onChangeValues={handleMoodOfJourneyChange}
-                  focused={false}
-                  required
-                />
+                      <Grid size={{ xs: 12, md: 4 }}>
+                        <CommonDropdown
+                          name="category"
+                          label="Select of Category *"
+                          options={categoriesList}
+                          // onChangeValues={handleMoodOfJourneyChange}
+                          // focused={false}
+                          required
+                        />
 
+                      </Grid>
+
+                      <Grid size={{ xs: 12, md: 4 }}>
+                        <CommenTextField
+                          name="name"
+                          focused={isEdit}
+                          label="SubCategory Name"
+                          required
+                        />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 4 }}>
+                        <CommenTextField
+                          name="slug"
+                          label="slug"
+                          required
+                          focused={watch("name")?.length}
+                          onChange={(input) => {
+                            const sanitizedSlug = sanitizeSlug(input);
+                            setValue("slug", sanitizedSlug);
+                          }}
+                          onKeyDown={(e) => {
+                            if (!isAllowedKey(e.key)) {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      spacing={{ xs: 1, md: 3 }}
+                      columns={{ xs: 12, sm: 12, md: 12 }}
+                    >
+                      <Grid size={{ xs: 12, md: 12 }}>
+                        <CommenTextField
+                          name="metaTitle"
+                          focused={isEdit}
+                          label="Meta Title"
+                          required
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      spacing={{ xs: 1, md: 3 }}
+                      columns={{ xs: 12, sm: 12, md: 12 }}
+                    >
+                      <Grid size={{ xs: 12, md: 6 }}>
+                        <CommenTextField
+                          name="metaDescription"
+                          focused={isEdit}
+                          label="Meta Description"
+                          multiline
+                          rows={4}
+                          required
+                        />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 6 }}>
+                        <CommenTextField
+                          name="description"
+                          focused={isEdit}
+                          label="Description"
+                          multiline
+                          rows={4}
+                          required
+                        />
+                      </Grid>
                     </Grid>
 
-                    <Grid size={{ xs: 12, md: 4 }}>
-                          <CommenTextField
-                  name="name"
-                  focused={isEdit}
-                  label="SubCategory Name"
-                  required
-                />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
-                    <CommenTextField
-                  name="slug"
-                  // focused={isEdit}
-                  label="slug"
-                  required
-                  focused={watch("name")?.length}
-                />
+                    <Grid
+                      container
+                      spacing={{ xs: 1, md: 3 }}
+                      columns={{ xs: 12, sm: 12, md: 12 }}
+                    >
+                      <Grid size={{ xs: 12, md: 12 }}>
+                        <CommenTextField
+                          name="metakeywords"
+                          focused={isEdit}
+                          label="meta keywords"
+                          required
+                        />
+                      </Grid>
                     </Grid>
                   </Grid>
-                  <Grid
-                    container
-                    spacing={{ xs: 1, md: 3 }}
-                    columns={{ xs: 12, sm: 12, md: 12 }}
-                  >
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                     <Grid size={{ xs: 12, md: 12 }}>
-                     <CommenTextField
-                  name="metaTitle"
-                  focused={isEdit}
-                  label="Meta Title"
-                  required
-                />
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    container
-                    spacing={{ xs: 1, md: 3 }}
-                    columns={{ xs: 12, sm: 12, md: 12 }}
-                  >
-                    <Grid size={{ xs: 12, md: 6 }}>
-                     <CommenTextField
-                  name="metaDescription"
-                  focused={isEdit}
-                  label="Meta Description"
-                  multiline
-                  rows={4}
-                  required
-                />
-                    </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                    <CommenTextField
-                  name="description"
-                  focused={isEdit}
-                  label="Description"
-                  multiline
-                  rows={4}
-                  required
-                />
-                    </Grid>
-                  </Grid>
-
-                  <Grid
-                    container
-                    spacing={{ xs: 1, md: 3 }}
-                    columns={{ xs: 12, sm: 12, md: 12 }}
-                  >
-                    <Grid size={{ xs: 12, md: 12 }}>
-                      <CommenTextField
-                        name="metakeywords"
+                      <ImageUpload
+                        name="image"
                         focused={isEdit}
-                        label="meta keywords"
-                        required
+                        label="Image"
+                        altText
+                      // defaultImage={defaultImage}
                       />
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              </Paper>
+
+              {/* FAQ */}
+              <Paper elevation={3} sx={categoryStyle.paperShadow}>
+                <Grid
+                  container
+                  spacing={{ xs: 2, md: 3 }}
+                  columns={{ xs: 12, sm: 12, md: 12 }}
+                >
                   <Grid size={{ xs: 12, md: 12 }}>
-                     <ImageUpload
-                  name="image"
-                  focused={isEdit}
-                  label="Image"
-                  altText
-                  // defaultImage={defaultImage}
-                />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Paper>
-
-               {/* FAQ */}
-          <Paper elevation={3} sx={categoryStyle.paperShadow}>
-            <Grid
-              container
-              spacing={{ xs: 2, md: 3 }}
-              columns={{ xs: 12, sm: 12, md: 12 }}
-            >
-              <Grid size={{ xs: 12, md: 12 }}>
-                <Stack sx={travelPackageStyle.customFaq}>
-                  <Typography variant="h6" fontWeight={600}>
-                    FAQs
-                  </Typography>
-                  <IconButton
-                    color="primary"
-                    onClick={() => appendFaq({ question: "", answer: "" })}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </Stack>
-
-                {faqFields.map((item, index) => (
-                  <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
                     <Stack sx={travelPackageStyle.customFaq}>
-                      <Typography variant="subtitle1">
-                        FAQ {index + 1}
+                      <Typography variant="h6" fontWeight={600}>
+                        FAQs
                       </Typography>
-                      {faqFields.length > 1 && (
-                        <IconButton
-                          color="error"
-                          onClick={() => removeFaq(index)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      )}
+                      <IconButton
+                        color="primary"
+                        onClick={() => appendFaq({ question: "", answer: "" })}
+                      >
+                        <AddIcon />
+                      </IconButton>
                     </Stack>
 
-                    <CommenTextField
-                      name={`faq.${index}.question`}
-                      label="Question *"
-                      required
-                    />
-                    <CommenTextField
-                      name={`faq.${index}.answer`}
-                      label="Answer *"
-                      multiline
-                      rows={3}
-                      required
-                    />
-                  </Box>
-                ))}
-              </Grid>
-            </Grid>
-            <Box sx={categoryStyle.buttonBox}>
-               <CommonButton
-                  type="submit"
-                  disabled={isSubmitting}
-                  loading={isSubmitting}
-                  fullWidth={false}
-                >
-                  {isEdit ? "Update Category" : "Add Sub Category"}
-                </CommonButton>
-            </Box>
-          </Paper>
-          </Box></>
+                    {faqFields.map((item, index) => (
+                      <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
+                        <Stack sx={travelPackageStyle.customFaq}>
+                          <Typography variant="subtitle1">
+                            FAQ {index + 1}
+                          </Typography>
+                          {faqFields.length > 1 && (
+                            <IconButton
+                              color="error"
+                              onClick={() => removeFaq(index)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                        </Stack>
+
+                        <CommenTextField
+                          name={`faq.${index}.question`}
+                          label="Question *"
+                          required
+                        />
+                        <CommenTextField
+                          name={`faq.${index}.answer`}
+                          label="Answer *"
+                          multiline
+                          rows={3}
+                          required
+                        />
+                      </Box>
+                    ))}
+                  </Grid>
+                </Grid>
+                <Box sx={categoryStyle.buttonBox}>
+                  <CommonButton
+                    type="submit"
+                    disabled={isSubmitting}
+                    loading={isSubmitting}
+                    fullWidth={false}
+                  >
+                    {isEdit ? "Update Category" : "Add Sub Category"}
+                  </CommonButton>
+                </Box>
+              </Paper>
+            </Box></>
         </form>
         {/* </Box> */}
       </FormProvider>

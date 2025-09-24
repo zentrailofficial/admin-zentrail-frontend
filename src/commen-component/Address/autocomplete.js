@@ -12,10 +12,10 @@ import {
 import Autocomplete from "@mui/material/Autocomplete";
 import useGoogle from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 
-const LocationSearch = ({ onSelect }) => {
+const LocationSearch = ({ onSelect , value }) => {
   const uniqueId = useId();
   const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(value);
   const [locationData, setLocationData] = useState({
     formatted_address: "",
     country: "",
@@ -77,10 +77,13 @@ const LocationSearch = ({ onSelect }) => {
     setOpen(true);
   };
 
+
+  console.log(value , inputValue)
   return (
     <Box>
       <Autocomplete
         id={`autocomplete-${uniqueId}`}
+
         freeSolo
         disableClearable
         open={open}

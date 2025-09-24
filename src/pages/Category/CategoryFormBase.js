@@ -23,6 +23,7 @@ import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import commoncss from "../../styles/commoncss";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { isAllowedKey, sanitizeSlug } from "../../utils/helperFunctions";
 
 const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
 
@@ -42,22 +43,33 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
     name: "faq",
   });
   const titleValue = !isEdit && watch("name");
+  // useEffect(() => {
+  //   if (titleValue) {
+  //     const slug = titleValue
+  //       .toLowerCase()
+  //       .trim()
+  //       .replace(/[^\w\s]/gi, "")
+  //       .replace(/\s+/g, "-");
+
+  //     setValue("slug", slug);
+  //   }
+  // }, [titleValue, setValue]);
   useEffect(() => {
-    if (titleValue) {
+    if (!isEdit && titleValue) {
       const slug = titleValue
         .toLowerCase()
         .trim()
-        .replace(/[^\w\s]/gi, "")
-        .replace(/\s+/g, "-");
+        .replace(/&/g, "and")
+        .replace(/[^\w\s]/gi, "-")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-+|-+$/g, "");
 
-      setValue("slug", slug);
+      setValue("slug", slug, { shouldValidate: true });
     }
-  }, [titleValue, setValue]);
+  }, [titleValue, isEdit, setValue]);
 
-  console.log(!watch("isblog"));
-  const [loading, setLoading] = useState(false);
   return (
-
     <>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
@@ -146,35 +158,29 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                       <CommonToolTip title=" SEO Settings" />
                     </Stack>
                     <Box sx={commoncss.meta}>
-                     
-                        <Box sx={commoncss.metabox1}>
-                          <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
-                          <Box sx={commoncss.tooltipbox}>
-                            <CommonToolTip title="60 characters only" /></Box>
-                          <Box sx={commoncss.fieldbox}><CommenTextField
-                            name="metaTitle"
-                            focused={isEdit}
-                            label="Meta Title"
-                            required={!watch("isblog")}
-                            maxLength={60}
-                          />
-                          </Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="60 characters only" /></Box>
+                        <Box sx={commoncss.fieldbox}><CommenTextField
+                          name="metaTitle"
+                          focused={isEdit}
+                          label="Meta Title"
+                          required={!watch("isblog")}
+                          maxLength={60}
+                        />
+                        </Box>
                       </Box>
-
-                       <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.metabox1}>
                         <Box sx={commoncss.labelbox}><label>Keywords</label></Box>
-                          <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Keywords" /></Box>
-                          <Box sx={commoncss.fieldbox}> <CommenTextField
+                        <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Keywords" /></Box>
+                        <Box sx={commoncss.fieldbox}> <CommenTextField
                           name="metaKeyword"
                           focused={isEdit}
                           label="meta keywords"
                           required={!watch("isblog")}
                         /></Box>
-                        
-                      
-                       
                       </Box>
-
                       <Box sx={commoncss.metabox1}>
                         <Box sx={commoncss.labelbox}>
                           <label>Meta Description</label>
@@ -206,15 +212,24 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                           <CommenTextField
                             name="slug"
                             label="slug"
-                            // required={!watch("name")}
+                            required={!watch("name")}
                             focused={isEdit}
                             disabled={isEdit}
                             readOnly={isEdit && true}
+                            onChange={(input) => {
+                              const sanitizedSlug = sanitizeSlug(input);
+                              setValue("slug", sanitizedSlug);
+                            }}
+                            onKeyDown={(e) => {
+                              if (!isAllowedKey(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
                           />
                         </Box>
                       </Box>
-
-                    </Box>            </Paper>
+                    </Box>
+                  </Paper>
                   <Paper elevation={3}
                     sx={commoncss.cardlineargradient}>
 
@@ -249,7 +264,6 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                               </IconButton>
                             )}
                           </Stack>
-
                           <CommenTextField
                             name={`faq.${index}.question`}
                             label="Question *"
@@ -265,18 +279,19 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                         </Box>
                       ))}
                     </Box>
-
                   </Paper>
-                  <CommonButton type="submit" loading={loading}>
-                    Submit
+                  <CommonButton
+                    type="submit"
+                    disabled={isSubmitting}
+                    loading={isSubmitting}
+                    fullWidth={false}
+                  >
+                    {isEdit ? "Update Category" : "Add Category"}
                   </CommonButton>
                 </Grid>
-
               </Grid>
             </Box>
           </Box>
-
-
         </form>
         {/* </Box> */}
       </FormProvider>

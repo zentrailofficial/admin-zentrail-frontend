@@ -4,7 +4,7 @@ trigger:
       - main
 
 pool:
-  name: zentrail-agent
+  name: frontend-agent
 
 stages:
   - stage: Dev
