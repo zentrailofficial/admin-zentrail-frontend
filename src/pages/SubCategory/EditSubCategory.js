@@ -27,11 +27,12 @@ import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown
 import categoryStyle from "../../styles/category";
 import { appendImagesToFormData } from "../../utils/helperFunctions";
 import { toast } from "react-toastify";
+import SkeletonLoader from "../../commen-component/Reusable/SkeletonLoader";
 
 const EditSubCategory = () => {
   const [formKey, setFormKey] = useState(0);
+  const [loading, setloading] = useState(false);
   const { id } = useParams();
-  const [defaultValues, setDefaultValues] = useState(null);
   const [categoriesList, setCategoriesList] = useState([]);
   const methods = useForm({
     defaultValues: {
@@ -95,6 +96,9 @@ const EditSubCategory = () => {
   }, []);
   const navigate = useNavigate();
   const onSubmit = async (data) => {
+    if(!data?.image?.length){
+      return toast.error("Image is required")
+    }
     try {
       const formData = new FormData();
       formData.append("categoryId", data.categoryId);
@@ -131,6 +135,7 @@ const EditSubCategory = () => {
 
   useEffect(() => {
     const fetchService = async () => {
+      setloading(true)
       try {
         const res = await apiClient.get(
           `/api/subcategory/${id}`
@@ -169,10 +174,16 @@ const EditSubCategory = () => {
         setFormKey(prev => prev + 1);
       } catch (err) {
         console.error("Error fetching service", err);
+      }finally{
+        setloading(false)
       }
     };
     fetchService();
   }, [id]);
+
+  if (loading) {
+    return <SkeletonLoader />
+  }
   return (
     <Box>
       <FormProvider key={formKey} {...methods}>
