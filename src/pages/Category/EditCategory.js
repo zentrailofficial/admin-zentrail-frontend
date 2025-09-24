@@ -88,7 +88,6 @@ const EditCategory = () => {
       toast.success("Category Updated successfully");
       Navigation("/category");
     } catch (error) {
-      console.error(error?.response?.data?.message);
       toast.error(error?.response?.data?.message||"Failed to update category.");
     }
   };

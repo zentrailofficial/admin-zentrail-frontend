@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Paper,
@@ -20,11 +20,13 @@ import ImageIcon from "@mui/icons-material/Image";
 import travelPackageStyle from "../../styles/travelPackage";
 import categoryStyle from "../../styles/category";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
-import addBlogStyle from "../../styles/blogcss";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
+import commoncss from "../../styles/commoncss";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { isAllowedKey, sanitizeSlug } from "../../utils/helperFunctions";
 
 const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
+
   const {
     formState: { isSubmitting },
     control,
@@ -57,7 +59,7 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
       const slug = titleValue
         .toLowerCase()
         .trim()
-        .replace(/&/g, "and")   
+        .replace(/&/g, "and")
         .replace(/[^\w\s]/gi, "-")
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-")
@@ -71,156 +73,225 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
     <>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
-            <Grid size={6}>
-              <Box sx={categoryStyle.customBox}>
-                <Stack direction="row" justifyContent={"space-between"}>
-                  <Stack direction="row" spacing={2}>
-                    <BookIcon color="primary" />
-                    <Typography variant="h6" fontWeight={600}>
-                      Add Category
-                    </Typography>
-                  </Stack>
-                  <FormControlLabel
-                    control={
-                      <Controller
-                        name="isblog"
-                        control={methods.control}
-                        render={({ field }) => (
-                          <Switch {...field} checked={field.value} />
-                        )}
-                      />
-                    }
-                    label="category for blog"
-                    sx={{ whiteSpace: "nowrap" }}
-                  />
-                </Stack>
-                <CommenTextField
-                  name="name"
-                  focused={isEdit}
-                  label="Category Name"
-                  required
-                />
-                <CommenQuillEditor name="description" required minLength={160} label="Category description" />
-                <ImageUpload
-                  name="image"
-                  focused={isEdit}
-                  label="Image"
-                  altText
-                // defaultImage={defaultImage}
-                />
-              </Box>
-
-              <Box sx={[categoryStyle.customBox, { marginTop: "30px" }]}>
-                <Stack direction="row" spacing={2}>
-                  <BookIcon color="primary" />
-                  <Typography variant="h6" fontWeight={600}>
-                    Add Seo Tags
-                  </Typography>
-                </Stack>
-                <CommenTextField
-                  name="metaTitle"
-                  focused={isEdit}
-                  label="Meta Title"
-                  required={!watch("isblog")}
-                  maxLength={60}
-                />
-
-                <CommenTextField
-                  name="metaDescription"
-                  focused={isEdit}
-                  label="Meta Description"
-                  required={!watch("isblog")}
-                  multiline
-                  rows={3}
-                  maxLength={160}
-                />
-                <CommenTextField
-                  name="metaKeyword"
-                  focused={isEdit}
-                  label="meta keywords"
-                  required={!watch("isblog")}
-                />
-                <CommenTextField
-                  name="slug"
-                  label="slug"
-                  required={!watch("name")}
-                  focused={isEdit}
-                  disabled={isEdit}
-                  readOnly={isEdit && true}
-                  onChange={(input) => {
-                    const sanitizedSlug = sanitizeSlug(input);
-                    setValue("slug", sanitizedSlug);
-                  }}
-                  onKeyDown={(e) => {
-                    if (!isAllowedKey(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                />
-              </Box>
-            </Grid>
-            <Grid size={6}>
-              <Box sx={categoryStyle.customBox}>
-                <Stack sx={travelPackageStyle.customFaq}>
-                  <Box sx={addBlogStyle.customBox2}>
-                    <QuestionAnswerIcon color="primary" />
-                    <Typography variant="h6" fontWeight={600}>
-                      FAQs
-                    </Typography>
-                    <CommonToolTip title="Keywords" />
-                  </Box>
-                  <IconButton
-                    color="primary"
-                    onClick={() => appendFaq({ question: "", answer: "" })}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </Stack>
-
-                {faqFields.map((item, index) => (
-                  <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
-                    <Stack sx={travelPackageStyle.customFaq}>
-                      <Typography variant="subtitle1">
-                        FAQ {index + 1}
-                      </Typography>
-                      {faqFields.length > 1 && (
-                        <IconButton
-                          color="error"
-                          onClick={() => removeFaq(index)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      )}
-                    </Stack>
-
-                    <CommenTextField
-                      name={`faq.${index}.question`}
-                      label="Question *"
-                      required={!watch("isblog")}
-                    />
-                    <CommenTextField
-                      name={`faq.${index}.answer`}
-                      label="Answer *"
-                      multiline
-                      rows={3}
-                      required={!watch("isblog")}
-                    />
-                  </Box>
-                ))}
-
-                <CommonButton
-                  type="submit"
-                  disabled={isSubmitting}
-                  loading={isSubmitting}
-                  fullWidth={false}
+          <Box sx={commoncss.mainbox} >
+            <Box maxWidth="xl" mx="auto" >
+              <Grid
+                container
+                sx={commoncss.grid1} >
+                <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  sx={commoncss.leftGrid}
                 >
-                  {isEdit ? "Update Category" : "Add Category"}
-                </CommonButton>
-              </Box>
-            </Grid>
-          </Grid>
+                  <Paper elevation={3}
+                    sx={commoncss.cardlineargradient}>
+                    <Stack direction="row" justifyContent={"space-between"}>
+                      <Stack direction="row" alignItems="center" spacing={2}>
+                        <BookIcon color="primary" />
+                        <Typography variant="h6" fontWeight={600}>
+                          Add Category
+                        </Typography>
+                        <CommonToolTip title=" Add Category" />
+                      </Stack>
+                      <FormControlLabel
+                        control={
+                          <Controller
+                            name="isblog"
+                            control={methods.control}
+                            render={({ field }) => (
+                              <Switch {...field} checked={field.value} />
+                            )}
+                          />
+                        }
+                        label="category for blog"
+                        sx={{ whiteSpace: "nowrap" }}
+                      />
+                    </Stack>
+                    <Box sx={commoncss.customBox1}>
+                      <Box sx={commoncss.customBox2}>
+                        <label >Category Name  </label>
+                        <CommonToolTip title="70 characters only" />
+                      </Box>
+                      <CommenTextField
+                        name="name"
+                        focused={isEdit}
+                        label="Category Name"
+                        required
+                      />  </Box>
 
+                    <CommenQuillEditor name="description" required minLength={30} label="Category description" />
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={1}
+                    >
+                      <ImageIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        URL & Featured Image
+                      </Typography>
+                      <CommonToolTip title="Alt text required" />
+                    </Stack>
+                    <ImageUpload
+                      name="image"
+                      focused={isEdit}
+                      label="Image"
+                      altText
+                    // defaultImage={defaultImage}
+                    />
+                  </Paper>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  sx={commoncss.rightGrid}
+                >
+                  <Paper elevation={3}
+                    sx={commoncss.cardlineargradient}>
+                    <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                      <SettingsIcon color="primary" />
+                      <Typography variant="h6" fontWeight="600">
+                        SEO Settings
+                      </Typography>
+                      <CommonToolTip title=" SEO Settings" />
+                    </Stack>
+                    <Box sx={commoncss.meta}>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="60 characters only" /></Box>
+                        <Box sx={commoncss.fieldbox}><CommenTextField
+                          name="metaTitle"
+                          focused={isEdit}
+                          label="Meta Title"
+                          required={!watch("isblog")}
+                          maxLength={60}
+                        />
+                        </Box>
+                      </Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}><label>Keywords</label></Box>
+                        <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Keywords" /></Box>
+                        <Box sx={commoncss.fieldbox}> <CommenTextField
+                          name="metaKeyword"
+                          focused={isEdit}
+                          label="meta keywords"
+                          required={!watch("isblog")}
+                        /></Box>
+                      </Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}>
+                          <label>Meta Description</label>
+                        </Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="Keywords" />
+                        </Box>
+
+                        <Box sx={commoncss.fieldbox}>
+                          <CommenTextField
+                            name="metaDescription"
+                            focused={isEdit}
+                            label="Meta Description"
+                            required={!watch("isblog")}
+                            multiline
+                            rows={3}
+                            maxLength={160}
+                          />
+                        </Box>
+                      </Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}>
+                          <label>Slug</label>
+                        </Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="Slug" />
+                        </Box>
+                        <Box sx={commoncss.fieldbox}>
+                          <CommenTextField
+                            name="slug"
+                            label="slug"
+                            required={!watch("name")}
+                            focused={isEdit}
+                            disabled={isEdit}
+                            readOnly={isEdit && true}
+                            onChange={(input) => {
+                              const sanitizedSlug = sanitizeSlug(input);
+                              setValue("slug", sanitizedSlug);
+                            }}
+                            onKeyDown={(e) => {
+                              if (!isAllowedKey(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Paper>
+                  <Paper elevation={3}
+                    sx={commoncss.cardlineargradient}>
+
+                    <Stack sx={travelPackageStyle.customFaq}>
+                      <Box sx={commoncss.customBox2}>
+                        <QuestionAnswerIcon color="primary" />
+                        <Typography variant="h6" fontWeight={600}>
+                          FAQs
+                        </Typography>
+                        <CommonToolTip title="Questions and answers" />
+                      </Box>
+                      <IconButton
+                        color="primary"
+                        onClick={() => appendFaq({ question: "", answer: "" })}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </Stack>
+                    <Box sx={commoncss.faqBox}>
+                      {faqFields.map((item, index) => (
+                        <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
+                          <Stack sx={travelPackageStyle.customFaq}>
+                            <Typography variant="subtitle1">
+                              FAQ {index + 1}
+                            </Typography>
+                            {faqFields.length > 1 && (
+                              <IconButton
+                                color="error"
+                                onClick={() => removeFaq(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            )}
+                          </Stack>
+                          <CommenTextField
+                            name={`faq.${index}.question`}
+                            label="Question *"
+                            required={!watch("isblog")}
+                          />
+                          <CommenTextField
+                            name={`faq.${index}.answer`}
+                            label="Answer *"
+                            multiline
+                            rows={3}
+                            required={!watch("isblog")}
+                          />
+                        </Box>
+                      ))}
+                    </Box>
+                  </Paper>
+                  <CommonButton
+                    type="submit"
+                    disabled={isSubmitting}
+                    loading={isSubmitting}
+                    fullWidth={false}
+                  >
+                    {isEdit ? "Update Category" : "Add Category"}
+                  </CommonButton>
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
         </form>
         {/* </Box> */}
       </FormProvider>
