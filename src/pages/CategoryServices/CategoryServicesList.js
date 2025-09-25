@@ -23,7 +23,7 @@ const CategoryServicesList = () => {
 
   const fetchCategories = async () => {
     const res = await apiClient.get("/api/service");
-    console.log(res?.data?.services);
+   
     const formatted = res?.data?.services.map((item, index) => ({
       id: item._id,
       sr: index + 1,
@@ -42,10 +42,8 @@ const CategoryServicesList = () => {
 
   const handleDelete = async () => {
     setLoadingForDelete(true);
-    console.log(IdtoDelete);
     try {
       const res = await apiClient.delete(`api/service/${IdtoDelete}`);
-      console.log(res?.data);
       if (res?.data) {
         // setAllPortfolioData(
         //   allPortfolioData?.filter((val) => val?._id !== IdtoDelete)

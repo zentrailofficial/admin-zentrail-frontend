@@ -93,7 +93,6 @@ export default function Navbar() {
   const handleMiniDrawerToggle = () => {
     setMiniDrawer(!miniDrawer);
   };
-  console.log(user)
   const drawerContent = (
     <div>
       <Toolbar sx={{ justifyContent: "center" }} />

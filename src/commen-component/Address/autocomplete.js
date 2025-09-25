@@ -76,9 +76,6 @@ const LocationSearch = ({ onSelect , value }) => {
 
     setOpen(true);
   };
-
-
-  console.log(value , inputValue)
   return (
     <Box>
       <Autocomplete

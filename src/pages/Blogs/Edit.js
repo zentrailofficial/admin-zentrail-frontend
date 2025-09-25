@@ -73,7 +73,6 @@ const EditBlog = () => {
       try {
         const res = await apiClient.get(`/api/blogs/${id}`);
         const blog = res.data.blog;
-        console.log(res.data.blog);
         const mapped = {
           title: blog.title,
           author: blog.authorName,
@@ -317,7 +316,7 @@ const EditBlog = () => {
                       <Box sx={commoncss.customBox1}>
                         <Box sx={commoncss.labelbox}> <label>uid </label>  </Box>
                         <Box sx={commoncss.tooltipbox}> <CommonToolTip title="uid" /></Box>
-                        <Box sx={commoncss.fieldbox}> <CommenTextField name="uid" label="uid" size="small" /></Box>
+                        <Box sx={commoncss.fieldbox}> <CommenTextField name="uid" label="uid" disabled size="small" /></Box>
                       </Box>
                       {/* <Typography textAlign={"center"} fontWeight="600">
                       Open Graph

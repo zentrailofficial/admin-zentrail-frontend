@@ -5,8 +5,10 @@ import { apiClient } from "../../lib/api-client";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { appendImagesToFormData } from "../../utils/helperFunctions";
+import SkeletonLoader from "../../commen-component/Reusable/SkeletonLoader";
 const EditCategory = () => {
   const [formKey, setFormKey] = useState(0);
+  const [loading, setloading] = useState(false);
   const methods = useForm({
     defaultValues: {
       image: [],
@@ -18,6 +20,7 @@ const EditCategory = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setloading(true)
       const res = await apiClient.get(`/api/category/${categoryId}`);
       methods.reset({
         ...res.data[0],
@@ -32,6 +35,7 @@ const EditCategory = () => {
           : [],
       });
       setFormKey(prev => prev + 1);
+      setloading(false)
     };
     fetchData();
   }, [categoryId]);
@@ -62,13 +66,13 @@ const EditCategory = () => {
       //     if (imgObj.file instanceof File) {
       //       formData.append("image", imgObj.file);
       //       formData.append(`imageAlt`, imgObj.altText || "");
-      //       console.log("1");
+     
 
       //     } else if (imgObj.url) {
       //       appendImagesToFormData(imgObj?.url, formData)
       //       // formData.append("image", imgObj.url);
       //       // formData.append(`imageAlt`, imgObj.altText || "");
-      //       console.log("2");
+  
 
       //     }
       //   });
@@ -94,13 +98,17 @@ const EditCategory = () => {
 
 
   return (
-    <CategoryFormBase
-      key={formKey}
-      methods={methods}
-      onSubmit={onSubmit}
-      isEdit
-      defaultImage={methods.watch("image")}
-    />
+    <>
+
+      {loading ? <SkeletonLoader/> : <CategoryFormBase
+        key={formKey}
+        methods={methods}
+        onSubmit={onSubmit}
+        isEdit
+        defaultImage={methods.watch("image")}
+      />}
+
+    </>
   );
 };
 

@@ -6,7 +6,6 @@ import ServiceFormBase from "./ServiceFormBase";
 const EditService = () => {
   const { id } = useParams();
   const [defaultValues, setDefaultValues] = useState(null);
-console.log(defaultValues , 'defaultValues')
   useEffect(() => {
     const fetchService = async () => {
       try {
@@ -32,7 +31,7 @@ console.log(defaultValues , 'defaultValues')
     };
     fetchService();
   }, [id]);
-  console.log(defaultValues, "defaultValues");
+
 
   if (!defaultValues) return <p>Loading...</p>;
 

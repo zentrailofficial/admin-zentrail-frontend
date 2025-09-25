@@ -171,6 +171,7 @@ const ListingTravelPackage = () => {
         columns={columns}
         pagination
         pageSizeOptions={[10, 20, 50]}
+        loading={loading}
         initialState={{
           pagination: {
             paginationModel: { pageSize: 10, page: 0 },

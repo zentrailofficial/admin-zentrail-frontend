@@ -23,7 +23,6 @@ const ListSubCategory = () => {
     apiClient
       .get(`/api/subcategory`)
       .then((res) => {
-        console.log(res?.data);
         const tourList = res?.data || [];
         const formatted = tourList.map((val, index) => ({
           ...val,
