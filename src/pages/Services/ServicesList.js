@@ -13,6 +13,7 @@ import { apiClient } from "../../lib/api-client";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
+import { toast } from "react-toastify";
 
 const ServicesList = () => {
   const [rows, setRows] = useState([]);
@@ -50,7 +51,7 @@ const ServicesList = () => {
         setIdtoDelete("");
       }
     } catch (error) {
-      console.error("Error fetching categories", error);
+      toast.error("Error fetching categories", error);
       setLoadingForDelete(false);
       setDialogOpen(false);
       setIdtoDelete("");
@@ -64,7 +65,6 @@ const ServicesList = () => {
   const columns = [
     { field: "sr", headerName: "Sr", width: 70 },
     { field: "name", headerName: "Name", flex: 1 },
-    { field: "description", headerName: "Description", flex: 1.5 },
     { field: "metaTitle", headerName: "Meta Title", flex: 1 },
     { field: "metaDescription", headerName: "Meta Description", flex: 1.5 },
     {
@@ -106,7 +106,7 @@ const ServicesList = () => {
     navigate("/addservices");
   };
   return (
-    <Box sx={{ height: 600, width: "100%", p: 2 }}>
+    <Box sx={{ height: 750, width: "100%", p: 2 }}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Services List</Typography>
         <Button

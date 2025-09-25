@@ -7,6 +7,7 @@ import {
   Stack,
   Typography,
   IconButton,
+  Paper,
 } from "@mui/material";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +26,14 @@ import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
 import { apiClient } from "../../lib/api-client";
+import commoncss from "../../styles/commoncss";
+import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import AssistantIcon from '@mui/icons-material/Assistant';
+import ImageSearchIcon from '@mui/icons-material/ImageSearch';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import HourglassTopIcon from '@mui/icons-material/HourglassTop';
+import { toast } from "react-toastify";
 
 const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
   const navigate = useNavigate();
@@ -55,7 +64,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
           }))
         );
       } catch (err) {
-        console.error("Error fetching dropdown data", err);
+        toast.error("Error fetching dropdown data", err);
       }
     };
     fetchData();
@@ -105,8 +114,8 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
 
       formData.append("faq", JSON.stringify(data.faq));
       if (!Array.isArray(data.whyPoornam)) {
-  data.whyPoornam = [data.whyPoornam];
-}
+        data.whyPoornam = [data.whyPoornam];
+      }
       formData.append("whyPoornam", JSON.stringify(data.whyPoornam));
       let response;
       if (mode === "add") {
@@ -128,61 +137,39 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
         navigate("/services");
       }
     } catch (error) {
-      console.error("Error saving service:", error);
       setLoading(false);
-      alert("Failed to save service");
+      toast.error("Failed to save service");
     }
   };
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box
-          sx={{
-            minHeight: "100vh",
-            py: 0,
-            px: 0,
-            // bgcolor: "dark" ? "white" : "#F7F7F9",
-            transition: "background 0.3s",
-          }}
-        >
+        <Box sx={commoncss.mainbox}>
           <Box maxWidth="xl" mx="auto">
-            <Grid
-              container
-              spacing={2}
-              sx={{
-                flexDirection: { xs: "column", md: "row" },
-                alignItems: "stretch",
-              }}
-            >
+            <Grid container sx={commoncss.grid1}>
               {/* Left Section */}
-              <Grid
-                item
-                xs={12}
-                md={6}
-                sx={{
-                  width: { xs: "100%", md: "50%" },
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
+              <Grid item xs={12} md={6} sx={commoncss.leftGrid}>
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
                   <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                     <BookIcon color="primary" />
                     <Typography variant="h6" gutterBottom fontWeight={600}>
                       Add New Service
                     </Typography>
                   </Stack>
-
-                  <CommenTextField
-                    name="title"
-                    label="Service Title *"
-                    required
-                    size="small"
-                    onChange={(val) => setValue("uid", textToSlug(val))}
-                  />
-
-                  <CommenTextField name="uid" label="uid" size="small" />
+                  <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.labelbox}><label>Blog Title </label>{" "}</Box>
+                    <Box sx={commoncss.tooltipbox}>{" "}<CommonToolTip title="70 characters only" /></Box>
+                    <Box sx={commoncss.fieldbox1}> {" "}
+                      <CommenTextField
+                        name="title"
+                        label="Service Title *"
+                        required
+                        size="small"
+                        onChange={(val) => setValue("uid", textToSlug(val))}
+                      />
+                    </Box>
+                  </Box>
                   <CommenQuillEditor
                     name="description"
                     label="Description *"
@@ -190,9 +177,40 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                     minLength={30}
                     placeholder="Write blog content here..."
                   />
-                </Card>
-
-                <Card elevation={2} sx={{ borderRadius: 3 }}>
+                  <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                    <CategoryIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Select Blog Category
+                    </Typography>
+                    <CommonToolTip title="Please select one" />
+                  </Stack>
+                  <CommonDropdown
+                    name="blogcategory"
+                    label="Blog Category *"
+                    options={categoryOptions}
+                    required
+                  />
+                </Paper>
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    mb={1}
+                  >
+                    <ImageIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      URL & Featured Image
+                    </Typography>
+                    <CommonToolTip title="Alt text required" />
+                  </Stack>
+                  <ImageUpload
+                    name="featuredImage"
+                    label="Choose Service Images"
+                    altText
+                  />
+                </Paper>
+                {/* <Card elevation={2} sx={{ borderRadius: 3 }}>
                   <CardContent sx={{ p: { xs: 3, md: 2 } }}>
                     <Stack
                       direction="row"
@@ -213,102 +231,94 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                       required
                     />
                   </CardContent>
-                </Card>
-                <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
-                  <CardContent sx={{ p: { xs: 3, md: 2 } }}>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={2}
-                      mb={3}
-                    >
-                      <CategoryIcon color="primary" />
-                      <Typography variant="h6" fontWeight={600}>
-                        Service feature
-                      </Typography>
-                    </Stack>
-                    <CommonDropdown
-                      name="serviceCategory"
-                      label="Service Category *"
-                      multiple
-                      options={serviceOptions}
-                      required
-                    />
-                  </CardContent>
-                </Card>
+                </Card> */}
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    mb={3}
+                  >
+                    <AssistantIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Service feature
+                    </Typography>
+                    <CommonToolTip title="Feature your service category" />
+                  </Stack>
+                  <CommonDropdown
+                    name="serviceCategory"
+                    label="Service Category *"
+                    multiple
+                    options={serviceOptions}
+                    required
+                  />
+                </Paper>
 
-                <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
-                  <CardContent sx={{ p: { xs: 3, md: 2 } }}>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={2}
-                      mb={3}
-                    >
-                      <CategoryIcon color="primary" />
-                      <Typography variant="h6" fontWeight={600}>
-                        Gallery
-                      </Typography>
-                    </Stack>
-                    <CommonDropdown
-                      name="Portfolio"
-                      label="Portfolio *"
-                      options={portfolioOptions}
-                      required
-                    />
-                  </CardContent>
-                </Card>
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    mb={3}
+                  >
+                    <ImageSearchIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Gallery
+                    </Typography>
+                    <CommonToolTip title="select as pr ypur requirement" />
+                  </Stack>
+                  <CommonDropdown
+                    name="Portfolio"
+                    label="Portfolio *"
+                    options={portfolioOptions}
+                    required
+                  />
+                </Paper>
                 {/* Why Poornam Section */}
-                <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
-                  <CardContent>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      mb={2}
-                    >
-                      <Typography variant="h6" fontWeight={600}>
-                        Why Poornam ?
-                      </Typography>
-                    </Stack>
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    mb={3}
+                  >
+                    <ThumbUpAltIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Why Poornam ?
+                    </Typography>
+                    <CommonToolTip title="Help us understand you more!" />
+                  </Stack>
+                  <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.labelbox}>  <label>Title</label>{" "}   </Box>
+                    <Box sx={commoncss.tooltipbox}> <CommonToolTip title="Why Poornam" />{" "}  </Box>
+                    <Box sx={commoncss.fieldbox1}>
+                      <CommenTextField
+                        name="whyPoornam[0].title"
+                        label="Title *"
+                        required
+                      />
+                    </Box>
+                  </Box>   
+                  <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.labelbox}>  <label>Description</label>{" "}   </Box>
+                    <Box sx={commoncss.tooltipbox}> <CommonToolTip title="Help us understand more" />{" "}  </Box>
+                    <Box sx={commoncss.fieldbox1}>
+                      <CommenTextField
+                        name="whyPoornam[0].description"
+                        label="Description *"
+                        required
+                        multiline
+                        rows={3}
+                      />
+                    </Box>
+                  </Box>
 
-                    <CommenTextField
-                      name="whyPoornam[0].title"
-                      label="Title *"
-                      required
-                    />
-                    <CommenTextField
-                      name="whyPoornam[0].description"
-                      label="Description *"
-                      required
-                      multiline
-                      rows={3}
-                    />
-                  </CardContent>
-                </Card>
 
-                <CommonDropdown
-                  name="status"
-                  label="Status"
-                  required
-                  options={[
-                    { value: "Draft", label: "Draft" },
-                    { value: "Published", label: "Published" },
-                    { value: "Scheduled", label: "Scheduled" },
-                  ]}
-                />
+                </Paper>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                md={6}
-                sx={{
-                  width: { xs: "100%", md: "45%" },
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Card elevation={3} sx={{ borderRadius: 3, mb: 2, padding: 3 }}>
+
+              <Grid item xs={12} md={6} sx={commoncss.rightGrid}>
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
                   <Stack direction="row" alignItems="center" spacing={2} mb={1}>
                     <SettingsIcon color="primary" />
                     <Typography variant="h6" fontWeight="600">
@@ -316,96 +326,166 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                     </Typography>
                   </Stack>
                   {/* Meta Tags Accordion */}
+                  <Typography fontWeight="600" textAlign="center">
+                    Meta Tags
+                  </Typography>
+                  <Box sx={commoncss.meta}>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}> <label>Meta Title</label>{" "} </Box>
+                      <Box sx={commoncss.tooltipbox}> {" "} <CommonToolTip title="60 characters only" />  </Box>
+                      <Box sx={commoncss.fieldbox}> {" "}
+                        <CommenTextField
+                          name="meta.title"
+                          label="Meta Title *"
+                          required
+                          maxLength={60}
+                          messages={{
+                            required: "Meta title is required",
+                            maxLength: "Please do not exceed 60 characters",
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}> <label>Keywords</label>  </Box>
+                      <Box sx={commoncss.tooltipbox}>  {" "} <CommonToolTip title="Keywords" /> </Box>
+                      <Box sx={commoncss.fieldbox}>  {" "}
+                        <CommenTextField
+                          name="meta.keywords"
+                          label="Keywords"
+                        />
+                      </Box>
+                    </Box>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}> {" "} <label>Meta Description </label></Box>
+                      <Box sx={commoncss.tooltipbox}> <CommonToolTip title="160 characters only" />  </Box>
+                      <Box sx={commoncss.fieldbox}>  {" "}
+                        <CommenTextField
+                          name="meta.description"
+                          label="Meta Description *"
+                          multiline
+                          required
+                          rows={3}
+                          maxLength={160}
+                          messages={{
+                            required: "Meta description is required",
+                            maxLength: "Please do not exceed 160 characters",
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}>  <label>uid </label>{" "} </Box>
+                      <Box sx={commoncss.tooltipbox}> <CommonToolTip title="uid" />{" "} </Box>
+                      <Box sx={commoncss.fieldbox}>
+                        <CommenTextField name="uid" label="uid" size="small" />
+                      </Box>
+                      {/* <Box sx={commoncss.fieldbox}>
+                                            {" "}
+                                            <CommenTextField
+                                              name="uid"
+                                              label="uid"
+                                              size="small"
+                                              maxLength={70}
+                                              focused={watch("title")?.length}
+                                              onChange={(input) => {
+                                                const sanitizedSlug = sanitizeSlug(input);
+                                                setValue("slug", sanitizedSlug);
+                                              }}
+                                              onKeyDown={(e) => {
+                                                if (!isAllowedKey(e.key)) {
+                                                  e.preventDefault();
+                                                }
+                                              }}
+                                            />
+                                          </Box> */}
+                    </Box>
 
-                  <Box sx={{ borderRadius: 3 }}>
-                    <Typography fontWeight="600" textAlign="center">
-                      Meta Tags
-                    </Typography>
-                    <CommenTextField
-                      name="meta.title"
-                      label="Meta Title *"
-                      required
-                    />
-                    <CommenTextField
-                      name="meta.description"
-                      label="Meta Description *"
-                      multiline
-                      required
-                      rows={3}
-                    />
-                    <CommenTextField name="meta.keywords" label="Keywords" />
-                  </Box>
 
-                  {/* OG Tags Accordion */}
+                    {/* OG Tags Accordion */}
 
-                  <Box sx={{ borderRadius: 3 }}>
-                    <Typography fontWeight="600" textAlign="center">
+
+                    <Typography fontWeight="600" textAlign="center" mt={2}>
                       Open Graph
                     </Typography>
-                    <CommenTextField name="ogTags.title" label="OG Title" />
-                    <CommenTextField
-                      name="ogTags.description"
-                      label="OG Description"
-                      multiline
-                      rows={3}
-                    />
-                    <CommenTextField name="ogTags.image" label="OG Image URL" />
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}>  <label>OG Title</label>{" "}   </Box>
+                      <Box sx={commoncss.tooltipbox}> <CommonToolTip title="OG tittle" />{" "}  </Box>
+                      <Box sx={commoncss.fieldbox}>
+                        <CommenTextField name="ogTags.title" label="OG Title" />
+                      </Box>
+                    </Box>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}> <label>OG Description</label>{" "} </Box>
+                      <Box sx={commoncss.tooltipbox}> <CommonToolTip title="OG Description" />{" "} </Box>
+                      <Box sx={commoncss.fieldbox}>
+                        <CommenTextField
+                          name="ogTags.description"
+                          label="OG Description"
+                          multiline
+                          rows={3}
+                        />
+                      </Box>
+                    </Box>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}> <label>OG image URL</label>{" "}  </Box>
+                      <Box sx={commoncss.tooltipbox}> <CommonToolTip title="Please provide URL of your OG image" />{" "}  </Box>
+                      <Box sx={commoncss.fieldbox}>
+                        <CommenTextField name="ogTags.image" label="OG image URL" />
+                      </Box>
+                    </Box>
                   </Box>
-                  {/* </CardContent> */}
-                </Card>
-                <Card elevation={2} sx={{ borderRadius: 3 }}>
-                  <CardContent sx={{ p: { xs: 3, md: 2 } }}>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={2}
-                      mb={1}
-                    >
-                      <ImageIcon color="primary" />
-                      <Typography variant="h6" fontWeight={600}>
-                        URL & Featured Image
-                      </Typography>
-                    </Stack>
-
-                    <ImageUpload
-                      name="featuredImage"
-                      label="Choose Service Images"
-                      altText
-                    />
-                  </CardContent>
-                </Card>
+                </Paper>
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    mb={3}
+                  >
+                    <HourglassTopIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Status
+                    </Typography>
+                    <CommonToolTip title="Please select your status" />
+                  </Stack>
+                  <CommonDropdown
+                    name="status"
+                    label="Status"
+                    required
+                    options={[
+                      { value: "Draft", label: "Draft" },
+                      { value: "Published", label: "Published" },
+                      { value: "Scheduled", label: "Scheduled" },
+                    ]}
+                  />
+                </Paper>
 
                 {/* FAQ Section */}
-                <Card elevation={2} sx={{ borderRadius: 3, mt: 2 }}>
-                  <CardContent>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      mb={2}
-                    >
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    mb={2}
+                  >
+                    <Box sx={commoncss.customBox2}>
+                      <QuestionAnswerIcon color="primary" />
                       <Typography variant="h6" fontWeight={600}>
                         FAQs
                       </Typography>
-                      <IconButton
-                        color="primary"
-                        onClick={() => append({ question: "", answer: "" })}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </Stack>
-
+                      <CommonToolTip title="Questions and answers" />
+                    </Box>
+                    <IconButton
+                      color="primary"
+                      onClick={() => append({ question: "", answer: "" })}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Stack>
+                  <Box sx={commoncss.faqBox}>
                     {fields.map((item, index) => (
-                      <Box
-                        key={item.id}
-                        sx={{
-                          border: "1px solid #ddd",
-                          borderRadius: 2,
-                          p: 2,
-                          mb: 2,
-                          background: "#fafafa",
-                        }}
-                      >
+                      <Box key={item.id} sx={commoncss.faq}>
                         <Stack
                           direction="row"
                           justifyContent="space-between"
@@ -424,7 +504,6 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                             </IconButton>
                           )}
                         </Stack>
-
                         <CommenTextField
                           name={`faq.${index}.question`}
                           label="Question *"
@@ -439,21 +518,21 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                         />
                       </Box>
                     ))}
-                  </CardContent>
-                </Card>
+                  </Box>
+                </Paper>
 
-                <Box mt={4}>
-                  <CommonButton
-                    sx={{
-                      borderRadius: 10,
-                      width: "100%",
-                    }}
-                    loading={loading}
-                    type="submit"
-                  >
-                    Submit
-                  </CommonButton>
-                </Box>
+
+                <CommonButton
+                  sx={{
+                    borderRadius: 10,
+                    width: "100%",
+                  }}
+                  loading={loading}
+                  type="submit"
+                >
+                  Submit
+                </CommonButton>
+
               </Grid>
             </Grid>
           </Box>
