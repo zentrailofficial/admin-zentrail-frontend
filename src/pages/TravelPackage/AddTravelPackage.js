@@ -1,4 +1,12 @@
-import { Box, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Grid,
+  IconButton,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
 import CommenTextField from "../../commen-component/TextField/TextField";
@@ -28,6 +36,17 @@ const seasonOptions = [
   { value: "winter-trips", label: "Winter-trips" },
   { value: "monsoon-trips", label: "Monsoon-trips" },
   { value: "autumn-trips", label: "Autumn-trips" },
+];
+
+const inclusionOptions = [
+  { id: 1, title: "Meals", description: "Breakfast, lunch, dinner included" },
+  { id: 2, title: "Accommodation", description: "3-star hotel stay" },
+  { id: 3, title: "Transport", description: "Pick and drop facility" },
+];
+const exclusionOptions = [
+  { id: 1, title: "Flights", description: "Airfare not included" },
+  { id: 2, title: "Personal Expenses", description: "Shopping, tips etc." },
+  { id: 3, title: "Insurance", description: "Travel insurance not provided" },
 ];
 const AddTravelPackage = () => {
   const [loading, setLoading] = useState(false);
@@ -72,9 +91,9 @@ const AddTravelPackage = () => {
   const [moodBasedList, setMoodBasedList] = useState([]);
 
   const onError = (errors) => {
-    const firstErrorField = Object.keys(errors)[0]; 
+    const firstErrorField = Object.keys(errors)[0];
     if (firstErrorField) {
-      setFocus(firstErrorField); 
+      setFocus(firstErrorField);
       document.querySelector(`[name="${firstErrorField}"]`)?.scrollIntoView({
         behavior: "smooth",
         block: "center",
@@ -100,6 +119,29 @@ const AddTravelPackage = () => {
     control,
     name: "itinerary",
   });
+  const {
+    fields: inclusionFields,
+    append: appendInclusion,
+    remove: removeInclusion,
+  } = useFieldArray({
+    control,
+    name: "inclusions",
+  });
+  const {
+    fields: exclusionFields,
+    append: appendExclusion,
+    remove: removeExclusion,
+  } = useFieldArray({
+    control,
+    name: "exclusions",
+  });
+
+  const handleChipSelect = (chip) => {
+    appendInclusion({ title: chip.title, description: chip.description });
+  };
+  const handleExclusionChipSelect = (chip) => {
+    appendExclusion({ title: chip.title, description: chip.description });
+  };
   const duration = watch("duration");
   const titleValue = watch("title");
 
@@ -122,28 +164,21 @@ const AddTravelPackage = () => {
   }, [titleValue, setValue]);
   useEffect(() => {
     const days = parseInt(duration) || 0;
-    if (days > 0) {
-      const newItinerary = Array.from({ length: days }, (_, i) => ({
-        title: "",
-        description: "",
-      }));
-      replaceItinerary(newItinerary);
-    } else {
+
+    if (days <= 0) {
       replaceItinerary([]);
+      return;
     }
-  }, [duration, replaceItinerary]);
-  const handleAddExclusion = () => {
-    setExclusions([...exclusions, ""]);
-  };
-  const handleRemoveExclusion = (indexToRemove) => {
-    setExclusions((prev) => prev.filter((_, idx) => idx !== indexToRemove));
-  };
-  const handleAddInclusion = () => {
-    setInclusions([...inclusions, ""]);
-  };
-  const handleRemoveInclusion = (indexToRemove) => {
-    setInclusions((prev) => prev.filter((_, idx) => idx !== indexToRemove));
-  };
+
+    const prevItinerary = watch("itinerary") || [];
+
+    const newItinerary = Array.from({ length: days }, (_, i) => {
+      return prevItinerary[i] || { title: "", description: "" };
+    });
+
+    replaceItinerary(newItinerary);
+  }, [duration, replaceItinerary, watch]);
+
   useEffect(() => {
     const fetchMoodBased = async () => {
       try {
@@ -166,21 +201,23 @@ const AddTravelPackage = () => {
   const onSubmit = async (data) => {
     if (data.featuredImage?.length == 0) {
       toast.error("Featured image is required");
-      setFocus("featuredImage"); 
+      setFocus("featuredImage");
       return;
     }
     if (data.gallery?.length < 3) {
       toast.error("Gallery requires at least 3 images");
-       setFocus("gallery");
+      setFocus("gallery");
       return;
     }
     setLoading(true);
+  
     try {
       const formData = new FormData();
       // Add Travel Package
       formData.append("type", data.type);
       formData.append("offbeat", data.offbeat);
       formData.append("title", data.title);
+      formData.append("subtitle", data.subtitle);
       formData.append("slug", data.slug);
       formData.append("description", data.description);
       formData.append("price", data.price);
@@ -211,7 +248,7 @@ const AddTravelPackage = () => {
       data.gallery.forEach((item, index) => {
         if (item.file) {
           formData.append("gallery", item.file);
-          formData.append(`galleryAlt_${item?.file?.name}`, item.altText || "");
+          formData.append(`galleryAlt_${item?.file?.name}`, item.altText || "dsdsadasd");
         }
       });
       formData.append("isActive", data.isActive || false);
@@ -228,12 +265,14 @@ const AddTravelPackage = () => {
       });
       if (response) {
         toast.success("Travel Package created successfully!");
-        navigate("/travelpackage");
-       
+        // navigate("/travelpackage");
       }
     } catch (error) {
       console.error("Error creating travel package:", error?.response);
-      toast.error(error?.response.data.message|| "Failed to create travel package. Please try again: ");
+      toast.error(
+        error?.response.data.message ||
+          "Failed to create travel package. Please try again: "
+      );
     } finally {
       setLoading(false);
     }
@@ -289,21 +328,27 @@ const AddTravelPackage = () => {
                   size="small"
                   maxLength={70}
                 />
+                <CommenTextField
+                  name="subtitle"
+                  label="Subtitle Name *"
+                  required
+                  size="small"
+                  maxLength={70}
+                />
 
                 {/* Type of Mood Of Journey */}
 
                 <Box sx={travelPackageStyle.customBox3}>
                   <CommonDropdown
                     name="moodOfJourney"
-                    label="Select Category *"
+                    label="Select Moodbase Subcategory *"
                     options={moodBasedList}
-
                     // onChangeValues={handleMoodOfJourneyChange}
                     required
                   />
                   <CommonDropdown
                     name="season"
-                    label="Select Season *"
+                    label="Select Season Subcategory *"
                     options={seasonOptions}
                     required
                   />
@@ -327,7 +372,7 @@ const AddTravelPackage = () => {
                   <CommonDropdown
                     options={[
                       { value: "percentage", label: "Discount in %" },
-                      { value: "amount", label: "Discount in Amount" },
+                      { value: "amount", label: "Discount in Price" },
                     ]}
                     name="discount.type"
                     label="Discount Type"
@@ -493,7 +538,6 @@ const AddTravelPackage = () => {
                         { value: "Moderate", label: "Moderate" },
                         { value: "Difficult", label: "Difficult" },
                       ]}
-                     
                     />
                   </>
                 )}
@@ -572,24 +616,41 @@ const AddTravelPackage = () => {
                   <Typography variant="h6" fontWeight={600}>
                     Inclusions
                   </Typography>
-                  <IconButton color="primary" onClick={handleAddInclusion}>
+                  <Stack direction="row" spacing={1} mb={2} flexWrap="wrap">
+                    {inclusionOptions.map((chip) => (
+                      <Chip
+                        key={chip.id}
+                        label={chip.title}
+                        clickable
+                        onClick={() => handleChipSelect(chip)}
+                        color="primary"
+                        variant="outlined"
+                      />
+                    ))}
+                  </Stack>
+                  <IconButton
+                    color="primary"
+                    onClick={() =>
+                      appendInclusion({ title: "", description: "" })
+                    }
+                  >
                     <AddIcon />
                   </IconButton>
                 </Stack>
                 <Box sx={travelPackageStyle.inclusionsContainer}>
-                  {inclusions.map((inclusion, index) => (
+                  {inclusionFields.map((inclusion, index) => (
                     <Stack key={index} sx={travelPackageStyle.inclusionsBox}>
                       <CommenTextField
                         key={index}
-                        name={`inclusions[${index}]`}
+                        name={`inclusions[${index}].description`}
                         label={`Inclusion ${index + 1}*`}
                         required
                         size="small"
                       />
-                      {inclusions.length > 1 && (
+                      {inclusionFields.length > 1 && (
                         <IconButton
                           color="error"
-                          onClick={() => handleRemoveInclusion(index)}
+                          onClick={() => removeInclusion(index)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -598,29 +659,46 @@ const AddTravelPackage = () => {
                   ))}
                 </Box>
               </Paper>
+
               {/*  Exclusion */}
               <Paper elevation={3} sx={travelPackageStyle.addTravel}>
                 <Stack sx={travelPackageStyle.customFaq}>
                   <Typography variant="h6" fontWeight={600}>
                     Exclusions
                   </Typography>
-                  <IconButton color="primary" onClick={handleAddExclusion}>
+                  <IconButton color="primary" 
+                  onClick={() =>
+                      appendExclusion({ title: "", description: "" })
+                    }>
                     <AddIcon />
                   </IconButton>
                 </Stack>
+
+                <Stack direction="row" spacing={1} mb={2} flexWrap="wrap">
+                  {exclusionOptions.map((chip) => (
+                    <Chip
+                      key={chip.id}
+                      label={chip.title}
+                      clickable
+                      onClick={() => handleExclusionChipSelect(chip)}
+                      color="secondary"
+                      variant="outlined"
+                    />
+                  ))}
+                </Stack>
                 <Box sx={travelPackageStyle.inclusionsContainer}>
-                  {exclusions.map((_, index) => (
+                  {exclusionFields.map((_, index) => (
                     <Stack key={index} sx={travelPackageStyle.inclusionsBox}>
                       <CommenTextField
-                        name={`exclusions[${index}]`}
+                        name={`exclusions[${index}].description`}
                         label={`Exclusion ${index + 1}*`}
                         required
                         size="small"
                       />
-                      {exclusions.length > 1 && (
+                      {exclusionFields.length > 1 && (
                         <IconButton
                           color="error"
-                          onClick={() => handleRemoveExclusion(index)}
+                          onClick={() =>  removeExclusion(index)}
                         >
                           <DeleteIcon />
                         </IconButton>

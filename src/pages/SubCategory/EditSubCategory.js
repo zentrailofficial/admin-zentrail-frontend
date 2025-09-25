@@ -109,6 +109,8 @@ const EditSubCategory = () => {
       const formData = new FormData();
       formData.append("categoryId", data.categoryId);
       formData.append("title", data?.title);
+      formData.append("bannertitle", data?.bannertitle);
+      
       formData.append("uid", data.uid);
       formData.append("description", data?.description);
       formData.append("metaTitle", data?.metaTitle);
@@ -229,6 +231,19 @@ const EditSubCategory = () => {
                             <CommenTextField
                               name="title"
                               label="SubCategory Name"
+                              focused={true}
+                              required
+                            />
+                          </Box>
+
+                        </Box>
+                        <Box sx={commoncss.metabox1}>
+                          <Box sx={commoncss.labelbox}> <label >SubCategory Name</label></Box>
+                          <Box sx={commoncss.tooltipbox}> <CommonToolTip title=" New SubCategory" /></Box>
+                          <Box sx={commoncss.fieldbox1}>
+                            <CommenTextField
+                              name="bannertitle"
+                              label="Banner Title"
                               focused={true}
                               required
                             />

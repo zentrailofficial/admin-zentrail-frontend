@@ -119,6 +119,17 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                         label="Category Name"
                         required
                       />  </Box>
+                    <Box sx={commoncss.customBox1}>
+                      <Box sx={commoncss.customBox2}>
+                        <label> Banner Title </label>
+                        <CommonToolTip title="70 characters only" />
+                      </Box>
+                      <CommenTextField
+                        name="bannertitle"
+                        focused={isEdit}
+                        label="Banner Title"
+                        required
+                      />  </Box>
 
                     <CommenQuillEditor name="description" required minLength={30} label="Category description" />
                     <Stack

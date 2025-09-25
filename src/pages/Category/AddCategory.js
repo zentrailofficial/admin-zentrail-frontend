@@ -31,6 +31,7 @@ const AddCategory = () => {
       }
       const formData = new FormData();
       formData.append("name", data?.name);
+      formData.append("bannertitle", data?.bannertitle);
       formData.append("uid", data.slug);
       formData.append("description", data?.description);
       formData.append("metaTitle", data?.metaTitle);
