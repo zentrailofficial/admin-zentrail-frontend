@@ -19,6 +19,8 @@ import { apiClient } from "../lib/api-client";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import CommonButton from "../commen-component/CommenButton/CommenButton";
+import { toast } from "react-toastify";
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -35,15 +37,13 @@ const Login = () => {
     setLoading(true);
     try {
       const res = await apiClient.post("/api/auth/login", data);
-      login({ ...res?.data?.user, panel: res?.data?.panel });
-
+      login({ ...res?.data?.user, panel: res?.data?.panel,allowedModels:res?.data?.allowedModels });
       const { token } = res.data;
-
       Cookies.set("Admin_access", token, { expires: 7 });
-
       navigate("/dashboard");
     } catch (err) {
-      console.error("Login error:", err.response?.data || err.message);
+      toast.error(err.response?.data?.message)
+      console.log("Login error:", err.response?.data || err.message);
     }
     finally {
       setLoading(false);  
@@ -119,6 +119,7 @@ const Login = () => {
                 </Typography>
                 <TextField
                   fullWidth
+                  size="small"
                   variant="outlined"
                   {...register("email", {
                     required: "Email is required",
@@ -138,10 +139,10 @@ const Login = () => {
                         borderColor: "#e0e0e0",
                       },
                       "&:hover fieldset": {
-                        borderColor: "#D7A10F",
+                        borderColor: "#ff00ffff",
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: "#D7A10F",
+                        borderColor: "#ff00ffff",
                       },
                     },
                   }}
@@ -162,10 +163,11 @@ const Login = () => {
                 </Typography>
                 <TextField
                   fullWidth
+                  size="small"
                   type={showPassword ? "text" : "password"}
                   variant="outlined"
                   {...register("password", {
-                    // required: "Password is required", 
+                    required: "Password is required", 
                     // minLength: {
                     //   value: 8,
                     //   message: 'Password must be at least 8 characters'
@@ -195,10 +197,10 @@ const Login = () => {
                         borderColor: "#e0e0e0",
                       },
                       "&:hover fieldset": {
-                        borderColor: "#D7A10F",
+                        borderColor: "#ff00ffff",
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: "#D7A10F",
+                        borderColor: "#ff00ffff",
                       },
                     },
                   }}
@@ -249,7 +251,11 @@ const Login = () => {
               </Box> */}
 
               {/* Submit Button */}
-              <Button
+              <CommonButton type="submit"
+                disabled={loading} loading={loading} >
+                Login
+              </CommonButton>
+              {/* <Button
                 fullWidth
                 variant="contained"
                 type="submit"
@@ -275,7 +281,7 @@ const Login = () => {
                   "Login"
                 )}
                 
-              </Button>
+              </Button> */}
             </form>
           </Box>
 

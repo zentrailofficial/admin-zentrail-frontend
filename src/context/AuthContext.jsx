@@ -11,6 +11,7 @@ const defaultUser = {
   canView: false,
   canAdd: false,
   isLoggedIn: false,
+  allowedModels:[]
 };
 
 export const AuthProvider = ({ children }) => {
