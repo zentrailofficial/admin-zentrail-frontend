@@ -199,6 +199,8 @@ const AddTravelPackage = () => {
     fetchMoodBased();
   }, []);
   const onSubmit = async (data) => {
+  
+
     if (data.featuredImage?.length == 0) {
       toast.error("Featured image is required");
       setFocus("featuredImage");
@@ -231,8 +233,8 @@ const AddTravelPackage = () => {
       formData.append("endLocation", data.endLocation);
       formData.append("groupMembers", JSON.stringify(data.groupMembers));
       formData.append("itinerary", JSON.stringify(data.itinerary));
-      formData.append("exclusions", JSON.stringify(data.exclusions));
-      formData.append("inclusions", JSON.stringify(data.inclusions));
+      formData.append("exclusions", JSON.stringify(data.exclusions.map((item) =>item.description)));
+      formData.append("inclusions", JSON.stringify(data.inclusions.map((item) =>item.description)));
       //location
       formData.append("country", data.country);
       formData.append("state", data.state);
