@@ -265,7 +265,7 @@ const AddTravelPackage = () => {
       });
       if (response) {
         toast.success("Travel Package created successfully!");
-        // navigate("/travelpackage");
+        navigate("/travelpackage");
       }
     } catch (error) {
       console.error("Error creating travel package:", error?.response);
