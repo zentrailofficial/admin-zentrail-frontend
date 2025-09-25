@@ -98,32 +98,49 @@ export default function Navbar() {
     <div>
       <Toolbar sx={{ justifyContent: "center" }} />
       <List>
-        {NAV_ITEMS.map((item) => (
-          <ListItemButton
-            key={item.title}
-            onClick={() => {
-              navigate(item.path);
-              setMobileOpen(false);
-            }}
-            sx={{
-              justifyContent: miniDrawer ? "center" : "flex-start",
-              px: miniDrawer ? 2 : 3,
-              
-            }}
-          >
-            <ListItemIcon
+        {NAV_ITEMS.map((item) => {
+          const isActive = location.pathname === item.path;
+
+          return (
+            <ListItemButton
+              key={item.title}
+              onClick={() => {
+                navigate(item.path);
+                setMobileOpen(false);
+              }}
               sx={{
-                minWidth: 0,
-                mr: miniDrawer ? 0 : 2,
-                justifyContent: "center",
-                color :"#c843ff"
+                justifyContent: miniDrawer ? "center" : "flex-start",
+                px: miniDrawer ? 2 : 3,
               }}
             >
-              {item.icon}
-            </ListItemIcon>
-            {!miniDrawer && <ListItemText primary={item.title} />}
-          </ListItemButton>
-        ))}
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: miniDrawer ? 0 : 2,
+                  justifyContent: "center",
+                  color: "#c843ff",
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+
+              {!miniDrawer && (
+                <ListItemText
+                  primary={item.title}
+                  sx={{
+                    ...(isActive && {
+                      background:
+                        "linear-gradient(135deg, #c843ff, #ff7eff, #75d9e6ff)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      fontWeight: 600,
+                    }),
+                  }}
+                />
+              )}
+            </ListItemButton>
+          );
+        })}
       </List>
     </div>
   );
@@ -151,8 +168,8 @@ export default function Navbar() {
           </IconButton>
           <Typography
             variant="h6"
-           
-            sx={commoncss.navtypography }>
+
+            sx={commoncss.navtypography}>
             {user.panel === "travel" ? 'Zentrail' : user.panel} Admin Panel
           </Typography>
           <IconButton onClick={toggleColorMode}
