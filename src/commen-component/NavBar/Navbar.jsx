@@ -16,7 +16,7 @@ import {
   Avatar,
   Divider,
 } from "@mui/material";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import WorkIcon from "@mui/icons-material/Work";
@@ -27,7 +27,7 @@ import {
   ChevronLeft,
 } from "@mui/icons-material";
 import { useThemeMode } from "../../context/ThemeProvider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import HikingIcon from '@mui/icons-material/Hiking';
 import commoncss from "../../styles/commoncss";
@@ -38,37 +38,68 @@ import NewReleasesIcon from '@mui/icons-material/NewReleases';
 const FULL_DRAWER_WIDTH = 240;
 const MINI_DRAWER_WIDTH = 60;
 
-const NAV_ITEMS = [
-  { title: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-  { title: "Blog", icon: <AutoStoriesIcon />, path: "/blog" },
-  { title: "Portfolio", icon: <WorkIcon />, path: "/portfolio" },
-  { title: "Services", icon: <MiscellaneousServicesIcon />, path: "/services" },
-  { title: "Category", icon: <CategoryIcon />, path: "/category" },
-  {
-    title: "Category Feature",
-    icon: <SatelliteIcon />,
-    path: "/categoryservices",
-  },
-  {
-    title: "Travel Package",
-    icon: <HikingIcon />,
-    path: "/travelpackage",
-  },
 
-  {
-    title: "Leads",
-    icon: <NewReleasesIcon />,
-    path: "/leads",
-  },
-];
 
 export default function Navbar() {
   const theme = useTheme();
+  const location = useLocation()
   const { user, logout } = useAuth();
   const { toggleColorMode } = useThemeMode();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  const sidebarMap = {
+    Blog: {
+      title: "Blog",
+      icon: <AutoStoriesIcon />,
+      path: "/blog",
+    },
+    Category: {
+      title: "Category",
+      icon: <CategoryIcon />,
+      path: "/category",
+    },
+    subCategory: {
+      title: "Sub Category",
+      icon: <SatelliteIcon />,
+      path: "/listsubcategory",
+    },
+    inqueryform: {
+      title: "Leads",
+      icon: <NewReleasesIcon />,
+      path: "/leads",
+    },
+    TravelPackage: {
+      title: "Travel Package",
+      icon: <HikingIcon />,
+      path: "/travelpackage",
+    },
+    Portfolio: {
+      title: "Portfolio",
+      icon: <WorkIcon />,
+      path: "/portfolio",
+    },
+    Service: {
+      title: "Services",
+      icon: <MiscellaneousServicesIcon />,
+      path: "/services",
+    },
+    servicePage: {
+      title: "Service Page",
+      icon: <MiscellaneousServicesIcon />,
+      path: "/categoryservices",
+    },
+  };
+
+  const staticItems = [
+    { title: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
+  ];
+
+  const NAV_ITEMS = [
+    ...staticItems,
+    ...user?.allowedModels?.map((key) => sidebarMap[key]).filter(Boolean), 
+  ];
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -167,8 +198,7 @@ export default function Navbar() {
           </IconButton>
           <Typography
             variant="h6"
-
-            sx={commoncss.navtypography}>
+            sx={[commoncss.navtypography,{textTransform: 'capitalize'}]}>
             {user.panel === "travel" ? 'Zentrail' : user.panel} Admin Panel
           </Typography>
           <IconButton onClick={toggleColorMode}
