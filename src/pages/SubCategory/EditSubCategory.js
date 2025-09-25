@@ -35,6 +35,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import SkeletonLoader from "../../commen-component/Reusable/SkeletonLoader";
 
+
 const EditSubCategory = () => {
   const [formKey, setFormKey] = useState(0);
   const [loading, setloading] = useState(false);
@@ -94,7 +95,7 @@ const EditSubCategory = () => {
           setCategoriesList(data);
         }
       } catch (error) {
-        console.error("Error fetching categories", error);
+        toast.error("Error fetching categories", error);
       }
     };
 
@@ -136,8 +137,7 @@ const EditSubCategory = () => {
       // methods.reset();
       navigate("/listsubcategory");
     } catch (error) {
-      console.error(error);
-      alert(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -181,7 +181,7 @@ const EditSubCategory = () => {
         });
         setFormKey(prev => prev + 1);
       } catch (err) {
-        console.error("Error fetching service", err);
+        toast.error("Error fetching service", err);
       }finally{
         setloading(false)
       }
@@ -202,8 +202,6 @@ const EditSubCategory = () => {
                  > */}
 
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-
-
           <>
             <Box sx={commoncss.mainbox} >
               <Box maxWidth="xl" mx="auto" >

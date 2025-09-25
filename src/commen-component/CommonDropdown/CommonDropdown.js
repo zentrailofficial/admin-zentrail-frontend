@@ -13,11 +13,11 @@ const CommonDropdown = ({
   label,
   options = [],
   required = false,
-  multiple = false, 
-  onChangeValues,  
+  multiple = false,
+  onChangeValues,
   ...props
 }) => {
-  const { control , error  } = useFormContext();
+  const { control, error } = useFormContext();
   const labelId = `${name}-label`;
   const selectId = `${name}-select`;
   return (
@@ -42,16 +42,25 @@ const CommonDropdown = ({
               field.onChange(e);
               const selectedValues = e.target.value;
               if (onChangeValues) {
-                onChangeValues( selectedValues );
+                onChangeValues(selectedValues);
               }
             }}
             defaultValue={{
               value: "item._id",
-                label: "item.name",
+              label: "item.name",
             }}
             {...props}
             MenuProps={{
-              PaperProps: { style: { maxHeight: 250, marginRight: 0 } },
+              anchorOrigin: {
+                vertical: "bottom",
+                horizontal: "left",
+                margintop: 30
+              },
+              transformOrigin: {
+                vertical: "top",
+                horizontal: "left",
+              },
+              PaperProps: { style: { maxHeight: 200, marginLeft: 33, } },
             }}
           >
             {options.map((option, index) => (

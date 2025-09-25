@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { apiClient } from "../../lib/api-client";
 import ServiceFormBase from "./ServiceFormBase";
+import { toast } from "react-toastify";
 
 const EditService = () => {
   const { id } = useParams();
@@ -26,7 +27,7 @@ const EditService = () => {
         };
         setDefaultValues(formattedData);
       } catch (err) {
-        console.error("Error fetching service", err);
+        toast.error("Error fetching service", err);
       }
     };
     fetchService();

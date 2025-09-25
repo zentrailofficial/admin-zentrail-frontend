@@ -110,7 +110,7 @@ const CategoryDataGrid = () => {
   };
   return (
     <>
-      <Box sx={{ height: 600, width: "100%", p: 2 }}>
+      <Box sx={{ height: 750, width: "100%", p: 2 }}>
         <Stack direction="row" justifyContent="space-between" mb={2}>
           <Typography variant="h5">Category</Typography>
           <Box sx={{ display: "flex", gap: 2 }}>
