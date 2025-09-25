@@ -133,6 +133,233 @@ const commoncss = {
   fieldbox1 :{
     width: "630px"
   }
+  
 };
 
   export default commoncss;
+
+  /* /////////////////// heading for h1 ///////////////////// */
+
+// .responsive-heading {
+//   font-family: "DM Sans", sans-serif;
+//   font-size: 24px;
+//   line-height: 1.3;
+//   font-weight: 500;
+// }
+// @media (min-width: 640px) {
+//   .responsive-heading {
+//     font-size: 28px;
+//   }
+// }
+// @media (min-width: 768px) {
+//   .responsive-heading {
+//     font-size: 32px;
+//   }
+// }
+// @media (min-width: 992px) {
+//   .responsive-heading {
+//     font-size: 36px;
+//   }
+// }
+// @media (min-width: 1280px) {
+//   .responsive-heading {
+//     font-size: 40px;
+//   }
+// }
+// @media (min-width: 1536px) {
+//   .responsive-heading {
+//     font-size: 44px;
+//   }
+// }
+
+/* /////////////////// heading for h2 ///////////////////// */
+
+// .responsiveheading2 {
+//   font-weight: 500;
+//   font-size: 22px;
+//   line-height: 30px;
+// }
+
+// @media (min-width: 640px) {
+//   .responsiveheading2 {
+//     font-size: 24px;
+//     line-height: 32px;
+//   }
+// }
+
+// @media (min-width: 768px) {
+//   .responsiveheading2 {
+//     font-size: 28px;
+//     line-height: 32px;
+//   }
+// }
+
+// @media (min-width: 1024px) {
+//   .responsiveheading2 {
+//     font-size: 32px;
+//     line-height: 35px;
+//   }
+// }
+
+/* /////////////////// heading for h3 ///////////////////// */
+
+
+// .responsiveheading3 {
+//   font-family: "DM Sans", sans-serif;
+//   font-weight: 500;
+//   font-size: 20px;
+//   line-height: 32px;
+// }
+
+// @media (min-width: 640px) {
+//   .responsiveheading3 {
+//     font-size: 22px;
+//     line-height: 36px;
+//   }
+// }
+
+// @media (min-width: 768px) {
+//   .responsiveheading3 {
+//     font-size: 26px;
+//     line-height: 40px;
+//   }
+// }
+
+// @media (min-width: 1024px) {
+//   .responsiveheading3 {
+//     font-size: 30px;
+//     line-height: 44px;
+//   }
+// }
+
+////////// h4 //////////
+// .responsive-h4 {
+//   font-size: 18px;
+//   @media (min-width: 640px) {
+//     font-size: 24px;
+//   }
+
+//   @media (min-width: 768px) {
+//     font-size: 28px;
+//   }
+
+//   @media (min-width: 1024px) {
+//     font-size: 32px;
+//   }
+// }
+
+ ////////// h5 /////////
+//  .responsiveheading5 {
+//   font-family: "DM Sans", sans-serif;
+//   font-weight: 500;
+//   font-size: 18px;
+//   line-height: 32px;
+// }
+
+// @media (min-width: 640px) {
+//   .responsiveheading5 {
+//     font-size: 20px;
+//   }
+// }
+
+// @media (min-width: 768px) {
+//   .responsiveheading5 {
+//     font-size: 22px;
+//   }
+// }
+
+// @media (min-width: 1024px) {
+//   .responsiveheading5 {
+//     font-size: 24px;
+//   }
+// }
+
+/////// h6 ///////////
+
+// .responsiveheading6 {
+//   font-family: "DM Sans", sans-serif;
+//   font-weight: 500;
+//   font-size: 18px;
+//   line-height: 28px;
+// }
+
+// @media (min-width: 640px) {
+//   .responsiveheading6 {
+//     font-size: 20px;
+//   }
+// }
+
+// @media (min-width: 768px) {
+//   .responsiveheading6 {
+//     font-size: 22px;
+//   }
+// }
+
+// @media (min-width: 1024px) {
+//   .responsiveheading6 {
+//     font-size: 22px;
+//   }
+// }
+
+/* //////////////////////// paragraph ///////////////////////// */
+
+// .responsive-text {
+//   font-family: "DM Sans", sans-serif;
+//   font-weight: 400;
+//   font-size: 16px;
+//   line-height: 20px;
+// }
+
+// @media (min-width: 640px) {
+//   .responsive-text {
+//     font-size: 16px;
+//     line-height: 20px;
+//   }
+// }
+
+// @media (min-width: 768px) {
+//   .responsive-text {
+//     font-size: 18px;
+//     line-height: 24px;
+//   }
+// }
+
+// @media (min-width: 1024px) {
+//   .responsive-text {
+//     font-size: 18px;
+//     line-height: 24px;
+//   }
+// }
+
+/* .responsive-text {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  line-height: 24px;
+  font-size: 15px;
+
+  @media (min-width: 640px) {
+    font-size: 16px;
+    line-height: 1.625rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 16px;
+    line-height: 24px;
+  }
+} */
+
+
+
+
+
+
+
+
+
+
+

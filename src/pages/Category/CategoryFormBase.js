@@ -186,7 +186,7 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                           <label>Meta Description</label>
                         </Box>
                         <Box sx={commoncss.tooltipbox}>
-                          <CommonToolTip title="Keywords" />
+                          <CommonToolTip title="160 characters only" />
                         </Box>
 
                         <Box sx={commoncss.fieldbox}>

@@ -27,6 +27,13 @@ import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown
 import categoryStyle from "../../styles/category";
 import { toast } from "react-toastify";
 import { isAllowedKey, sanitizeSlug } from "../../utils/helperFunctions";
+import commoncss from "../../styles/commoncss";
+import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
+import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
+import ImageIcon from "@mui/icons-material/Image";
+import SettingsIcon from "@mui/icons-material/Settings";
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+
 const AddSubCategory = () => {
   const [categoriesList, setCategoriesList] = useState([]);
   const navigate = useNavigate();
@@ -110,9 +117,9 @@ const AddSubCategory = () => {
     if (!data?.image) {
       return toast.error("Image is required")
     }
-        if(!data?.image[0]?.altText){
-            return toast.error("altText of every images is required")
-          }
+    if (!data?.image[0]?.altText) {
+      return toast.error("altText of every images is required")
+    }
     try {
       const formData = new FormData();
       formData.append("categoryId", data.category);
@@ -135,7 +142,6 @@ const AddSubCategory = () => {
       methods.reset();
       navigate("/listsubcategory");
     } catch (error) {
-      console.error(error);
       toast.error(error?.response?.data?.message);
     }
   };
@@ -274,8 +280,226 @@ const AddSubCategory = () => {
           </Paper> */}
 
           <>
-            <Box>
-              <Stack direction="row" spacing={2} mb={2}>
+            <Box sx={commoncss.mainbox} >
+              <Box maxWidth="xl" mx="auto" >
+                <Grid container
+                  sx={commoncss.grid1} >
+                  <Grid
+                    item
+                    xs={12}
+                    md={6}
+                    sx={commoncss.leftGrid}
+                  >
+                    <Paper elevation={3}
+                      sx={commoncss.cardlineargradient}>
+
+                      <Stack direction="row" alignItems="center" spacing={2}>
+                        <BookIcon color="primary" />
+                        <Typography variant="h6" fontWeight={600}>
+                          Add New SubCategory
+                        </Typography>
+                        <CommonToolTip title=" New SubCategory" />
+                      </Stack>
+                      <Box sx={commoncss.meta}>
+                        <Box sx={commoncss.metabox1}>
+                          <Box sx={commoncss.labelbox}> <label >SubCategory Name</label></Box>
+                          <Box sx={commoncss.tooltipbox}> <CommonToolTip title=" New SubCategory" /></Box>
+                          <Box sx={commoncss.fieldbox1}> <CommenTextField
+                            name="name"
+                            focused={isEdit}
+                            label="SubCategory Name"
+                            required
+                          />
+                          </Box>
+                        </Box>
+                        <Box sx={commoncss.metabox1}>
+                          <Box sx={commoncss.labelbox}> <label >Select Category *</label></Box>
+                          <Box sx={commoncss.tooltipbox}><CommonToolTip title=" New SubCategory" /></Box>
+                          <Box sx={commoncss.fieldbox1}> <CommonDropdown
+                            name="category"
+                            label="Select Category *"
+                            options={categoriesList}
+                            // onChangeValues={handleMoodOfJourneyChange}
+                            // focused={false}
+                            required
+                          /></Box>
+                        </Box>
+                      </Box>
+                      <CommenQuillEditor
+                        name="description"
+                        required minLength={30}
+                        label="Category description" />
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={2}
+                        mb={1}
+                      >
+                        <ImageIcon color="primary" />
+                        <Typography variant="h6" fontWeight={600}>
+                          URL & Featured Image
+                        </Typography>
+                        <CommonToolTip title="Alt text required" />
+                      </Stack>
+                      <ImageUpload
+                        name="image"
+                        focused={isEdit}
+                        label="Image"
+                        altText
+                      // defaultImage={defaultImage}
+                      />
+                    </Paper>
+                  </Grid>
+                    <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  sx={commoncss.rightGrid}
+                >
+                  <Paper elevation={3}
+                    sx={commoncss.cardlineargradient}>
+                    <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                      <SettingsIcon color="primary" />
+                      <Typography variant="h6" fontWeight="600">
+                        SEO Settings
+                      </Typography>
+                      <CommonToolTip title=" SEO Settings" />
+                    </Stack>
+                    <Box sx={commoncss.meta}>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="60 characters only" /></Box>
+                        <Box sx={commoncss.fieldbox}>
+                      
+                          <CommenTextField
+                          name="metaTitle"
+                          focused={isEdit}
+                          label="Meta Title"
+                          required
+                        />
+                      </Box>
+                        </Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}><label>Keywords</label></Box>
+                        <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Keywords" /></Box>
+                        <Box sx={commoncss.fieldbox}>
+                           <CommenTextField
+                          name="metaKeyword"
+                          focused={isEdit}
+                          label="meta keywords"
+                          required={!watch("isblog")}
+                        /></Box>
+                      </Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}>
+                          <label>Meta Description</label>
+                        </Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="160 characters only" />
+                        </Box>
+
+                        <Box sx={commoncss.fieldbox}>
+                           <CommenTextField
+                          name="metaDescription"
+                          focused={isEdit}
+                          label="Meta Description"
+                          multiline
+                          rows={4}
+                          required
+                        />
+                        </Box>
+                      </Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}>
+                          <label>Slug</label>
+                        </Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="Slug" />
+                        </Box>
+                        <Box sx={commoncss.fieldbox}>
+                           <CommenTextField
+                          name="slug"
+                          label="slug"
+                          required
+                          focused={watch("name")?.length}
+                          onChange={(input) => {
+                            const sanitizedSlug = sanitizeSlug(input);
+                            setValue("slug", sanitizedSlug);
+                          }}
+                          onKeyDown={(e) => {
+                            if (!isAllowedKey(e.key)) {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Paper>
+                 <Paper elevation={3}
+                    sx={commoncss.cardlineargradient}>
+
+                    <Stack sx={travelPackageStyle.customFaq}>
+                      <Box sx={commoncss.customBox2}>
+                        <QuestionAnswerIcon color="primary" />
+                        <Typography variant="h6" fontWeight={600}>
+                          FAQs
+                        </Typography>
+                        <CommonToolTip title="Questions and answers" />
+                      </Box>
+                      <IconButton
+                        color="primary"
+                        onClick={() => appendFaq({ question: "", answer: "" })}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </Stack>
+                    <Box sx={commoncss.faqBox}>
+                      {faqFields.map((item, index) => (
+                        <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
+                          <Stack sx={travelPackageStyle.customFaq}>
+                            <Typography variant="subtitle1">
+                              FAQ {index + 1}
+                            </Typography>
+                            {faqFields.length > 1 && (
+                              <IconButton
+                                color="error"
+                                onClick={() => removeFaq(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            )}
+                          </Stack>
+                          <CommenTextField
+                            name={`faq.${index}.question`}
+                            label="Question *"
+                            required={!watch("isblog")}
+                          />
+                          <CommenTextField
+                            name={`faq.${index}.answer`}
+                            label="Answer *"
+                            multiline
+                            rows={3}
+                            required={!watch("isblog")}
+                          />
+                        </Box>
+                      ))}
+                    </Box>
+                  </Paper>
+                  <CommonButton
+                    type="submit"
+                    disabled={isSubmitting}
+                    loading={isSubmitting}
+                    fullWidth={false}
+                  >
+                    {isEdit ? "Update Category" : "Add Sub Category"}
+                  </CommonButton>
+             
+                  </Grid>
+                </Grid>
+              </Box>
+              {/* <Stack direction="row" spacing={2} mb={2}>
                 <BookIcon color="primary" />
                 <Typography variant="h6" fontWeight={600}>
                   Add New SubCategory
@@ -403,7 +627,7 @@ const AddSubCategory = () => {
               </Paper>
 
               {/* FAQ */}
-              <Paper elevation={3} sx={categoryStyle.paperShadow}>
+              {/* <Paper elevation={3} sx={categoryStyle.paperShadow}>
                 <Grid
                   container
                   spacing={{ xs: 2, md: 3 }}
@@ -464,8 +688,9 @@ const AddSubCategory = () => {
                     {isEdit ? "Update Category" : "Add Sub Category"}
                   </CommonButton>
                 </Box>
-              </Paper>
-            </Box></>
+              </Paper> */}
+            </Box>
+          </>
         </form>
         {/* </Box> */}
       </FormProvider>

@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -25,22 +26,23 @@ const ConfirmDelete = ({
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <CommonButton
+        <Button
           onClick={onClose}
-          color="primary"
+          color="primary" 
           variant="outlined"
           fullWidth={false}
         >
           {cancelText}
-        </CommonButton>
-        <CommonButton
+        </Button>
+        <Button
           onClick={onConfirm}
           loading={loading}
+           variant="outlined"
           color="error"
           fullWidth={false}
         >
           {confirmText}
-        </CommonButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );
