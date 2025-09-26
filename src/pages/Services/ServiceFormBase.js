@@ -164,6 +164,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                       <CommenTextField
                         name="title"
                         label="Service Title *"
+                        maxLength={70}
                         required
                         size="small"
                         onChange={(val) => setValue("uid", textToSlug(val))}
@@ -202,7 +203,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                     <Typography variant="h6" fontWeight={600}>
                       URL & Featured Image
                     </Typography>
-                    <CommonToolTip title="Alt text required" />
+                    <CommonToolTip title="Include at least one image with alt text" />
                   </Stack>
                   <ImageUpload
                     name="featuredImage"
@@ -243,7 +244,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                     <Typography variant="h6" fontWeight={600}>
                       Service feature
                     </Typography>
-                    <CommonToolTip title="Feature your service category" />
+                    <CommonToolTip title="Feature your services" />
                   </Stack>
                   <CommonDropdown
                     name="serviceCategory"
@@ -265,7 +266,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                     <Typography variant="h6" fontWeight={600}>
                       Gallery
                     </Typography>
-                    <CommonToolTip title="select as pr ypur requirement" />
+                    <CommonToolTip title="select as pr your requirement" />
                   </Stack>
                   <CommonDropdown
                     name="Portfolio"
@@ -295,10 +296,11 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                       <CommenTextField
                         name="whyPoornam[0].title"
                         label="Title *"
+                         maxLength={60}
                         required
                       />
                     </Box>
-                  </Box>   
+                  </Box>
                   <Box sx={commoncss.metabox1}>
                     <Box sx={commoncss.labelbox}>  <label>Description</label>{" "}   </Box>
                     <Box sx={commoncss.tooltipbox}> <CommonToolTip title="Help us understand more" />{" "}  </Box>
@@ -306,6 +308,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                       <CommenTextField
                         name="whyPoornam[0].description"
                         label="Description *"
+                         maxLength={160}
                         required
                         multiline
                         rows={3}
@@ -330,6 +333,32 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                     Meta Tags
                   </Typography>
                   <Box sx={commoncss.meta}>
+                      <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}>  <label>uid </label>{" "} </Box>
+                      <Box sx={commoncss.tooltipbox}> <CommonToolTip title="URL slug" />{" "} </Box>
+                      <Box sx={commoncss.fieldbox}>
+                        <CommenTextField name="uid" label="uid" size="small" />
+                      </Box>
+                      {/* <Box sx={commoncss.fieldbox}>
+                                            {" "}
+                                            <CommenTextField
+                                              name="uid"
+                                              label="uid"
+                                              size="small"
+                                              maxLength={70}
+                                              focused={watch("title")?.length}
+                                              onChange={(input) => {
+                                                const sanitizedSlug = sanitizeSlug(input);
+                                                setValue("slug", sanitizedSlug);
+                                              }}
+                                              onKeyDown={(e) => {
+                                                if (!isAllowedKey(e.key)) {
+                                                  e.preventDefault();
+                                                }
+                                              }}
+                                            />
+                                          </Box> */}
+                    </Box>
                     <Box sx={commoncss.metabox1}>
                       <Box sx={commoncss.labelbox}> <label>Meta Title</label>{" "} </Box>
                       <Box sx={commoncss.tooltipbox}> {" "} <CommonToolTip title="60 characters only" />  </Box>
@@ -348,7 +377,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                     </Box>
                     <Box sx={commoncss.metabox1}>
                       <Box sx={commoncss.labelbox}> <label>Keywords</label>  </Box>
-                      <Box sx={commoncss.tooltipbox}>  {" "} <CommonToolTip title="Keywords" /> </Box>
+                      <Box sx={commoncss.tooltipbox}>  {" "} <CommonToolTip title="SEO friendly keywords" /> </Box>
                       <Box sx={commoncss.fieldbox}>  {" "}
                         <CommenTextField
                           name="meta.keywords"
@@ -374,32 +403,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                         />
                       </Box>
                     </Box>
-                    <Box sx={commoncss.metabox1}>
-                      <Box sx={commoncss.labelbox}>  <label>uid </label>{" "} </Box>
-                      <Box sx={commoncss.tooltipbox}> <CommonToolTip title="uid" />{" "} </Box>
-                      <Box sx={commoncss.fieldbox}>
-                        <CommenTextField name="uid" label="uid" size="small" />
-                      </Box>
-                      {/* <Box sx={commoncss.fieldbox}>
-                                            {" "}
-                                            <CommenTextField
-                                              name="uid"
-                                              label="uid"
-                                              size="small"
-                                              maxLength={70}
-                                              focused={watch("title")?.length}
-                                              onChange={(input) => {
-                                                const sanitizedSlug = sanitizeSlug(input);
-                                                setValue("slug", sanitizedSlug);
-                                              }}
-                                              onKeyDown={(e) => {
-                                                if (!isAllowedKey(e.key)) {
-                                                  e.preventDefault();
-                                                }
-                                              }}
-                                            />
-                                          </Box> */}
-                    </Box>
+                  
 
 
                     {/* OG Tags Accordion */}

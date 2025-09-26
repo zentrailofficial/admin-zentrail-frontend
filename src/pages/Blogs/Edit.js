@@ -188,7 +188,7 @@ const EditBlog = () => {
                   </Stack>
                   <Box sx={commoncss.customBox1}>
                     <Box sx={commoncss.labelbox}> <label >Blog Title  </label> </Box>
-                    <Box sx={commoncss.tooltipbox}> <CommonToolTip title="Blog" /></Box>
+                    <Box sx={commoncss.tooltipbox}> <CommonToolTip title="Blog's Title" /></Box>
                     <Box sx={commoncss.fieldbox1}> <CommenTextField
                       name="title"
                       label="Blog Title *"
@@ -199,7 +199,7 @@ const EditBlog = () => {
                   </Box>
                   <Box sx={commoncss.customBox1}>
                     <Box sx={commoncss.labelbox}> <label >Author </label>  </Box>
-                    <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Blog" /></Box>
+                    <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Author's Name" /></Box>
                     <Box sx={commoncss.fieldbox1}> <CommenTextField name="author" label="Author" required /></Box>
                   </Box>
                   <CommenQuillEditor
@@ -217,7 +217,7 @@ const EditBlog = () => {
                     <Typography variant="h6" fontWeight={600}>
                       Category & Tags
                     </Typography>
-                    <CommonToolTip title="Category & Tags" />
+                    <CommonToolTip title="Please select one" />
                   </Stack>
 
                   <CommonDropdown
@@ -239,7 +239,7 @@ const EditBlog = () => {
                     <Typography variant="h6" fontWeight={600}>
                       URL & Featured Image
                     </Typography>
-                    <CommonToolTip title=" URL & Featured Image" />
+                    <CommonToolTip title="Include at least one image with alt text" />
                   </Stack>
 
                   <Stack spacing={3}>
@@ -251,93 +251,7 @@ const EditBlog = () => {
                     />
                   </Stack>
                 </Paper>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                md={6}
-                sx={commoncss.rightGrid}
-              >
-                <Paper elevation={3}
-                  sx={commoncss.cardlineargradient}>
-                  <Stack spacing={3}>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={2}
-                      mb={3}
-                    >
-                      <SettingsIcon color="primary" />
-                      <Typography variant="h6" fontWeight="600">
-                        SEO Settings
-                      </Typography>
-                      <CommonToolTip title=" SEO Settings" />
-                    </Stack>
-                   <Box sx={commoncss.meta}>
-                        <Box sx={commoncss.metabox1}>
-                         <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
-                        <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Meta Title" /></Box>
-                        <Box sx={commoncss.fieldbox}>
-                        <CommenTextField
-                          name="meta.title"
-                          label="Meta Title *"
-                          required={true}
-                          maxLength={60}
-                          messages={{
-                            required: "Meta title is required",
-                            maxLength: "Please do not exceed 60 characters",
-                          }}
-                        />  </Box>
-                       </Box>
-                      <Box sx={commoncss.metabox1}>
-                         <Box sx={commoncss.labelbox}> <label>Keywords</label></Box>
-                          <Box sx={commoncss.tooltipbox}> <CommonToolTip title="Keywords" /></Box>
-                           <Box sx={commoncss.fieldbox}> <CommenTextField name="meta.keywords" label="Keywords" /></Box>
-                        {/* <CommenTextField
-                        name="meta.canonicalUrl"
-                        label="Canonical URL"
-                      /> */}
-                      </Box>
-                       <Box sx={commoncss.metabox1}>
-                        <Box sx={commoncss.labelbox}> <label>Meta Description *</label></Box>
-                           <Box sx={commoncss.tooltipbox}> <CommonToolTip title="160 characters only" /></Box>
-                          <Box sx={commoncss.fieldbox}> <CommenTextField
-                          name="meta.description"
-                          label="Meta Description *"
-                          multiline
-                          rows={3}
-                          maxLength={160}
-                          messages={{
-                            required: "Meta description is required",
-                            maxLength: "Please do not exceed 160 characters",
-                          }}
-                        /></Box>
-                      </Box>
-                      <Box sx={commoncss.customBox1}>
-                        <Box sx={commoncss.labelbox}> <label>uid </label>  </Box>
-                        <Box sx={commoncss.tooltipbox}> <CommonToolTip title="uid" /></Box>
-                        <Box sx={commoncss.fieldbox}> <CommenTextField name="uid" label="uid" disabled size="small" /></Box>
-                      </Box>
-                      {/* <Typography textAlign={"center"} fontWeight="600">
-                      Open Graph
-                    </Typography>
-                    <Stack spacing={2}>
-                      {/* <CommenTextField name="ogTags.title" label="OG Title" />
-                      <CommenTextField
-                        name="ogTags.description"
-                        label="OG Description"
-                        multiline
-                        rows={3}
-                      />
-                      <CommenTextField
-                        name="ogTags.image"
-                        label="OG Image URL"
-                      /> */}
-                      {/* </Stack> */}
-                    </Box>
-                  </Stack>
-                </Paper>
-                <Paper elevation={3}
+                  <Paper elevation={3}
                   sx={commoncss.cardlineargradient}>
                   <Stack
                     direction="row"
@@ -350,7 +264,7 @@ const EditBlog = () => {
                       <Typography variant="h6" fontWeight={600}>
                         FAQs
                       </Typography>
-                      <CommonToolTip title="Keywords" />
+                      <CommonToolTip title="Questions and answers" />
                     </Box>
                     <IconButton
                       color="primary"
@@ -397,6 +311,94 @@ const EditBlog = () => {
                     ))}
                   </Box>
                 </Paper>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                md={6}
+                sx={commoncss.rightGrid}
+              >
+                <Paper elevation={3}
+                  sx={commoncss.cardlineargradient}>
+                  <Stack spacing={3}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={3}
+                    >
+                      <SettingsIcon color="primary" />
+                      <Typography variant="h6" fontWeight="600">
+                        SEO Settings
+                      </Typography>
+                      <CommonToolTip title=" SEO Settings" />
+                    </Stack>
+                   <Box sx={commoncss.meta}>
+                      <Box sx={commoncss.customBox1}>
+                        <Box sx={commoncss.labelbox}> <label>uid </label>  </Box>
+                        <Box sx={commoncss.tooltipbox}> <CommonToolTip title="URL slug" /></Box>
+                        <Box sx={commoncss.fieldbox}> <CommenTextField name="uid" label="uid" disabled size="small" /></Box>
+                      </Box>
+                        <Box sx={commoncss.metabox1}>
+                         <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
+                        <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="60 characters only" /></Box>
+                        <Box sx={commoncss.fieldbox}>
+                        <CommenTextField
+                          name="meta.title"
+                          label="Meta Title *"
+                          required={true}
+                          maxLength={60}
+                          messages={{
+                            required: "Meta title is required",
+                            maxLength: "Please do not exceed 60 characters",
+                          }}
+                        />  </Box>
+                       </Box>
+                      <Box sx={commoncss.metabox1}>
+                         <Box sx={commoncss.labelbox}> <label>Keywords</label></Box>
+                          <Box sx={commoncss.tooltipbox}> <CommonToolTip title="SEO friendly keywords" /></Box>
+                           <Box sx={commoncss.fieldbox}> <CommenTextField name="meta.keywords" label="Keywords" /></Box>
+                        {/* <CommenTextField
+                        name="meta.canonicalUrl"
+                        label="Canonical URL"
+                      /> */}
+                      </Box>
+                       <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}> <label>Meta Description *</label></Box>
+                           <Box sx={commoncss.tooltipbox}> <CommonToolTip title="160 characters only" /></Box>
+                          <Box sx={commoncss.fieldbox}> <CommenTextField
+                          name="meta.description"
+                          label="Meta Description *"
+                          multiline
+                          rows={3}
+                          maxLength={160}
+                          messages={{
+                            required: "Meta description is required",
+                            maxLength: "Please do not exceed 160 characters",
+                          }}
+                        /></Box>
+                      </Box>
+                    
+                      {/* <Typography textAlign={"center"} fontWeight="600">
+                      Open Graph
+                    </Typography>
+                    <Stack spacing={2}>
+                      {/* <CommenTextField name="ogTags.title" label="OG Title" />
+                      <CommenTextField
+                        name="ogTags.description"
+                        label="OG Description"
+                        multiline
+                        rows={3}
+                      />
+                      <CommenTextField
+                        name="ogTags.image"
+                        label="OG Image URL"
+                      /> */}
+                      {/* </Stack> */}
+                    </Box>
+                  </Stack>
+                </Paper>
+              
                 <CommonButton type="submit" loading={btnloading}>
                   Submit
                 </CommonButton>

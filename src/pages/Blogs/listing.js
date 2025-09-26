@@ -14,6 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { apiClient } from "../../lib/api-client";
 import { useNavigate } from "react-router-dom";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
+import commoncss from "../../styles/commoncss";
 export default function BlogListGrid() {
   const [listData, setListData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
@@ -156,7 +157,7 @@ export default function BlogListGrid() {
   ];
 
   return (
-    <Box sx={{ height: 750, width: "100%", p: 2 }}>
+    <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Blogs</Typography>
         <Button

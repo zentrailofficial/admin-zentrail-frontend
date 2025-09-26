@@ -7,6 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { Delete, Edit } from "@mui/icons-material";
 import { apiClient } from "../../lib/api-client";
+import commoncss from "../../styles/commoncss";
 const ListSubCategory = () => {
   const [listData, setListData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -97,7 +98,7 @@ const ListSubCategory = () => {
     },
   ];
   return (
-    <Box sx={travelPackageStyle.customBox1}>
+    <Box sx={commoncss.listBox}>
       <Stack sx={travelPackageStyle.customBox2}>
         <Typography variant="h5" fontWeight={600}>
           Travel Package

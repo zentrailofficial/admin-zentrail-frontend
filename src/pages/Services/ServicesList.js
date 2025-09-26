@@ -14,6 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
 import { toast } from "react-toastify";
+import commoncss from "../../styles/commoncss";
 
 const ServicesList = () => {
   const [rows, setRows] = useState([]);
@@ -106,7 +107,7 @@ const ServicesList = () => {
     navigate("/addservices");
   };
   return (
-    <Box sx={{ height: 750, width: "100%", p: 2 }}>
+    <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Services List</Typography>
         <Button

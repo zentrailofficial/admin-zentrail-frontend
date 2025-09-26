@@ -95,7 +95,7 @@ const commoncss = {
     p: 2,
     mb: 2,
   },
-   mainbox: {
+  mainbox: {
     minHeight: "100vh",
     py: 0,
     px: 0,
@@ -107,7 +107,7 @@ const commoncss = {
     alignItems: "stretch",
     gap: 2,
   },
-   customBox1: {
+  customBox1: {
     display: "flex",
     alignItems: "center",
     whiteSpace: "nowrap",
@@ -118,27 +118,34 @@ const commoncss = {
     alignItems: 'center',
     gap: 1
   },
-  metabox1 :{
-    display: "flex ", alignItems:"center", gap: 1
+  metabox1: {
+    display: "flex ",
+    alignItems: "center",
+    gap: 1
   },
-  labelbox :{
-    width:"100px"
-  }, 
-  tooltipbox :{
+  labelbox: {
+    width: "120px"
+  },
+  tooltipbox: {
     width: "20px"
   },
-  fieldbox :{
+  fieldbox: {
     width: "520px"
   },
-  fieldbox1 :{
+  fieldbox1: {
     width: "630px"
-  }
-  
+  },
+   listBox: {
+    height: 680,
+    width: "100%",
+    p: 2,
+  },
+
 };
 
-  export default commoncss;
+export default commoncss;
 
-  /* /////////////////// heading for h1 ///////////////////// */
+/* /////////////////// heading for h1 ///////////////////// */
 
 // .responsive-heading {
 //   font-family: "DM Sans", sans-serif;
@@ -248,7 +255,7 @@ const commoncss = {
 //   }
 // }
 
- ////////// h5 /////////
+////////// h5 /////////
 //  .responsiveheading5 {
 //   font-family: "DM Sans", sans-serif;
 //   font-weight: 500;

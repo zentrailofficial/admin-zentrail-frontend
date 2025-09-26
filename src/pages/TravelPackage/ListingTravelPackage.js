@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "../../lib/api-client.js";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete.jsx";
 import { toast } from "react-toastify";
+import commoncss from "../../styles/commoncss.js";
 const ListingTravelPackage = () => {
   const [listData, setListData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -153,7 +154,7 @@ const ListingTravelPackage = () => {
     },
   ];
   return (
-    <Box sx={travelPackageStyle.customBox1}>
+    <Box sx={commoncss.listBox}>
       <Stack sx={travelPackageStyle.customBox2}>
         <Typography variant="h5" fontWeight={600}>
           Travel Package

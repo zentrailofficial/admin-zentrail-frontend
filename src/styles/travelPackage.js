@@ -1,6 +1,6 @@
 const travelPackageStyle = {
-  customBox1: {
-    height: 750,
+  listBox: {
+    height: 680,
     width: "100%",
     p: 2,
   },
