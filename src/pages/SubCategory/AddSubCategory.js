@@ -129,7 +129,7 @@ const AddSubCategory = () => {
       formData.append("description", data?.description);
       formData.append("metaTitle", data?.metaTitle);
       formData.append("metaDescription", data?.metaDescription);
-      formData.append("metaKeyword", data?.metakeywords);
+      formData.append("metaKeyword", data?.metaKeyword);
       formData.append("faq", JSON.stringify(data?.faq));
       // formData.append("image", data?.image);
       // if (data.image[0]?.file) {
@@ -140,8 +140,8 @@ const AddSubCategory = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success("Create Successful");
-      methods.reset();
-      navigate("/listsubcategory");
+      // methods.reset();
+      // navigate("/listsubcategory");
     } catch (error) {
       toast.error(error?.response?.data?.message);
     }

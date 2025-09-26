@@ -85,8 +85,6 @@ const AddTravelPackage = () => {
     setFocus,
     formState: { isSubmitting, errors },
   } = methods;
-  const [exclusions, setExclusions] = useState([""]);
-  const [inclusions, setInclusions] = useState([""]);
   const navigate = useNavigate();
   const [moodBasedList, setMoodBasedList] = useState([]);
 
@@ -199,7 +197,15 @@ const AddTravelPackage = () => {
     fetchMoodBased();
   }, []);
   const onSubmit = async (data) => {
-  
+    if (data.discount.type === "amount" && data.discount.amount > data.price) {
+      toast.error("Discount amount cannot be greater than price");
+      return;
+    }
+
+    if (data.discount.type === "percentage" && data.discount.percentage > 100) {
+      toast.error("Discount percentage cannot be greater than 100%");
+      return;
+    }
 
     if (data.featuredImage?.length == 0) {
       toast.error("Featured image is required");
@@ -212,7 +218,7 @@ const AddTravelPackage = () => {
       return;
     }
     setLoading(true);
-  
+
     try {
       const formData = new FormData();
       // Add Travel Package
@@ -233,8 +239,14 @@ const AddTravelPackage = () => {
       formData.append("endLocation", data.endLocation);
       formData.append("groupMembers", JSON.stringify(data.groupMembers));
       formData.append("itinerary", JSON.stringify(data.itinerary));
-      formData.append("exclusions", JSON.stringify(data.exclusions.map((item) =>item.description)));
-      formData.append("inclusions", JSON.stringify(data.inclusions.map((item) =>item.description)));
+      formData.append(
+        "exclusions",
+        JSON.stringify(data.exclusions.map((item) => item.description))
+      );
+      formData.append(
+        "inclusions",
+        JSON.stringify(data.inclusions.map((item) => item.description))
+      );
       //location
       formData.append("country", data.country);
       formData.append("state", data.state);
@@ -250,7 +262,10 @@ const AddTravelPackage = () => {
       data.gallery.forEach((item, index) => {
         if (item.file) {
           formData.append("gallery", item.file);
-          formData.append(`galleryAlt_${item?.file?.name}`, item.altText || "dsdsadasd");
+          formData.append(
+            `galleryAlt_${item?.file?.name}`,
+            item.altText || "dsdsadasd"
+          );
         }
       });
       formData.append("isActive", data.isActive || false);
@@ -389,6 +404,17 @@ const AddTravelPackage = () => {
                       size="small"
                       minvalue={0}
                       maxvalue={price}
+                      rules={{
+                        validate: (value, formValues) => {
+                          if (
+                            formValues.discount.type === "amount" &&
+                            value > formValues.price
+                          ) {
+                            return "Discount amount cannot exceed price";
+                          }
+                          return true;
+                        },
+                      }}
                     />
                   )}
                   {discount.type === "percentage" && (
@@ -400,6 +426,17 @@ const AddTravelPackage = () => {
                       size="small"
                       minvalue={0}
                       maxvalue={100}
+                      rules={{
+                        validate: (value, formValues) => {
+                          if (
+                            formValues.discount.type === "percentage" &&
+                            value > 100
+                          ) {
+                            return "Percentage discount cannot exceed 100%";
+                          }
+                          return true;
+                        },
+                      }}
                     />
                   )}
                 </Box>
@@ -668,10 +705,12 @@ const AddTravelPackage = () => {
                   <Typography variant="h6" fontWeight={600}>
                     Exclusions
                   </Typography>
-                  <IconButton color="primary" 
-                  onClick={() =>
+                  <IconButton
+                    color="primary"
+                    onClick={() =>
                       appendExclusion({ title: "", description: "" })
-                    }>
+                    }
+                  >
                     <AddIcon />
                   </IconButton>
                 </Stack>
@@ -700,7 +739,7 @@ const AddTravelPackage = () => {
                       {exclusionFields.length > 1 && (
                         <IconButton
                           color="error"
-                          onClick={() =>  removeExclusion(index)}
+                          onClick={() => removeExclusion(index)}
                         >
                           <DeleteIcon />
                         </IconButton>
