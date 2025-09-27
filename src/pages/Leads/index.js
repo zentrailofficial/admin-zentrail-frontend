@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+
 import { CircularProgress, Box, Stack, Typography, Button } from "@mui/material";
 import axios from "axios";
 import { apiClient } from "../../lib/api-client";
@@ -54,8 +55,8 @@ export default function InquiryTable() {
     );
   }
 
-  const handleExport = () => {
-    handleDownloadCSV(columns, rows, "Lead");
+  const handleExport = ()=>{
+    handleDownloadCSV(columns ,rows , "Lead");
   }
 
   return (
