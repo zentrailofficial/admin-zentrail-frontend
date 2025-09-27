@@ -13,6 +13,7 @@ import { apiClient } from "../../lib/api-client";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
+import commoncss from "../../styles/commoncss";
 
 const CategoryServicesList = () => {
   const [rows, setRows] = useState([]);
@@ -109,7 +110,7 @@ const CategoryServicesList = () => {
     navigate("/createcategoryservices");
   };
   return (
-    <Box sx={{ height: 750, width: "100%", p: 2 }}>
+    <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Category Services</Typography>
         <Button

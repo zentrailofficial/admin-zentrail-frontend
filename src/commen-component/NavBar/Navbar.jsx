@@ -35,6 +35,8 @@ import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices
 import CategoryIcon from '@mui/icons-material/Category';
 import SatelliteIcon from '@mui/icons-material/Satellite';
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
+
 const FULL_DRAWER_WIDTH = 240;
 const MINI_DRAWER_WIDTH = 60;
 
@@ -82,7 +84,7 @@ export default function Navbar() {
     },
     Service: {
       title: "Services",
-      icon: <MiscellaneousServicesIcon />,
+      icon: <SettingsSuggestIcon />,
       path: "/services",
     },
     servicePage: {

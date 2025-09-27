@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+
 import { CircularProgress, Box, Stack, Typography, Button } from "@mui/material";
 import axios from "axios";
 import { apiClient } from "../../lib/api-client";
 import { handleDownloadCSV } from "../../utils/helperFunctions";
+import commoncss from "../../styles/commoncss";
 
 export default function InquiryTable() {
   const [rows, setRows] = useState([]);
@@ -53,12 +55,12 @@ export default function InquiryTable() {
     );
   }
 
-  const handleExport = () => {
-    handleDownloadCSV(columns, rows, "Lead");
+  const handleExport = ()=>{
+    handleDownloadCSV(columns ,rows , "Lead");
   }
 
   return (
-    <Box sx={{ height: 500, width: "100%" }}>
+    <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Leads</Typography>
         <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>

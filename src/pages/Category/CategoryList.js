@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
 import { toast } from "react-toastify";
+import commoncss from "../../styles/commoncss";
 const CategoryDataGrid = () => {
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
@@ -110,7 +111,7 @@ const CategoryDataGrid = () => {
   };
   return (
     <>
-      <Box sx={{ height: 750, width: "100%", p: 2 }}>
+      <Box sx={commoncss.listBox}>
         <Stack direction="row" justifyContent="space-between" mb={2}>
           <Typography variant="h5">Category</Typography>
           <Box sx={{ display: "flex", gap: 2 }}>

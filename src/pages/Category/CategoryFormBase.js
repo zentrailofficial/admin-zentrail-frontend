@@ -108,30 +108,30 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                         sx={{ whiteSpace: "nowrap" }}
                       />
                     </Stack>
-                    <Box sx={commoncss.customBox1}>
-                      <Box sx={commoncss.customBox2}>
-                        <label >Category Name  </label>
-                        <CommonToolTip title="70 characters only" />
-                      </Box>
-                      <CommenTextField
-                        name="name"
-                        focused={isEdit}
-                        label="Category Name"
-                        required
-                      />  </Box>
-                    <Box sx={commoncss.customBox1}>
-                      <Box sx={commoncss.customBox2}>
-                        <label> Banner Title </label>
-                        <CommonToolTip title="70 characters only" />
-                      </Box>
-                      <CommenTextField
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}> <label >Category Name  </label> </Box>
+                      <Box sx={commoncss.tooltipbox}> <CommonToolTip title="70 characters only" /></Box>
+                      <Box sx={commoncss.fieldbox1}>
+                        <CommenTextField
+                          name="name"
+                          focused={isEdit}
+                          label="Category Name"
+                             maxLength={70}
+                          required
+                        /> </Box>
+                    </Box>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}> <label> Banner Title </label></Box>
+                      <Box sx={commoncss.tooltipbox}><CommonToolTip title="100 characters only" /></Box>
+                      <Box sx={commoncss.fieldbox1}><CommenTextField
                         name="bannertitle"
                         focused={isEdit}
                         label="Banner Title"
+                           maxLength={100}
                         required
-                      />  </Box>
-
-                    <CommenQuillEditor name="description" required minLength={30} label="Category description" />
+                      />
+                      </Box>
+                    </Box>
                     <Stack
                       direction="row"
                       alignItems="center"
@@ -140,9 +140,9 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                     >
                       <ImageIcon color="primary" />
                       <Typography variant="h6" fontWeight={600}>
-                        URL & Featured Image
+                        Banner Image
                       </Typography>
-                      <CommonToolTip title="Alt text required" />
+                      <CommonToolTip title="Include at least one image with alt text" />
                     </Stack>
                     <ImageUpload
                       name="image"
@@ -151,97 +151,11 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                       altText
                     // defaultImage={defaultImage}
                     />
-                  </Paper>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  md={6}
-                  sx={commoncss.rightGrid}
-                >
-                  <Paper elevation={3}
-                    sx={commoncss.cardlineargradient}>
-                    <Stack direction="row" alignItems="center" spacing={2} mb={1}>
-                      <SettingsIcon color="primary" />
-                      <Typography variant="h6" fontWeight="600">
-                        SEO Settings
-                      </Typography>
-                      <CommonToolTip title=" SEO Settings" />
-                    </Stack>
-                    <Box sx={commoncss.meta}>
-                      <Box sx={commoncss.metabox1}>
-                        <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
-                        <Box sx={commoncss.tooltipbox}>
-                          <CommonToolTip title="60 characters only" /></Box>
-                        <Box sx={commoncss.fieldbox}><CommenTextField
-                          name="metaTitle"
-                          focused={isEdit}
-                          label="Meta Title"
-                          required={!watch("isblog")}
-                          maxLength={60}
-                        />
-                        </Box>
-                      </Box>
-                      <Box sx={commoncss.metabox1}>
-                        <Box sx={commoncss.labelbox}><label>Keywords</label></Box>
-                        <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Keywords" /></Box>
-                        <Box sx={commoncss.fieldbox}> <CommenTextField
-                          name="metaKeyword"
-                          focused={isEdit}
-                          label="meta keywords"
-                          required={!watch("isblog")}
-                        /></Box>
-                      </Box>
-                      <Box sx={commoncss.metabox1}>
-                        <Box sx={commoncss.labelbox}>
-                          <label>Meta Description</label>
-                        </Box>
-                        <Box sx={commoncss.tooltipbox}>
-                          <CommonToolTip title="160 characters only" />
-                        </Box>
 
-                        <Box sx={commoncss.fieldbox}>
-                          <CommenTextField
-                            name="metaDescription"
-                            focused={isEdit}
-                            label="Meta Description"
-                            required={!watch("isblog")}
-                            multiline
-                            rows={3}
-                            maxLength={160}
-                          />
-                        </Box>
-                      </Box>
-                      <Box sx={commoncss.metabox1}>
-                        <Box sx={commoncss.labelbox}>
-                          <label>Slug</label>
-                        </Box>
-                        <Box sx={commoncss.tooltipbox}>
-                          <CommonToolTip title="Slug" />
-                        </Box>
-                        <Box sx={commoncss.fieldbox}>
-                          <CommenTextField
-                            name="slug"
-                            label="slug"
-                            required={!watch("name")}
-                            focused={isEdit}
-                            disabled={isEdit}
-                            readOnly={isEdit && true}
-                            onChange={(input) => {
-                              const sanitizedSlug = sanitizeSlug(input);
-                              setValue("slug", sanitizedSlug);
-                            }}
-                            onKeyDown={(e) => {
-                              if (!isAllowedKey(e.key)) {
-                                e.preventDefault();
-                              }
-                            }}
-                          />
-                        </Box>
-                      </Box>
-                    </Box>
+                    <CommenQuillEditor name="description" required minLength={30} label="Category description" />
+
                   </Paper>
-                  <Paper elevation={3}
+                    <Paper elevation={3}
                     sx={commoncss.cardlineargradient}>
 
                     <Stack sx={travelPackageStyle.customFaq}>
@@ -291,6 +205,97 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                       ))}
                     </Box>
                   </Paper>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  sx={commoncss.rightGrid}
+                >
+                  <Paper elevation={3}
+                    sx={commoncss.cardlineargradient}>
+                    <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                      <SettingsIcon color="primary" />
+                      <Typography variant="h6" fontWeight="600">
+                        SEO Settings
+                      </Typography>
+                      <CommonToolTip title=" SEO Settings" />
+                    </Stack>
+                    <Box sx={commoncss.meta}>
+                       <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}>
+                          <label>Slug</label>
+                        </Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="URL slug" />
+                        </Box>
+                        <Box sx={commoncss.fieldbox}>
+                          <CommenTextField
+                            name="slug"
+                            label="slug"
+                            required={!watch("name")}
+                            focused={isEdit}
+                            disabled={isEdit}
+                            readOnly={isEdit && true}
+                            onChange={(input) => {
+                              const sanitizedSlug = sanitizeSlug(input);
+                              setValue("slug", sanitizedSlug);
+                            }}
+                            onKeyDown={(e) => {
+                              if (!isAllowedKey(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="60 characters only" /></Box>
+                        <Box sx={commoncss.fieldbox}><CommenTextField
+                          name="metaTitle"
+                          focused={isEdit}
+                          label="Meta Title"
+                          required={!watch("isblog")}
+                          maxLength={60}
+                        />
+                        </Box>
+                      </Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}><label>Keywords</label></Box>
+                        <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="SEO friendly keywords" /></Box>
+                        <Box sx={commoncss.fieldbox}> <CommenTextField
+                          name="metaKeyword"
+                          focused={isEdit}
+                          label="meta keywords"
+                          required={!watch("isblog")}
+                        /></Box>
+                      </Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}>
+                          <label>Meta Description</label>
+                        </Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="160 characters only" />
+                        </Box>
+
+                        <Box sx={commoncss.fieldbox}>
+                          <CommenTextField
+                            name="metaDescription"
+                            focused={isEdit}
+                            label="Meta Description"
+                            required={!watch("isblog")}
+                            multiline
+                            rows={3}
+                            maxLength={160}
+                          />
+                        </Box>
+                      </Box>
+                     
+                    </Box>
+                  </Paper>
+                
                   <CommonButton
                     type="submit"
                     disabled={isSubmitting}
