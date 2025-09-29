@@ -61,6 +61,7 @@ const AddTravelPackage = () => {
       altitude: "",
       itinerary: [{ title: "", description: "" }],
       faq: [{ question: "", answer: "" }],
+      batches: [{ fromDate: "", toDate: "" }],
       seo: {
         metaTitle: "",
         metaDescription: "",
@@ -124,6 +125,14 @@ const AddTravelPackage = () => {
   } = useFieldArray({
     control,
     name: "inclusions",
+  });
+  const {
+    fields: batchesFields,
+    append: appendBathches,
+    remove: removeBatches,
+  } = useFieldArray({
+    control,
+    name: "batches",
   });
   const {
     fields: exclusionFields,
@@ -271,6 +280,8 @@ const AddTravelPackage = () => {
       formData.append("isActive", data.isActive || false);
       //Faq
       formData.append("faq", JSON.stringify(data.faq));
+      //batches
+      formData.append("batches", JSON.stringify(data.batches));
       //meta
       formData.append("seo", JSON.stringify(data.seo) || "");
       // formData.append("meta[description]", data.meta?.description || "");
@@ -282,13 +293,13 @@ const AddTravelPackage = () => {
       });
       if (response) {
         toast.success("Travel Package created successfully!");
-        navigate("/travelpackage");
+        // navigate("/travelpackage");
       }
     } catch (error) {
       console.error("Error creating travel package:", error?.response);
       toast.error(
         error?.response.data.message ||
-          "Failed to create travel package. Please try again: "
+        "Failed to create travel package. Please try again: "
       );
     } finally {
       setLoading(false);
@@ -793,6 +804,60 @@ const AddTravelPackage = () => {
                     }
                   }}
                 />
+              </Paper>
+
+              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
+                <Stack sx={travelPackageStyle.customFaq}>
+                  <Typography variant="h6" fontWeight={600}>
+                    Batch Dates
+                  </Typography>
+                  <IconButton
+                    color="primary"
+                    onClick={() =>
+                      appendBathches({ fromDate: "", toDate: "" })
+                    }
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </Stack>
+
+                <Box sx={commoncss.faqBox}>
+                  {batchesFields.map((item, index) => (
+                    <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
+                      <Stack sx={travelPackageStyle.customFaq}>
+                        <Typography variant="subtitle1">
+                          Batch Date {index + 1}
+                        </Typography>
+                        {batchesFields.length > 1 && (
+                          <IconButton
+                            color="error"
+                            onClick={() => removeBatches(index)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
+                      </Stack>
+
+                      <Stack direction="row" spacing={2}>
+                        <CommenTextField
+                          name={`batches.${index}.fromDate`}
+                          label="From Date *"
+                          type="date"
+                          required
+                          focused={true}
+                        />
+                        <CommenTextField
+                          name={`batches.${index}.toDate`}
+                          label="To Date *"
+                          type="date"
+                          required
+                          focused={true}
+                          sx={{ mt: 2 }}
+                        />
+                      </Stack>
+                    </Box>
+                  ))}
+                </Box>
               </Paper>
 
               <Paper elevation={3} sx={travelPackageStyle.addTravel}>
