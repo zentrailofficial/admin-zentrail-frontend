@@ -59,7 +59,7 @@ const EditBlog = () => {
   const [btnloading, setbtnLoading] = useState(false);
 
   useEffect(() => {
-    apiClient.get("/api/category").then((data) => {
+    apiClient.get("/api/category/blog-categories").then((data) => {
       const option = data.data.map((category) => ({
         value: category._id,
         label: category.name,
@@ -109,7 +109,6 @@ const EditBlog = () => {
       const formData = new FormData();
 
       formData.append("title", data.title);
-      formData.append("uid", data.uid);
       formData.append("uid", data.uid);
       formData.append("authorName", data.author);
       formData.append("description", data.description);
@@ -246,7 +245,6 @@ const EditBlog = () => {
                     <ImageUpload
                       name="images"
                       label="Choose Blog Images"
-                      multiple
                       altText
                     />
                   </Stack>

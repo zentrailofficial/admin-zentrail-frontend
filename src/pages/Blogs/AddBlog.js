@@ -99,22 +99,29 @@ const AddBlogForm = () => {
     alert("Add more clicked!");
   };
 
+  // useEffect(() => {
+  //   if (titleValue) {
+  //     const slug = titleValue
+  //       .toLowerCase()
+  //       .trim()
+  //       .replace(/&/g, "and")
+  //       .replace(/[^\w\s]/gi, "-")
+  //       .replace(/\s+/g, "-")
+  //       .replace(/-+/g, "-")
+  //       .replace(/^-+|-+$/g, "");
+  //     setValue("uid", slug);
+  //   }
+  // }, [titleValue, setValue]);
   useEffect(() => {
-    if (titleValue) {
-      const slug = titleValue
-        .toLowerCase()
-        .trim()
-        .replace(/&/g, "and")
-        .replace(/[^\w\s]/gi, "-")
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-+|-+$/g, "");
-      setValue("uid", slug);
+    const name = watch("title");
+    if (name) {
+      const sanitizedSlug = sanitizeSlug(name);
+      setValue("uid", sanitizedSlug, { shouldValidate: true });
     }
-  }, [titleValue, setValue]);
+  }, [watch("title")]);
 
   useEffect(() => {
-    apiClient.get("/api/category").then((data) => {
+    apiClient.get("/api/category/blog-categories").then((data) => {
       const option = data.data.map((category) => ({
         value: category._id,
         label: category.name,
@@ -138,7 +145,7 @@ const AddBlogForm = () => {
                     <Typography variant="h6" gutterBottom fontWeight={600}>
                       Add New Blog
                     </Typography>
-                     <CommonToolTip title=" Add New Blog" />
+                    <CommonToolTip title=" Add New Blog" />
                   </Stack>
                   <Box sx={commoncss.metabox1}>
                     <Box sx={commoncss.labelbox}>
@@ -214,7 +221,7 @@ const AddBlogForm = () => {
                     background="green"
                   />
                 </Paper>
-                 {/* FAQ Section */}
+                {/* FAQ Section */}
                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
                   <Stack
                     direction="row"
@@ -296,7 +303,7 @@ const AddBlogForm = () => {
                   </Stack>
                   {/* Meta Tags Accordion */}
                   <Box sx={commoncss.meta}>
-                     <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.metabox1}>
                       <Box sx={commoncss.labelbox}>
                         {" "}
                         <label>uid </label>{" "}
@@ -315,7 +322,7 @@ const AddBlogForm = () => {
                           focused={watch("title")?.length}
                           onChange={(input) => {
                             const sanitizedSlug = sanitizeSlug(input);
-                            setValue("slug", sanitizedSlug);
+                            setValue("uid", sanitizedSlug);
                           }}
                           onKeyDown={(e) => {
                             if (!isAllowedKey(e.key)) {
@@ -388,7 +395,7 @@ const AddBlogForm = () => {
                         />
                       </Box>
                     </Box>
-                   
+
                     {/* <CommenTextField
                       name="meta.canonicalUrl"
                       label="Canonical URL"
@@ -414,7 +421,7 @@ const AddBlogForm = () => {
                     <CommenTextField name="ogTags.image" label="OG Image URL" />
                   </Box> */}
                 </Paper>
-               
+
                 <CommonButton type="submit" loading={loading}>
                   Submit
                 </CommonButton>

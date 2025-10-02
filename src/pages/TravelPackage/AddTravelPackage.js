@@ -58,6 +58,7 @@ const AddTravelPackage = () => {
       offbeat: false,
       isActive: true,
       difficultyLevel: "Easy",
+      altitudeunit:"meter",
       altitude: "",
       itinerary: [{ title: "", description: "" }],
       faq: [{ question: "", answer: "" }],
@@ -243,6 +244,7 @@ const AddTravelPackage = () => {
       formData.append("duration", data.duration);
       formData.append("altitude", data.altitude);
       formData.append("difficultyLevel", data.difficultyLevel || "");
+      formData.append("altitudeunit", data.altitudeunit || "");
       formData.append("season", data.season);
       formData.append("startLocation", data.startLocation);
       formData.append("endLocation", data.endLocation);
@@ -574,12 +576,23 @@ const AddTravelPackage = () => {
                 {/* trek only */}
                 {methods.watch("type") == "trek" && (
                   <>
-                    <CommenTextField
-                      name="altitude"
-                      label="Altitude *"
-                      // required
-                      size="small"
-                    />
+                    <Stack flexDirection="row" gap={3}>
+                      <CommenTextField
+                        name="altitude"
+                        label="Altitude *"
+                        type="number"
+                        // required
+                        size="small"
+                      />
+                      <CommonDropdown
+                        name="altitudeunit"
+                        label="Altitude Unit *"
+                        options={[
+                          { value: "meter", label: "meter" },
+                          { value: "feet", label: "feet" },
+                        ]}
+                      />
+                    </Stack>
                     <CommonDropdown
                       name="difficultyLevel"
                       label="Difficulty Level *"

@@ -42,32 +42,15 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
     control,
     name: "faq",
   });
-  const titleValue = !isEdit && watch("name");
-  // useEffect(() => {
-  //   if (titleValue) {
-  //     const slug = titleValue
-  //       .toLowerCase()
-  //       .trim()
-  //       .replace(/[^\w\s]/gi, "")
-  //       .replace(/\s+/g, "-");
 
-  //     setValue("slug", slug);
-  //   }
-  // }, [titleValue, setValue]);
   useEffect(() => {
-    if (!isEdit && titleValue) {
-      const slug = titleValue
-        .toLowerCase()
-        .trim()
-        .replace(/&/g, "and")
-        .replace(/[^\w\s]/gi, "-")
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-+|-+$/g, "");
-
-      setValue("slug", slug, { shouldValidate: true });
+    const name = watch("name");
+    if (name && !isEdit) {
+      const sanitizedSlug = sanitizeSlug(name);
+      setValue("slug", sanitizedSlug, { shouldValidate: true });
     }
-  }, [titleValue, isEdit, setValue]);
+  }, [watch("name")]);
+
 
   return (
     <>
@@ -116,7 +99,7 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                           name="name"
                           focused={isEdit}
                           label="Category Name"
-                             maxLength={70}
+                          maxLength={70}
                           required
                         /> </Box>
                     </Box>
@@ -127,7 +110,7 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                         name="bannertitle"
                         focused={isEdit}
                         label="Banner Title"
-                           maxLength={100}
+                        maxLength={100}
                         required
                       />
                       </Box>
@@ -155,7 +138,7 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                     <CommenQuillEditor name="description" required minLength={30} label="Category description" />
 
                   </Paper>
-                    <Paper elevation={3}
+                  <Paper elevation={3}
                     sx={commoncss.cardlineargradient}>
 
                     <Stack sx={travelPackageStyle.customFaq}>
@@ -222,7 +205,7 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                       <CommonToolTip title=" SEO Settings" />
                     </Stack>
                     <Box sx={commoncss.meta}>
-                       <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.metabox1}>
                         <Box sx={commoncss.labelbox}>
                           <label>Slug</label>
                         </Box>
@@ -292,10 +275,10 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                           />
                         </Box>
                       </Box>
-                     
+
                     </Box>
                   </Paper>
-                
+
                   <CommonButton
                     type="submit"
                     disabled={isSubmitting}

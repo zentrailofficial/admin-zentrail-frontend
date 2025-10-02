@@ -45,6 +45,7 @@ const EditCategory = () => {
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("slug", data.slug);
+      formData.append("bannertitle", data?.bannertitle);
       formData.append("description", data.description || "");
       formData.append("isblog", data.isblog ? "true" : "false");
       // SEO fields

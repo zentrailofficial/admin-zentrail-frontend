@@ -36,15 +36,58 @@ export const handleDownloadCSV = (tableColumns, tableRows, fileName) => {
   triggerDownload(csvHeaders, csvRows, fileName);
 };
 
+// export const sanitizeSlug = (input) => {
+//   return input
+//     .toLowerCase()
+//     // .replace(/&/g, "and") 
+//     .replace(/[^\w\s-]/g, "") 
+//     .replace(/\s+/g, "-") 
+//     .replace(/-+/g, "-") 
+//     .replace(/[^a-z0-9\s-]/g, "") 
+//     .trim(); 
+// };
 export const sanitizeSlug = (input) => {
   return input
     .toLowerCase()
-    .replace(/&/g, "and") 
-    .replace(/[^\w\s-]/g, "") 
-    .replace(/\s+/g, "-") 
-    .replace(/-+/g, "-") 
-    .trim(); 
+    .replace(/[^a-z0-9\s-]/g, "-") // remove everything except letters, numbers, spaces, and -
+    .replace(/\s+/g, "-")         // spaces → -
+    .replace(/-+/g, "-")          // collapse multiple -
+    .replace(/^-|-$/g, "");       // trim leading/trailing -
 };
+
+
+
+export function modifystr(str) {
+    if (typeof str !== 'string') {
+       return ''
+    }
+    else {
+        str = str?.replaceAll('.', '-');
+        str = str?.replace(/[^a-zA-Z0-9/ ]/g, "-");
+        str = str?.trim().replaceAll(' ', "-");
+        let a = 0;
+        while (a < 1) {
+            if (str?.includes("--")) {
+                str = str?.replaceAll("--", "-")
+            } else if (str?.includes("//")) {
+                str = str?.replaceAll("//", "/")
+            } else if (str?.includes("//")) {
+                str = str?.replaceAll("-/", "/")
+            } else if (str?.includes("//")) {
+                str = str?.replaceAll("/-", "/")
+            }else if (str?.includes("/")) {
+                str = str?.replaceAll("/", "-")
+            }
+             else {
+                a++
+            }
+        }
+        if (str.toLowerCase().slice(-1) === '-') {
+            str = str.slice(0, -1); // Remove the trailing hyphen
+          }
+        return str.toLowerCase()
+    }
+}
 
 export const allowedPattern = /^[a-zA-Z0-9\s-]$/;
 
