@@ -15,6 +15,7 @@ import { apiClient } from "../../lib/api-client";
 import { useNavigate } from "react-router-dom";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
 import commoncss from "../../styles/commoncss";
+import CommonButton from "../../commen-component/CommenButton/CommenButton";
 export default function BlogListGrid() {
   const [listData, setListData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
@@ -160,28 +161,31 @@ export default function BlogListGrid() {
     <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Blogs</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleCreate}
-        >
-          Create Blog
-        </Button>
+        <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
+          <CommonButton
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleCreate}
+          >
+            Create Blog
+          </CommonButton>
+        </Stack>
+
       </Stack>
 
-        <DataGrid
-          rows={listData}
-          columns={columns}
-          pageSizeOptions={[10, 20]}
-          loading={loading}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 10, page: 0 } },
-          }}
-          checkboxSelection
-          disableRowSelectionOnClick
-        />
-      
+      <DataGrid
+        rows={listData}
+        columns={columns}
+        pageSizeOptions={[10, 20]}
+        loading={loading}
+        initialState={{
+          pagination: { paginationModel: { pageSize: 10, page: 0 } },
+        }}
+        checkboxSelection
+        disableRowSelectionOnClick
+      />
+
       <ConfirmDelete
         open={dialogOpen}
         onClose={() => {

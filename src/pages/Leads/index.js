@@ -6,6 +6,7 @@ import axios from "axios";
 import { apiClient } from "../../lib/api-client";
 import { handleDownloadCSV } from "../../utils/helperFunctions";
 import commoncss from "../../styles/commoncss";
+import CommonButton from "../../commen-component/CommenButton/CommenButton";
 
 export default function InquiryTable() {
   const [rows, setRows] = useState([]);
@@ -64,13 +65,13 @@ export default function InquiryTable() {
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Leads</Typography>
         <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
-          <Button
+          <CommonButton
             variant="contained"
             color="primary"
             onClick={handleExport}
           >
             export
-          </Button>
+          </CommonButton>
         </Stack>
       </Stack>
       <DataGrid

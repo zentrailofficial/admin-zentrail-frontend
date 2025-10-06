@@ -14,6 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
 import commoncss from "../../styles/commoncss";
+import CommonButton from "../../commen-component/CommenButton/CommenButton";
 
 const CategoryServicesList = () => {
   const [rows, setRows] = useState([]);
@@ -113,14 +114,16 @@ const CategoryServicesList = () => {
     <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Category Services</Typography>
-        <Button
+         <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
+        <CommonButton
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
           onClick={handleCreate}
         >
           Create Category services
-        </Button>
+        </CommonButton>
+        </Stack>
       </Stack>
 
       <DataGrid

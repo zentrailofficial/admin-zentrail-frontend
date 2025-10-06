@@ -116,20 +116,18 @@ const CategoryDataGrid = () => {
           <Typography variant="h5">Category</Typography>
           <Box sx={{ display: "flex", gap: 2 }}>
             <CommonButton
-              fullWidth={false}
               variant="contained"
               onClick={() => navigate("/listsubcategory")}
             >
               List Sub Category
             </CommonButton>
-            <Button
+            <CommonButton
               variant="contained"
-              color="primary"
               startIcon={<AddIcon />}
               onClick={handleCreate}
             >
               Create Category
-            </Button>
+            </CommonButton>
           </Box>
         </Stack>
 

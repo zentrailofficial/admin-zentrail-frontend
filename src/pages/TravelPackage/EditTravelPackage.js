@@ -13,7 +13,7 @@ import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import travelPackageStyle from "../../styles/travelPackage.js";
 import ImageUpload from "../../commen-component/ImageUpload/ImageUpload.js";
-import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { Add as AddIcon, Delete as DeleteIcon, Image as ImageIcon, } from "@mui/icons-material";
 import CommonButton from "../../commen-component/CommenButton/CommenButton.js";
 import { Switch, FormControlLabel } from "@mui/material";
 import { apiClient } from "../../lib/api-client.js";
@@ -21,6 +21,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip.js";
 import commoncss from "../../styles/commoncss.js";
 import LocationSearch from "../../commen-component/Address/autocomplete.js";
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import BookIcon from "@mui/icons-material/Book";
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import BackpackIcon from '@mui/icons-material/Backpack';
+import SettingsIcon from "@mui/icons-material/Settings";
+import TodayIcon from '@mui/icons-material/Today';
+import WarningIcon from '@mui/icons-material/Warning';
+import AddTaskIcon from '@mui/icons-material/AddTask';
+import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
 
 const seasonOptions = [
   { value: "summer-trips", label: "Summer-trips" },
@@ -373,264 +383,229 @@ const EditTravelPackage = () => {
   return (
     <FormProvider {...methods} key={formKey}>
       <form onSubmit={handleSubmit(onSubmit, onError)}>
-        <Box>
-          <Grid
-            container
-            spacing={{ xs: 2, md: 3 }}
-            columns={{ xs: 4, sm: 8, md: 12 }}
-          >
-            <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-              {/* Add Travel Package */}
-              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                <Typography variant="h6" fontWeight={600}>
-                  Edit Trip Package
-                </Typography>
-                <Box sx={travelPackageStyle.customBox3}>
-                  <CommonDropdown
-                    options={[
-                      { value: "tour", label: "Tour" },
-                      { value: "trek", label: "Trek" },
-                    ]}
-                    name="type"
-                    label="Select Trip Type *"
-                    required
-                  />
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <FormControlLabel
-                      control={
-                        <Controller
-                          name="offbeat"
-                          control={methods.control}
-                          render={({ field }) => (
-                            <Switch {...field} checked={field.value} />
-                          )}
-                        />
-                      }
-                      label="Is this OffBeat Trip"
-                      sx={{ whiteSpace: "nowrap" }}
+        <Box sx={commoncss.mainbox}>
+          <Box maxWidth="xl" mx="auto">
+            <Grid container sx={commoncss.grid1}>
+              <Grid item xs={12} md={6} sx={commoncss.leftGrid}>
+                {/* Add Travel Package */}
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack direction="row" alignItems="center" spacing={2} mb={3}>
+                    <BookIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Edit Trip Package
+                    </Typography>
+                    <CommonToolTip title="Edit Trip Package" />
+                  </Stack>
+                  <Box sx={travelPackageStyle.customBox3}>
+                    <CommonDropdown
+                      options={[
+                        { value: "tour", label: "Tour" },
+                        { value: "trek", label: "Trek" },
+                      ]}
+                      name="type"
+                      label="Select Trip Type *"
+                      required
                     />
-                    <CommonToolTip title="Is this OffBeat Trip" />
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <FormControlLabel
+                        control={
+                          <Controller
+                            name="offbeat"
+                            control={methods.control}
+                            render={({ field }) => (
+                              <Switch {...field} checked={field.value} />
+                            )}
+                          />
+                        }
+                        label="Is this OffBeat Trip"
+                        sx={{ whiteSpace: "nowrap" }}
+                      />
+                      <CommonToolTip title="Is this OffBeat Trip" />
+                    </Box>
                   </Box>
-                </Box>
-                <CommenTextField
-                  name="title"
-                  label="Package Name *"
-                  required
-                  focused={true}
-                  size="small"
-                  maxLength={70}
-                />
-                <CommenTextField
-                  name="subtitle"
-                  label="subtitle Name *"
-                  required
-                  focused={true}
-                  size="small"
-                  maxLength={70}
-                />
-
-                {/* Type of Mood Of Journey */}
-
-                <Box sx={travelPackageStyle.customBox3}>
-                  <CommonDropdown
-                    name="moodOfJourney"
-                    label="Select Moodbase Subcategory *"
-                    options={moodBasedList}
-                    // onChangeValues={handleMoodOfJourneyChange}
-                    required
-                  />
-                  <CommonDropdown
-                    name="season"
-                    label="Select Season *"
-                    options={seasonOptions}
-                    required
-                  />
-                </Box>
-
-                <CommenQuillEditor
-                  name="description"
-                  label="Description * (min 150 characters)"
-                  required
-                  minLength={150}
-                  placeholder="Write Overview/Trip Details here..."
-                />
-                <Box sx={travelPackageStyle.customBox3}>
                   <CommenTextField
-                    name="price"
-                    label="Price"
-                    focused={true}
-                    size="small"
+                    name="title"
+                    label="Package Name *"
                     required
-                    type="number"
-                  />
-                  <CommonDropdown
-                    options={[
-                      { value: "percentage", label: "Discount in %" },
-                      { value: "amount", label: "Discount in Amount" },
-                    ]}
-                    name="discount.type"
-                    label="Discount Type"
                     focused={true}
                     size="small"
+                    maxLength={70}
                   />
-                  {discount.type === "amount" && (
-                    <CommenTextField
-                      name="discount.amount"
-                      label="Discount"
-                      type="number"
-                      defaultValues="0"
-                      size="small"
-                      minvalue={0}
-                      maxvalue={price}
-                      rules={{
-                        validate: (value, formValues) => {
-                          const numValue = parseFloat(value) || 0;
-                          const numPrice = parseFloat(formValues.price) || 0;
+                  <CommenTextField
+                    name="subtitle"
+                    label="Banner Subtitle Name (optional)"
+                    required
+                    focused={true}
+                    size="small"
+                    maxLength={70}
+                  />
 
-                          if (numValue < 0) {
-                            return "Discount amount cannot be negative";
-                          }
-                          if (
-                            formValues.discount.type === "amount" &&
-                            numValue > numPrice
-                          ) {
-                            return "Discount amount cannot exceed price";
-                          }
-                          return true;
-                        },
-                      }}
+                  {/* Type of Mood Of Journey */}
+
+                  <Box sx={travelPackageStyle.customBox3}>
+                    <CommonDropdown
+                      name="moodOfJourney"
+                      label="Select Moodbase Subcategory *"
+                      options={moodBasedList}
+                      // onChangeValues={handleMoodOfJourneyChange}
+                      required
                     />
-                  )}
-                  {discount.type === "percentage" && (
-                    <CommenTextField
-                      name="discount.percentage"
-                      label="Discount"
-                      type="number"
-                      defaultValues="0"
-                      size="small"
-                      minvalue={0}
-                      maxvalue={100}
-                      rules={{
-                        validate: (value, formValues) => {
-                          const numValue = parseFloat(value) || 0;
-
-                          if (numValue < 0) {
-                            return "Discount percentage cannot be negative";
-                          }
-                          if (
-                            formValues.discount.type === "percentage" &&
-                            numValue >= 100
-                          ) {
-                            return "Percentage discount cannot be 100% or more";
-                          }
-                          return true;
-                        },
-                      }}
+                    <CommonDropdown
+                      name="season"
+                      label="Select Season *"
+                      options={seasonOptions}
+                      required
                     />
-                  )}
-                </Box>
-              </Paper>
-              {/* Loaction */}
-              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                <Typography variant="h6" gutterBottom fontWeight={600} required>
-                  Loaction
-                </Typography>
+                  </Box>
+                  <CommenQuillEditor
+                    name="description"
+                    label="Description * (min 150 characters)"
+                    required
+                    minLength={150}
+                    placeholder="Write Overview/Trip Details here..."
+                  />
+                  <Box sx={travelPackageStyle.customBox3}>
+                    <CommenTextField
+                      name="price"
+                      label="Price"
+                      focused={true}
+                      size="small"
+                      required
+                      type="number"
+                    />
+                    <CommonDropdown
+                      options={[
+                        { value: "percentage", label: "Discount in %" },
+                        { value: "amount", label: "Discount in Amount" },
+                      ]}
+                      name="discount.type"
+                      label="Discount Type"
+                      focused={true}
+                      size="small"
+                    />
+                    {discount.type === "amount" && (
+                      <CommenTextField
+                        name="discount.amount"
+                        label="Discount"
+                        type="number"
+                        defaultValues="0"
+                        size="small"
+                        minvalue={0}
+                        maxvalue={price}
+                        rules={{
+                          validate: (value, formValues) => {
+                            const numValue = parseFloat(value) || 0;
+                            const numPrice = parseFloat(formValues.price) || 0;
 
-                <LocationSearch
-                  value={watch("locationAddress") || ""}
-                  onSelect={(data) => {
-                    setValue("city", data.city || "");
-                    setValue("state", data.state || "");
-                    setValue("country", data.country || "");
-                    setValue("locationAddress", data.formatted_address || "");
-                  }}
-                ></LocationSearch>
+                            if (numValue < 0) {
+                              return "Discount amount cannot be negative";
+                            }
+                            if (
+                              formValues.discount.type === "amount" &&
+                              numValue > numPrice
+                            ) {
+                              return "Discount amount cannot exceed price";
+                            }
+                            return true;
+                          },
+                        }}
+                      />
+                    )}
+                    {discount.type === "percentage" && (
+                      <CommenTextField
+                        name="discount.percentage"
+                        label="Discount"
+                        type="number"
+                        defaultValues="0"
+                        size="small"
+                        minvalue={0}
+                        maxvalue={100}
+                        rules={{
+                          validate: (value, formValues) => {
+                            const numValue = parseFloat(value) || 0;
 
-                <CommenTextField
-                  name="state"
-                  label="State *"
-                  required
-                  size="small"
-                  disabled
-                />
-                <CommenTextField
-                  name="city"
-                  label="City*"
-                  required
-                  size="small"
-                  disabled
-                />
-                {/* <CommenTextField
+                            if (numValue < 0) {
+                              return "Discount percentage cannot be negative";
+                            }
+                            if (
+                              formValues.discount.type === "percentage" &&
+                              numValue >= 100
+                            ) {
+                              return "Percentage discount cannot be 100% or more";
+                            }
+                            return true;
+                          },
+                        }}
+                      />
+                    )}
+                  </Box>
+                </Paper>
+                {/* Loaction */}
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                    <PinDropIcon color="primary" />
+                    <Typography variant="h6" fontWeight="600">
+                      Loaction
+                    </Typography>
+                    <CommonToolTip title="Add location for your trip package" />
+                  </Stack>
+                  <LocationSearch
+                    value={watch("locationAddress") || ""}
+                    onSelect={(data) => {
+                      setValue("city", data.city || "");
+                      setValue("state", data.state || "");
+                      setValue("country", data.country || "");
+                      setValue("locationAddress", data.formatted_address || "");
+                    }}
+                  ></LocationSearch>
+                  <CommenTextField
+                    name="state"
+                    label="State *"
+                    required
+                    size="small"
+                    disabled
+                  />
+                  <CommenTextField
+                    name="city"
+                    label="City*"
+                    required
+                    size="small"
+                    disabled
+                  />
+                  {/* <CommenTextField
                   name="weatherLocation"
                   label="Weather Location*"
                   required
                   size="small"
                 /> */}
-              </Paper>
-              {/* Single Image Upload */}
-              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                <Typography variant="h6" fontWeight={600}>
-                  Featured Image (Single Image)
-                </Typography>
-                <ImageUpload
-                  name="featuredImage"
-                  label="Choose Package Images"
-                  // multiple
-                  altText
-                // required
-                />
-              </Paper>
-
-              {/* {FAQs} */}
-              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                <Stack sx={travelPackageStyle.customFaq}>
-                  <Typography variant="h6" fontWeight={600}>
-                    FAQs
-                  </Typography>
-                  <IconButton
-                    color="primary"
-                    onClick={() => appendFaq({ question: "", answer: "" })}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </Stack>
-                <Box sx={commoncss.faqBox}>
-                  {faqFields.map((item, index) => (
-                    <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
-                      <Stack sx={travelPackageStyle.customFaq}>
-                        <Typography variant="subtitle1">
-                          FAQ {index + 1}
-                        </Typography>
-                        {faqFields.length > 1 && (
-                          <IconButton
-                            color="error"
-                            onClick={() => removeFaq(index)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        )}
-                      </Stack>
-
-                      <CommenTextField
-                        name={`faq.${index}.question`}
-                        label="Question *"
-                        required
-                      />
-                      <CommenTextField
-                        name={`faq.${index}.answer`}
-                        label="Answer *"
-                        multiline
-                        rows={3}
-                        required
-                      />
-                    </Box>
-                  ))}
-                </Box>
-                {/* Gallery */}
-                <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                  <Typography variant="h6" fontWeight={600}>
-                    Gallery (Min 3 images)
-                  </Typography>
+                </Paper>
+                {/* Single Image Upload */}
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                    <ImageIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Featured Image
+                      {/* (Single Image) */}
+                    </Typography>
+                    <CommonToolTip title="Please upload single webp image of 100kb" />
+                  </Stack>
+                  <ImageUpload
+                    name="featuredImage"
+                    label="Choose Package Images"
+                    // multiple
+                    altText
+                  // required
+                  />
+                </Paper>
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                    <PhotoLibraryIcon color="primary" />
+                    <Typography variant="h6" fontWeight={600}>
+                      Gallery
+                      {/* (Min 3 images) */}
+                    </Typography>
+                    <CommonToolTip title="Minimum 3 images are required" />
+                  </Stack>
                   <ImageUpload
                     name="gallery"
                     label="Choose Package Images"
@@ -638,209 +613,354 @@ const EditTravelPackage = () => {
                     altText
                   />
                 </Paper>
-              </Paper>
-              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                <Box sx={travelPackageStyle.buttonBox}>
-                  <FormControlLabel
-                    control={
-                      <Controller
-                        name="isActive"
-                        control={methods.control}
-                        render={({ field }) => (
-                          <Switch {...field} checked={field.value} />
-                        )}
-                      />
-                    }
-                    label="Is Active"
-                  />
-                  <CommonButton
-                    sx={travelPackageStyle.customButton}
-                    type="submit"
-                    loading={loading}
-                    disabled={loading}
-                  >
-                    Submit
-                  </CommonButton>
-                </Box>
-              </Paper>
-            </Grid>
 
-            {/* Right side */}
-            <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-              {/* Package Details */}
-              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                <Typography variant="h6" gutterBottom fontWeight={600}>
-                  Package Details
-                </Typography>
+                {/* {FAQs} */}
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack sx={travelPackageStyle.customFaq}>
+                    <Box sx={commoncss.customBox2}>
+                      <QuestionAnswerIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        FAQs
+                      </Typography>
+                      <CommonToolTip title="Questions and answers" />
+                    </Box>
+                    <IconButton
+                      color="primary"
+                      onClick={() => appendFaq({ question: "", answer: "" })}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Stack>
+                  <Box sx={commoncss.faqBox}>
+                    {faqFields.map((item, index) => (
+                      <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
+                        <Stack sx={travelPackageStyle.customFaq}>
+                          <Typography variant="subtitle1">
+                            FAQ {index + 1}
+                          </Typography>
+                          {faqFields.length > 1 && (
+                            <IconButton
+                              color="error"
+                              onClick={() => removeFaq(index)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                        </Stack>
 
-                <CommenTextField
-                  name="duration"
-                  label="Duration*  ex: (4D/5N)"
-                  required
-                  minLength={5}
-                  focused={true}
-                  size="small"
-                />
-                {/* trek only */}
-                {methods.watch("type") == "trek" && (
-                  <>
+                        <CommenTextField
+                          name={`faq.${index}.question`}
+                          label="Question *"
+                          required
+                        />
+                        <CommenTextField
+                          name={`faq.${index}.answer`}
+                          label="Answer *"
+                          multiline
+                          rows={3}
+                          required
+                        />
+                      </Box>
+                    ))}
+                  </Box>
+                  {/* Gallery */}
 
-                    <Stack flexDirection="row" gap={3}>
+                </Paper>
+
+              </Grid>
+
+              {/* Right side */}
+              <Grid item xs={12} md={6} sx={commoncss.rightGrid}>
+                {/* Package Details */}
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                    <BackpackIcon color="primary" />
+                    <Typography variant="h6" gutterBottom fontWeight={600}>
+                      Package Details
+                    </Typography>
+                    <CommonToolTip title="Details of your trip package" />
+                  </Stack>
+                  <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.labelbox}> <label >Duration*</label> </Box>
+                    <Box sx={commoncss.tooltipbox}> <CommonToolTip title="You can also type 4days/5Nights here" /></Box>
+                    <Box sx={commoncss.fieldbox1}>
                       <CommenTextField
-                        name="altitude"
-                        label="Altitude *"
-                        type="number"
-                        // required
+                        name="duration"
+                        label="Duration*  ex: (4D/5N)"
+                        required
+                        minLength={5}
+                        focused={true}
+                        size="small"
+                      /> </Box>
+                  </Box>
+
+                  {/* trek only */}
+                  {methods.watch("type") == "trek" && (
+                    <>
+                      <Stack flexDirection="row" gap={3}>
+                        <CommenTextField
+                          name="altitude"
+                          label="Altitude "
+                          type="number"
+                          // required
+                          size="small"
+                        />
+                        <CommonDropdown
+                          name="altitudeunit"
+                          label="Altitude Unit "
+                          options={[
+                            { value: "meter", label: "meter" },
+                            { value: "feet", label: "feet" },
+                          ]}
+                        />
+                      </Stack>
+                      <CommonDropdown
+                        name="difficultyLevel"
+                        label="Difficulty Level *"
+                        options={[
+                          { value: "Easy", label: "Easy" },
+                          { value: "Moderate", label: "Moderate" },
+                          { value: "Difficult", label: "Difficult" },
+                        ]}
+                      // required
+                      />
+                    </>
+                  )}
+                  {/*  min and max members name change karna haa */}
+
+                  <Box sx={travelPackageStyle.customBox3}>
+                    <CommenTextField
+                      name="groupMembers.minMembers"
+                      label="Min Members"
+                      size="small"
+                      type="number"
+                      focused={true}
+                      required
+                    />
+                    <CommenTextField
+                      name="groupMembers.maxMembers"
+                      label="Max Members"
+                      size="small"
+                      type="number"
+                      focused={true}
+                      required
+                    />
+                  </Box>
+                  <Box sx={travelPackageStyle.customBox3}>
+                    <CommenTextField
+                      name="startLocation"
+                      label="Start Location *"
+                      size="small"
+                      required
+                      focused={true}
+                    />
+                    <CommenTextField
+                      name="endLocation"
+                      label="End Location "
+                      size="small"
+                      required
+                      focused={true}
+                    />
+                  </Box>
+                </Paper>
+                {/* itinerary */}
+
+                {itineraryFields?.length > 0 && (
+                  <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                    <Stack direction="column" mb={2}>
+                      <Stack direction="row" alignItems="center" spacing={2} mb={3}>
+                        <FormatListBulletedAddIcon color="primary" />
+                        <Typography variant="h6" fontWeight={600} gutterBottom>
+                          Itinerary
+                        </Typography>
+                        <CommonToolTip title="These things are included in the trip package" />
+                      </Stack>
+
+                      <Box sx={{ maxHeight: 470, overflowY: "auto", pr: 1 }}>
+                        {itineraryFields.map((item, index) => (
+                          <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
+                            <Typography variant="subtitle1">
+                              {`Day ${index + 1}`}
+                            </Typography>
+
+                            <CommenTextField
+                              name={`itinerary.${index}.title`}
+                              label="Title *"
+                              size="small"
+                              defaultValues=""
+                              focused={true}
+                              required
+                            />
+
+                            <CommenQuillEditor
+                              name={`itinerary.${index}.description`}
+                              label="Description *"
+                              required
+                              placeholder="Write itinerary details here..."
+                            />
+                          </Box>
+                        ))}
+                      </Box>
+                    </Stack>
+                  </Paper>
+                )}
+
+                {/* (Inclusions) */}
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack sx={travelPackageStyle.customFaq}>
+                    <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                      <AddTaskIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        Inclusions
+                      </Typography>
+                      <CommonToolTip title="These things are included in the trip package" />
+                    </Stack>
+                    <IconButton color="primary" onClick={handleAddInclusion}>
+                      <AddIcon />
+                    </IconButton>
+                  </Stack>
+                  <Box sx={{ maxHeight: 150, overflowY: "auto", pr: 1 }}>
+                    {inclusions.map((inclusion, index) => (
+                      <CommenTextField
+                        key={index}
+                        name={`inclusions[${index}]`}
+                        label={`Inclusion ${index + 1}*`}
+                        required
+                        focused={true}
                         size="small"
                       />
-                      <CommonDropdown
-                        name="altitudeunit"
-                        label="Altitude Unit *"
-                        options={[
-                          { value: "meter", label: "meter" },
-                          { value: "feet", label: "feet" },
-                        ]}
-                      />
-                    </Stack>
-                    <CommonDropdown
-                      name="difficultyLevel"
-                      label="Difficulty Level *"
-                      options={[
-                        { value: "Easy", label: "Easy" },
-                        { value: "Moderate", label: "Moderate" },
-                        { value: "Difficult", label: "Difficult" },
-                      ]}
-                    // required
-                    />
-                  </>
-                )}
-                {/*  min and max members name change karna haa */}
-
-                <Box sx={travelPackageStyle.customBox3}>
-                  <CommenTextField
-                    name="groupMembers.minMembers"
-                    label="Min Members"
-                    size="small"
-                    type="number"
-                    focused={true}
-                    required
-                  />
-                  <CommenTextField
-                    name="groupMembers.maxMembers"
-                    label="Max Members"
-                    size="small"
-                    type="number"
-                    focused={true}
-                    required
-                  />
-                </Box>
-                <Box sx={travelPackageStyle.customBox3}>
-                  <CommenTextField
-                    name="startLocation"
-                    label="Start Location *"
-                    size="small"
-                    required
-                    focused={true}
-                  />
-                  <CommenTextField
-                    name="endLocation"
-                    label="End Location "
-                    size="small"
-                    required
-                    focused={true}
-                  />
-                </Box>
-              </Paper>
-              {/* itinerary */}
-
-              {itineraryFields?.length > 0 && (
-                <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                  <Stack direction="column" mb={2}>
-                    <Typography variant="h6" fontWeight={600} gutterBottom>
-                      Itinerary
-                    </Typography>
-                    <Box sx={{ maxHeight: 470, overflowY: "auto", pr: 1 }}>
-                      {itineraryFields.map((item, index) => (
-                        <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
-                          <Typography variant="subtitle1">
-                            {`Day ${index + 1}`}
-                          </Typography>
-
-                          <CommenTextField
-                            name={`itinerary.${index}.title`}
-                            label="Title *"
-                            size="small"
-                            defaultValues=""
-                            focused={true}
-                            required
-                          />
-
-                          <CommenQuillEditor
-                            name={`itinerary.${index}.description`}
-                            label="Description *"
-                            required
-                            placeholder="Write itinerary details here..."
-                          />
-                        </Box>
-                      ))}
-                    </Box>
-                  </Stack>
+                    ))}
+                  </Box>
                 </Paper>
-              )}
+                {/*  Exclusion */}
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack sx={travelPackageStyle.customFaq}>
+                    <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                      <WarningIcon color="disabled" />
+                      <Typography variant="h6" fontWeight={600}>
+                        Exclusions
+                      </Typography>
+                      <CommonToolTip title="These things are not included in the trip package" />
+                    </Stack>
+                    <IconButton color="primary" onClick={handleAddExclusion}>
+                      <AddIcon />
+                    </IconButton>
+                  </Stack>
+                  <Box sx={{ maxHeight: 150, overflowY: "auto", pr: 1 }}>
+                    {exclusions.map((exclusion, index) => (
+                      <CommenTextField
+                        key={index}
+                        name={`exclusions[${index}]`}
+                        label={`Exclusion ${index + 1}*`}
+                        required
+                        size="small"
+                        focused={true}
+                      />
+                    ))}
+                  </Box>
+                </Paper>
 
-              {/* (Inclusions) */}
-              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                <Stack sx={travelPackageStyle.customFaq}>
-                  <Typography variant="h6" fontWeight={600}>
-                    Inclusions
-                  </Typography>
-                  <IconButton color="primary" onClick={handleAddInclusion}>
-                    <AddIcon />
-                  </IconButton>
-                </Stack>
-                <Box sx={{ maxHeight: 150, overflowY: "auto", pr: 1 }}>
-                  {inclusions.map((inclusion, index) => (
-                    <CommenTextField
-                      key={index}
-                      name={`inclusions[${index}]`}
-                      label={`Inclusion ${index + 1}*`}
-                      required
-                      focused={true}
-                      size="small"
-                    />
-                  ))}
-                </Box>
-              </Paper>
-              {/*  Exclusion */}
-              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                <Stack sx={travelPackageStyle.customFaq}>
-                  <Typography variant="h6" fontWeight={600}>
-                    Exclusions
-                  </Typography>
-                  <IconButton color="primary" onClick={handleAddExclusion}>
-                    <AddIcon />
-                  </IconButton>
-                </Stack>
-                <Box sx={{ maxHeight: 150, overflowY: "auto", pr: 1 }}>
-                  {exclusions.map((exclusion, index) => (
-                    <CommenTextField
-                      key={index}
-                      name={`exclusions[${index}]`}
-                      label={`Exclusion ${index + 1}*`}
-                      required
-                      size="small"
-                      focused={true}
-                    />
-                  ))}
-                </Box>
-              </Paper>
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack sx={travelPackageStyle.customFaq}>
+                    <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                      <TodayIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        Batch Dates
+                      </Typography>
+                      <CommonToolTip title="Include batch dates for your trip package" />
+                    </Stack>
+                    <IconButton
+                      color="primary"
+                      onClick={() =>
+                        appendBathches({ fromDate: "", toDate: "" })
+                      }
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Stack>
 
-              {/* SEO */}
-              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                <Typography variant="h6" fontWeight={600}>
-                  Meta Tags
-                </Typography>
-                <CommenTextField
+                  <Box sx={commoncss.faqBox}>
+                    {batchesFields.map((item, index) => (
+                      <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
+                        <Stack sx={travelPackageStyle.customFaq}>
+                          <Typography variant="subtitle1">
+                            Batch Date {index + 1}
+                          </Typography>
+                          {batchesFields.length > 1 && (
+                            <IconButton
+                              color="error"
+                              onClick={() => removeBatches(index)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                        </Stack>
+
+                        <Stack direction="row" spacing={2}>
+                          <CommenTextField
+                            name={`batches.${index}.fromDate`}
+                            label="From Date *"
+                            type="date"
+                            required
+                            focused={true}
+                          />
+                          <CommenTextField
+                            name={`batches.${index}.toDate`}
+                            label="To Date *"
+                            type="date"
+                            required
+                            focused={true}
+                            sx={{ mt: 2 }}
+                          />
+                        </Stack>
+                      </Box>
+                    ))}
+                  </Box>
+                </Paper>
+
+                {/* SEO */}
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                    <SettingsIcon color="primary" />
+                    <Typography variant="h6" fontWeight="600">
+                      SEO Settings
+                    </Typography>
+                    <CommonToolTip title="SEO Settings" />
+                  </Stack>
+                  {/* Meta Tags Accordion */}
+                  <Box sx={commoncss.meta}>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}>
+                        {" "}
+                        <label>uid </label>{" "}
+                      </Box>
+                      <Box sx={commoncss.tooltipbox}>
+                        {" "}
+                        <CommonToolTip title="URL slug" />{" "}
+                      </Box>
+                      <Box sx={commoncss.fieldbox}>
+                        {" "}
+                        <CommenTextField
+                  name="slug"
+                  label="slug"
+                  size="small"
+                  disabled
+                  focused={true}
+                />
+                      </Box>
+                    </Box>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}>
+                        {" "}
+                        <label>Meta Title</label>{" "}
+                      </Box>
+                      <Box sx={commoncss.tooltipbox}>
+                        {" "}
+                        <CommonToolTip title="60 characters only" />
+                      </Box>
+                      <Box sx={commoncss.fieldbox}>
+                        {" "}
+                        <CommenTextField
                   name="seo.metaTitle"
                   label="Meta Title *"
                   required
@@ -850,83 +970,77 @@ const EditTravelPackage = () => {
                     maxLength: "Please do not exceed 60 characters",
                   }}
                 />
-                <CommenTextField
-                  name="seo.metaDescription"
-                  label="Meta Description *"
-                  multiline
+                      </Box>
+                    </Box>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}>
+                        <label>Keywords</label>
+                      </Box>
+                      <Box sx={commoncss.tooltipbox}>
+                        {" "}
+                        <CommonToolTip title="SEO friendly keywords" />
+                      </Box>
+                      <Box sx={commoncss.fieldbox}>
+                        {" "}
+                        <CommenTextField name="seo.keywords" label="keywords" />
+                      </Box>
+                    </Box>
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}>
+                        {" "}
+                        <label>Meta Description </label>
+                      </Box>
+                      <Box sx={commoncss.tooltipbox}>
+                        <CommonToolTip title="160 characters only" />
+                      </Box>
+                      <Box sx={commoncss.fieldbox}>
+                        {" "}
+                         <CommenTextField
+                  name="seo.metaTitle"
+                  label="Meta Title *"
                   required
-                  rows={3}
-                  maxLength={160}
+                  maxLength={60}
                   messages={{
-                    required: "Meta description is required",
-                    maxLength: "Please do not exceed 160 characters",
+                    required: "Meta title is required",
+                    maxLength: "Please do not exceed 60 characters",
                   }}
                 />
-                <CommenTextField name="seo.keywords" label="keywords" />
-                <CommenTextField
-                  name="slug"
-                  label="slug"
-                  size="small"
-                  disabled
-                  focused={true}
-                />
-              </Paper>
-              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
-                <Stack sx={travelPackageStyle.customFaq}>
-                  <Typography variant="h6" fontWeight={600}>
-                    Batch Dates
-                  </Typography>
-                  <IconButton
-                    color="primary"
-                    onClick={() =>
-                      appendBathches({ fromDate: "", toDate: "" })
-                    }
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </Stack>
-
-                <Box sx={commoncss.faqBox}>
-                  {batchesFields.map((item, index) => (
-                    <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
-                      <Stack sx={travelPackageStyle.customFaq}>
-                        <Typography variant="subtitle1">
-                          Batch Date {index + 1}
-                        </Typography>
-                        {batchesFields.length > 1 && (
-                          <IconButton
-                            color="error"
-                            onClick={() => removeBatches(index)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        )}
-                      </Stack>
-
-                      <Stack direction="row" spacing={2}>
-                        <CommenTextField
-                          name={`batches.${index}.fromDate`}
-                          label="From Date *"
-                          type="date"
-                          required
-                          focused={true}
-                        />
-                        <CommenTextField
-                          name={`batches.${index}.toDate`}
-                          label="To Date *"
-                          type="date"
-                          required
-                          focused={true}
-                          sx={{ mt: 2 }}
-                        />
-                      </Stack>
+                      </Box>
                     </Box>
-                  ))}
-                </Box>
-              </Paper>
+                  </Box>
 
+
+
+
+                </Paper>
+
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Box sx={travelPackageStyle.buttonBox}>
+                    <FormControlLabel
+                      control={
+                        <Controller
+                          name="isActive"
+                          control={methods.control}
+                          render={({ field }) => (
+                            <Switch {...field} checked={field.value} />
+                          )}
+                        />
+                      }
+                      label="Is Active"
+                    />
+                    <CommonButton
+                      sx={travelPackageStyle.customButton}
+                      type="submit"
+                      loading={loading}
+                      disabled={loading}
+                    >
+                      Submit
+                    </CommonButton>
+                  </Box>
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Box>
       </form>
     </FormProvider>

@@ -12,6 +12,7 @@ import {
   CardMedia,
   CircularProgress,
   Button,
+  Stack,
 } from "@mui/material";
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -19,6 +20,7 @@ import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown
 import { apiClient } from "../../lib/api-client";
 import { portfoliostyle } from "../../styles/portfolio";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
+import CommonButton from "../../commen-component/CommenButton/CommenButton";
 
 const PortfolioPage = () => {
   const methods = useForm({ defaultValues: { category: "all" } });
@@ -121,14 +123,16 @@ const PortfolioPage = () => {
           }}
         >
           <Typography variant="h5">Portfolio Gallery</Typography>
-          <Button
+           <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
+          <CommonButton
             variant="contained"
             color="primary"
             startIcon={<AddIcon />}
             onClick={handlePhoto}
           >
             Add Photos
-          </Button>
+          </CommonButton>
+          </Stack>
         </Paper>
 
         {/* Dropdown Filter */}
