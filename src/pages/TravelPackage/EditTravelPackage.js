@@ -248,13 +248,27 @@ const EditTravelPackage = () => {
   }, [param?.id, moodBasedList]);
 
   const onSubmit = async (data) => {
-    if (data.discount.type === "amount" && data.discount.amount > data.price) {
-      toast.error("Discount amount cannot be greater than price");
+    const price = parseFloat(data.price) || 0;
+    const discountAmount = parseFloat(data.discount.amount) || 0;
+    const discountPercentage = parseFloat(data.discount.percentage) || 0;
+
+    if (data.discount.type === "amount" && discountAmount < 0) {
+      toast.error("Discount amount cannot be negative");
       return;
     }
 
-    if (data.discount.type === "percentage" && data.discount.percentage > 100) {
-      toast.error("Discount percentage cannot be greater than 100%");
+    if (data.discount.type === "amount" && discountAmount >= price) {
+      toast.error("Discount amount cannot be greater than price or equall to price");
+      return;
+    }
+
+    if (data.discount.type === "percentage" && discountPercentage < 0) {
+      toast.error("Discount percentage cannot be negative");
+      return;
+    }
+
+    if (data.discount.type === "percentage" && discountPercentage >= 100) {
+      toast.error("Discount percentage cannot be greater than or equal to 100%");
       return;
     }
 
@@ -468,6 +482,23 @@ const EditTravelPackage = () => {
                       size="small"
                       minvalue={0}
                       maxvalue={price}
+                      rules={{
+                        validate: (value, formValues) => {
+                          const numValue = parseFloat(value) || 0;
+                          const numPrice = parseFloat(formValues.price) || 0;
+
+                          if (numValue < 0) {
+                            return "Discount amount cannot be negative";
+                          }
+                          if (
+                            formValues.discount.type === "amount" &&
+                            numValue > numPrice
+                          ) {
+                            return "Discount amount cannot exceed price";
+                          }
+                          return true;
+                        },
+                      }}
                     />
                   )}
                   {discount.type === "percentage" && (
@@ -479,6 +510,22 @@ const EditTravelPackage = () => {
                       size="small"
                       minvalue={0}
                       maxvalue={100}
+                      rules={{
+                        validate: (value, formValues) => {
+                          const numValue = parseFloat(value) || 0;
+
+                          if (numValue < 0) {
+                            return "Discount percentage cannot be negative";
+                          }
+                          if (
+                            formValues.discount.type === "percentage" &&
+                            numValue >= 100
+                          ) {
+                            return "Percentage discount cannot be 100% or more";
+                          }
+                          return true;
+                        },
+                      }}
                     />
                   )}
                 </Box>
