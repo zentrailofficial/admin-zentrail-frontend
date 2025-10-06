@@ -16,17 +16,20 @@ const commoncss = {
     color: "#fff",
     fontWeight: "600",
     textTransform: "none",
+    whiteSpace: "nowrap",
     "&:hover": {
       background: " linear-gradient(180deg, #5959b9be, #d24bff)",
     },
   },
-  apptop: {
+   apptop: (theme) => ({
     position: "fixed",
     zIndex: 1201,
     color: "linear-gradient(135deg, #75d9e6ff, #c843ff, #ff7eff)",
-    background: "white",
-    // background: "linear-gradient(135deg, #75d9e6ff, #c843ff, #ff7eff)"
-  },
+   background:
+      theme.palette.mode === "dark"
+        ? "linear-gradient(135deg, #1e1e1e, #3a3a3a)" 
+        : "white",
+  }),
   iconbtn: {
     mr: 2,
     display: { xs: "none", sm: "inline-flex" },
@@ -135,7 +138,7 @@ const commoncss = {
   fieldbox1: {
     width: "630px"
   },
-   listBox: {
+  listBox: {
     height: 680,
     width: "100%",
     p: 2,
