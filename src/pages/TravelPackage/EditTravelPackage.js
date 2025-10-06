@@ -40,12 +40,15 @@ const EditTravelPackage = () => {
     defaultValues: {
       type: "",
       offbeat: false,
+      subtitle: "",
       isActive: true,
       difficultyLevel: "Easy",
       season: "",
       featuredImage: [],
+      batches: [{ fromDate: "", toDate: "" }],
       // moodOfJourney:{ value: "For Peace & Calm", label: "For Peace & Calm" },
       altitude: "",
+      // altitudeunit: "",
       itinerary: [{ title: "", description: "" }],
       faq: [{ question: "", answer: "" }],
       seo: {
@@ -70,6 +73,7 @@ const EditTravelPackage = () => {
     watch,
     setValue,
     handleSubmit,
+    setFocus,
     formState: { isSubmitting, errors },
   } = methods;
   const [exclusions, setExclusions] = useState([""]);
@@ -94,12 +98,42 @@ const EditTravelPackage = () => {
     control,
     name: "itinerary",
   });
+  const {
+    fields: batchesFields,
+    append: appendBathches,
+    remove: removeBatches,
+    replace: replaceBatches
+  } = useFieldArray({
+    control,
+    name: "batches",
+  });
   const duration = watch("duration");
   const titleValue = watch("title");
 
   const discount = watch("discount");
 
   const price = watch("price");
+  // 🧠 Automatically reset other discount field to 0 based on selected type
+  useEffect(() => {
+    if (discount?.type === "amount") {
+      setValue("discount.percentage", 0);
+    } else if (discount?.type === "percentage") {
+      setValue("discount.amount", 0);
+    }
+  }, [discount?.type, setValue]);
+
+
+  const onError = (errors) => {
+    const firstErrorField = Object.keys(errors)[0];
+    if (firstErrorField) {
+      setFocus(firstErrorField);
+      document.querySelector(`[name="${firstErrorField}"]`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      toast.error(`Please check "${firstErrorField}" field`);
+    }
+  };
 
   useEffect(() => {
     const days = parseInt(duration) || 0;
@@ -127,7 +161,7 @@ const EditTravelPackage = () => {
         const moodBased = response.data.data;
         if (Array.isArray(moodBased)) {
           const data = moodBased.map((item) => ({
-            value: item,
+            value: item.title,
             label: item.title,
           }))
           setMoodBasedList(data);
@@ -140,6 +174,8 @@ const EditTravelPackage = () => {
     fetchMoodBased();
   }, []);
 
+  console.log(moodBasedList)
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -147,51 +183,89 @@ const EditTravelPackage = () => {
           `api/travel-packages/${travelPackageId}`
         );
         const travelPackage = response.data.data;
+        console.log(response.data.data)
+        const parsedInclusions = Array.isArray(travelPackage?.inclusions)
+          ? JSON.parse(travelPackage?.inclusions[0] || "[]")
+          : [];
+
+        const parsedExclusions = Array.isArray(travelPackage?.exclusions)
+          ? JSON.parse(travelPackage?.exclusions[0] || "[]")
+          : [];
+        const parsedBatches = Array.isArray(travelPackage.batches)
+          ? travelPackage.batches.map((b) => ({
+            ...b,
+            fromDate: b.fromDate ? b.fromDate.split("T")[0] : "",
+            toDate: b.toDate ? b.toDate.split("T")[0] : "",
+          }))
+          : [];
+        const matchedMood =
+          moodBasedList.find(
+            (item) => item.value === travelPackage?.moodOfJourney?.title
+          ) || null;
+
+        console.log(matchedMood)
+
         methods.reset({
           ...travelPackage,
-          moodOfJourney: travelPackage.moodOfJourney?.title.toLowerCase(),
+          moodOfJourney: matchedMood?.label,
           groupMembers: travelPackage.groupMembers[0],
           featuredImage: travelPackage.featuredImage?.url
             ? [
-                {
-                  url: travelPackage.featuredImage.url,
-                  altText: travelPackage.featuredImage.altText,
-                },
-              ]
+              {
+                url: travelPackage.featuredImage.url,
+                altText: travelPackage.featuredImage.alt,
+              },
+            ]
             : [],
           gallery: Array.isArray(travelPackage.gallery)
             ? travelPackage.gallery.map((img) => ({
-                url: img.url,
-                altText: img.alt || "",
-              }))
+              url: img.url,
+              altText: img.alt || "",
+            }))
             : [],
+          batches: parsedBatches,
           locationAddress: travelPackage.locationAddress || "",
           discount: {
             amount: travelPackage.discount.amount,
             percentage: travelPackage.discount.percentage,
             type: travelPackage.discount.amount ? "amount" : "percentage",
           },
+          // itinerary: parsedItinerary,
+          inclusions: parsedInclusions,
+          exclusions: parsedExclusions,
         });
+        setInclusions(parsedInclusions);
+        setExclusions(parsedExclusions);
+        replaceBatches(parsedBatches);
         setFormKey((prev) => prev + 1);
       } catch (error) {
         console.error(error);
       }
     };
-
     if (moodBasedList?.length > 0) {
       fetchData();
     }
   }, [param?.id, moodBasedList]);
 
   const onSubmit = async (data) => {
-    
+    if (data.discount.type === "amount" && data.discount.amount > data.price) {
+      toast.error("Discount amount cannot be greater than price");
+      return;
+    }
+
+    if (data.discount.type === "percentage" && data.discount.percentage > 100) {
+      toast.error("Discount percentage cannot be greater than 100%");
+      return;
+    }
+
     if (data.featuredImage?.length == 0) {
       toast.error("Featured image is required");
+      setFocus("featuredImage");
       return;
     }
     if (data.gallery?.length < 3) {
       toast.error("Gallery requires at least 3 images");
-
+      setFocus("gallery");
       return;
     }
     setLoading(true);
@@ -201,6 +275,7 @@ const EditTravelPackage = () => {
       formData.append("type", data.type);
       formData.append("offbeat", data.offbeat);
       formData.append("title", data.title);
+      formData.append("subtitle", data.subtitle);
       formData.append("slug", data.slug);
       formData.append("description", data.description);
       formData.append("price", data.price);
@@ -208,6 +283,9 @@ const EditTravelPackage = () => {
       // Package Details
       formData.append("duration", data.duration);
       formData.append("altitude", data.altitude);
+      if (data?.altitudeunit && data.altitudeunit.trim() !== "") {
+        formData.append("altitudeunit", data.altitudeunit);
+      }
       formData.append("difficultyLevel", data.difficultyLevel || "");
       formData.append("season", data.season);
       formData.append("startLocation", data.startLocation);
@@ -224,13 +302,22 @@ const EditTravelPackage = () => {
       //moodBased
       formData.append("moodOfJourney", JSON.stringify(data.moodOfJourney));
       //image
-      if (data?.featuredImage[0]) {
-        formData.append("featuredImage", data?.featuredImage[0]?.url);
-        formData.append(
-          "featuredImageAlt",
-          data.featuredImage[0].altText || ""
-        );
+      // if (data?.featuredImage[0]) {
+      //   formData.append("featuredImage", data?.featuredImage[0]?.url);
+      //   formData.append(
+      //     "featuredImageAlt",
+      //     data.featuredImage[0].altText || ""
+      //   );
+      // }
+      if (data?.featuredImage?.[0]?.file) {
+        formData.append("featuredImage", data.featuredImage[0].file);
+        formData.append("featuredAlt", data.featuredImage[0].altText);
+      } else if (data?.featuredImage?.[0]?.url) {
+        formData.append("featuredImageUrl", data.featuredImage[0].url);
+        formData.append("featuredAlt", data.featuredImage[0].altText);
       }
+
+
       data.gallery.forEach((item, index) => {
         if (item.url) {
           formData.append("gallery", item.url);
@@ -242,6 +329,7 @@ const EditTravelPackage = () => {
       formData.append("faq", JSON.stringify(data.faq));
       //meta
       formData.append("seo", JSON.stringify(data.seo) || "");
+      formData.append("batches", JSON.stringify(data.batches));
       // formData.append("meta[description]", data.meta?.description || "");
       // formData.append("meta[keywords]", data.meta?.keywords || "");
       const response = await apiClient.patch(
@@ -270,7 +358,7 @@ const EditTravelPackage = () => {
 
   return (
     <FormProvider {...methods} key={formKey}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit, onError)}>
         <Box>
           <Grid
             container
@@ -318,13 +406,21 @@ const EditTravelPackage = () => {
                   size="small"
                   maxLength={70}
                 />
+                <CommenTextField
+                  name="subtitle"
+                  label="subtitle Name *"
+                  required
+                  focused={true}
+                  size="small"
+                  maxLength={70}
+                />
 
                 {/* Type of Mood Of Journey */}
 
                 <Box sx={travelPackageStyle.customBox3}>
                   <CommonDropdown
                     name="moodOfJourney"
-                    label="Select Category *"
+                    label="Select Moodbase Subcategory *"
                     options={moodBasedList}
                     // onChangeValues={handleMoodOfJourneyChange}
                     required
@@ -432,9 +528,9 @@ const EditTravelPackage = () => {
                 <ImageUpload
                   name="featuredImage"
                   label="Choose Package Images"
-                  multiple
+                  // multiple
                   altText
-                  // required
+                // required
                 />
               </Paper>
 
@@ -541,13 +637,24 @@ const EditTravelPackage = () => {
                 {/* trek only */}
                 {methods.watch("type") == "trek" && (
                   <>
-                    <CommenTextField
-                      name="altitude"
-                      label="Altitude *"
-                      // required
-                      size="small"
-                      focused={true}
-                    />
+
+                    <Stack flexDirection="row" gap={3}>
+                      <CommenTextField
+                        name="altitude"
+                        label="Altitude *"
+                        type="number"
+                        // required
+                        size="small"
+                      />
+                      <CommonDropdown
+                        name="altitudeunit"
+                        label="Altitude Unit *"
+                        options={[
+                          { value: "meter", label: "meter" },
+                          { value: "feet", label: "feet" },
+                        ]}
+                      />
+                    </Stack>
                     <CommonDropdown
                       name="difficultyLevel"
                       label="Difficulty Level *"
@@ -556,7 +663,7 @@ const EditTravelPackage = () => {
                         { value: "Moderate", label: "Moderate" },
                         { value: "Difficult", label: "Difficult" },
                       ]}
-                      // required
+                    // required
                     />
                   </>
                 )}
@@ -717,6 +824,60 @@ const EditTravelPackage = () => {
                   focused={true}
                 />
               </Paper>
+              <Paper elevation={3} sx={travelPackageStyle.addTravel}>
+                <Stack sx={travelPackageStyle.customFaq}>
+                  <Typography variant="h6" fontWeight={600}>
+                    Batch Dates
+                  </Typography>
+                  <IconButton
+                    color="primary"
+                    onClick={() =>
+                      appendBathches({ fromDate: "", toDate: "" })
+                    }
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </Stack>
+
+                <Box sx={commoncss.faqBox}>
+                  {batchesFields.map((item, index) => (
+                    <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
+                      <Stack sx={travelPackageStyle.customFaq}>
+                        <Typography variant="subtitle1">
+                          Batch Date {index + 1}
+                        </Typography>
+                        {batchesFields.length > 1 && (
+                          <IconButton
+                            color="error"
+                            onClick={() => removeBatches(index)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
+                      </Stack>
+
+                      <Stack direction="row" spacing={2}>
+                        <CommenTextField
+                          name={`batches.${index}.fromDate`}
+                          label="From Date *"
+                          type="date"
+                          required
+                          focused={true}
+                        />
+                        <CommenTextField
+                          name={`batches.${index}.toDate`}
+                          label="To Date *"
+                          type="date"
+                          required
+                          focused={true}
+                          sx={{ mt: 2 }}
+                        />
+                      </Stack>
+                    </Box>
+                  ))}
+                </Box>
+              </Paper>
+
             </Grid>
           </Grid>
         </Box>
