@@ -101,7 +101,14 @@ const EditCategoryServices = () => {
                     <Box sx={commoncss.fieldbox1}>
                       <CommenTextField name="name" focused={true} label="Category Name" required /> </Box>
                   </Box>
-                  <CommenQuillEditor name="description" required minLength={30} label="Category description" />
+                  <label>Description *</label>
+                  <CommenTextField
+                    name="description"
+                    label="Description"
+                    multiline
+                    rows={4}
+                    focused={true}
+                  />
                   <Stack
                     direction="row"
                     alignItems="center"

@@ -97,7 +97,13 @@ const CreateCategoryServices = () => {
                         required
                       /> </Box>
                   </Box>
-                  <CommenQuillEditor name="description" required minLength={30} label="Category description" />
+                  <label>Description *</label>
+                  <CommenTextField
+                    name="description"
+                    label="Description"
+                    multiline
+                    rows={4}
+                  />
                   <Stack
                     direction="row"
                     alignItems="center"
