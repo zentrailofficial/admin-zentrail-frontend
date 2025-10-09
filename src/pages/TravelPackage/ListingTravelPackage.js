@@ -36,7 +36,7 @@ const ListingTravelPackage = () => {
           moodOfJourney: val?.moodOfJourney?.title,
           season: val?.season,
           weatherLocation: val?.weatherLocation,
-          isActive: val?.isActive ? "Active " : "Inactive",
+          isActive: val?.isActive ? "Active" : "Inactive",
           discount: val?.discount.amount
             ? `₹ ${val?.discount.amount}`
             : val?.discount?.percentage
@@ -79,7 +79,7 @@ const ListingTravelPackage = () => {
     { field: "sr", headerName: "Sr", width: 70 },
     { field: "name", headerName: "Package Name", width: 180, flex: 1 },
     // { field: "duration", headerName: "Duration", flex: 1 },
-    { field: "moodOfJourney", headerName: "Category", width: 200 },
+    { field: "moodOfJourney", headerName: "Mood Of Journey", width: 200 },
     { field: "type", headerName: "Type", width: 200 },
 
     // { field: "season", headerName: "Season", flex: 1 },
@@ -109,8 +109,8 @@ const ListingTravelPackage = () => {
       renderCell: (params) => (
         <span
           style={{
-            color: params.value === "Active" ? "red" : "green",
-            backgroundColor: params.value === "Active" ? "#FFDCD1" : "#E9FFDB",
+            color: params.value !== "Active" ? "red" : "green",
+            backgroundColor: params.value !== "Active" ? "#FFDCD1" : "#E9FFDB",
             fontWeight: "bold",
             padding: "5px 15px",
             borderRadius: "5px",

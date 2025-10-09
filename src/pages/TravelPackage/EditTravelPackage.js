@@ -13,7 +13,11 @@ import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import travelPackageStyle from "../../styles/travelPackage.js";
 import ImageUpload from "../../commen-component/ImageUpload/ImageUpload.js";
-import { Add as AddIcon, Delete as DeleteIcon, Image as ImageIcon, } from "@mui/icons-material";
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  Image as ImageIcon,
+} from "@mui/icons-material";
 import CommonButton from "../../commen-component/CommenButton/CommenButton.js";
 import { Switch, FormControlLabel } from "@mui/material";
 import { apiClient } from "../../lib/api-client.js";
@@ -21,16 +25,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip.js";
 import commoncss from "../../styles/commoncss.js";
 import LocationSearch from "../../commen-component/Address/autocomplete.js";
-import PinDropIcon from '@mui/icons-material/PinDrop';
+import PinDropIcon from "@mui/icons-material/PinDrop";
 import BookIcon from "@mui/icons-material/Book";
-import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
-import BackpackIcon from '@mui/icons-material/Backpack';
+import BackpackIcon from "@mui/icons-material/Backpack";
 import SettingsIcon from "@mui/icons-material/Settings";
-import TodayIcon from '@mui/icons-material/Today';
-import WarningIcon from '@mui/icons-material/Warning';
-import AddTaskIcon from '@mui/icons-material/AddTask';
-import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
+import TodayIcon from "@mui/icons-material/Today";
+import WarningIcon from "@mui/icons-material/Warning";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import FormatListBulletedAddIcon from "@mui/icons-material/FormatListBulletedAdd";
 
 const seasonOptions = [
   { value: "summer-trips", label: "Summer-trips" },
@@ -112,7 +116,7 @@ const EditTravelPackage = () => {
     fields: batchesFields,
     append: appendBathches,
     remove: removeBatches,
-    replace: replaceBatches
+    replace: replaceBatches,
   } = useFieldArray({
     control,
     name: "batches",
@@ -131,7 +135,6 @@ const EditTravelPackage = () => {
       setValue("discount.amount", 0);
     }
   }, [discount?.type, setValue]);
-
 
   const onError = (errors) => {
     const firstErrorField = Object.keys(errors)[0];
@@ -173,7 +176,7 @@ const EditTravelPackage = () => {
           const data = moodBased.map((item) => ({
             value: item.title,
             label: item.title,
-          }))
+          }));
           setMoodBasedList(data);
         }
       } catch (error) {
@@ -184,7 +187,7 @@ const EditTravelPackage = () => {
     fetchMoodBased();
   }, []);
 
-  console.log(moodBasedList)
+  console.log(moodBasedList);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -193,7 +196,7 @@ const EditTravelPackage = () => {
           `api/travel-packages/${travelPackageId}`
         );
         const travelPackage = response.data.data;
-        console.log(response.data.data)
+        console.log(response.data.data);
         const parsedInclusions = Array.isArray(travelPackage?.inclusions)
           ? JSON.parse(travelPackage?.inclusions[0] || "[]")
           : [];
@@ -203,17 +206,24 @@ const EditTravelPackage = () => {
           : [];
         const parsedBatches = Array.isArray(travelPackage.batches)
           ? travelPackage.batches.map((b) => ({
-            ...b,
-            fromDate: b.fromDate ? b.fromDate.split("T")[0] : "",
-            toDate: b.toDate ? b.toDate.split("T")[0] : "",
-          }))
+              ...b,
+              fromDate: b.fromDate ? b.fromDate.split("T")[0] : "",
+              toDate: b.toDate ? b.toDate.split("T")[0] : "",
+            }))
           : [];
         const matchedMood =
           moodBasedList.find(
             (item) => item.value === travelPackage?.moodOfJourney?.title
           ) || null;
 
-        console.log(matchedMood)
+        console.log(matchedMood);
+
+        const parsedItinerary = Array.isArray(travelPackage.itinerary)
+          ? travelPackage.itinerary.map((b) => ({
+              title: b.title || "",
+              description: b.description || "",
+            }))
+          : [];
 
         methods.reset({
           ...travelPackage,
@@ -221,17 +231,17 @@ const EditTravelPackage = () => {
           groupMembers: travelPackage.groupMembers[0],
           featuredImage: travelPackage.featuredImage?.url
             ? [
-              {
-                url: travelPackage.featuredImage.url,
-                altText: travelPackage.featuredImage.alt,
-              },
-            ]
+                {
+                  url: travelPackage.featuredImage.url,
+                  altText: travelPackage.featuredImage.alt,
+                },
+              ]
             : [],
           gallery: Array.isArray(travelPackage.gallery)
             ? travelPackage.gallery.map((img) => ({
-              url: img.url,
-              altText: img.alt || "",
-            }))
+                url: img.url,
+                altText: img.alt || "",
+              }))
             : [],
           batches: parsedBatches,
           locationAddress: travelPackage.locationAddress || "",
@@ -240,13 +250,14 @@ const EditTravelPackage = () => {
             percentage: travelPackage.discount.percentage,
             type: travelPackage.discount.amount ? "amount" : "percentage",
           },
-          // itinerary: parsedItinerary,
+          itinerary: parsedItinerary,
           inclusions: parsedInclusions,
           exclusions: parsedExclusions,
         });
         setInclusions(parsedInclusions);
         setExclusions(parsedExclusions);
         replaceBatches(parsedBatches);
+        replaceItinerary(parsedItinerary);
         setFormKey((prev) => prev + 1);
       } catch (error) {
         console.error(error);
@@ -268,7 +279,9 @@ const EditTravelPackage = () => {
     }
 
     if (data.discount.type === "amount" && discountAmount >= price) {
-      toast.error("Discount amount cannot be greater than price or equall to price");
+      toast.error(
+        "Discount amount cannot be greater than price or equall to price"
+      );
       return;
     }
 
@@ -278,7 +291,9 @@ const EditTravelPackage = () => {
     }
 
     if (data.discount.type === "percentage" && discountPercentage >= 100) {
-      toast.error("Discount percentage cannot be greater than or equal to 100%");
+      toast.error(
+        "Discount percentage cannot be greater than or equal to 100%"
+      );
       return;
     }
 
@@ -340,7 +355,6 @@ const EditTravelPackage = () => {
         formData.append("featuredImageUrl", data.featuredImage[0].url);
         formData.append("featuredAlt", data.featuredImage[0].altText);
       }
-
 
       data.gallery.forEach((item, index) => {
         if (item.url) {
@@ -594,7 +608,7 @@ const EditTravelPackage = () => {
                     label="Choose Package Images"
                     // multiple
                     altText
-                  // required
+                    // required
                   />
                 </Paper>
                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
@@ -664,9 +678,7 @@ const EditTravelPackage = () => {
                     ))}
                   </Box>
                   {/* Gallery */}
-
                 </Paper>
-
               </Grid>
 
               {/* Right side */}
@@ -681,8 +693,14 @@ const EditTravelPackage = () => {
                     <CommonToolTip title="Details of your trip package" />
                   </Stack>
                   <Box sx={commoncss.metabox1}>
-                    <Box sx={commoncss.labelbox}> <label >Duration*</label> </Box>
-                    <Box sx={commoncss.tooltipbox}> <CommonToolTip title="You can also type 4days/5Nights here" /></Box>
+                    <Box sx={commoncss.labelbox}>
+                      {" "}
+                      <label>Duration*</label>{" "}
+                    </Box>
+                    <Box sx={commoncss.tooltipbox}>
+                      {" "}
+                      <CommonToolTip title="You can also type 4days/5Nights here" />
+                    </Box>
                     <Box sx={commoncss.fieldbox1}>
                       <CommenTextField
                         name="duration"
@@ -691,7 +709,8 @@ const EditTravelPackage = () => {
                         minLength={5}
                         focused={true}
                         size="small"
-                      /> </Box>
+                      />{" "}
+                    </Box>
                   </Box>
 
                   {/* trek only */}
@@ -722,7 +741,7 @@ const EditTravelPackage = () => {
                           { value: "Moderate", label: "Moderate" },
                           { value: "Difficult", label: "Difficult" },
                         ]}
-                      // required
+                        // required
                       />
                     </>
                   )}
@@ -768,7 +787,12 @@ const EditTravelPackage = () => {
                 {itineraryFields?.length > 0 && (
                   <Paper elevation={3} sx={commoncss.cardlineargradient}>
                     <Stack direction="column" mb={2}>
-                      <Stack direction="row" alignItems="center" spacing={2} mb={3}>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={2}
+                        mb={3}
+                      >
                         <FormatListBulletedAddIcon color="primary" />
                         <Typography variant="h6" fontWeight={600} gutterBottom>
                           Itinerary
@@ -778,7 +802,10 @@ const EditTravelPackage = () => {
 
                       <Box sx={{ maxHeight: 470, overflowY: "auto", pr: 1 }}>
                         {itineraryFields.map((item, index) => (
-                          <Box key={item.id} sx={travelPackageStyle.customFaqBox}>
+                          <Box
+                            key={item.id}
+                            sx={travelPackageStyle.customFaqBox}
+                          >
                             <Typography variant="subtitle1">
                               {`Day ${index + 1}`}
                             </Typography>
@@ -808,7 +835,12 @@ const EditTravelPackage = () => {
                 {/* (Inclusions) */}
                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
                   <Stack sx={travelPackageStyle.customFaq}>
-                    <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={1}
+                    >
                       <AddTaskIcon color="primary" />
                       <Typography variant="h6" fontWeight={600}>
                         Inclusions
@@ -835,7 +867,12 @@ const EditTravelPackage = () => {
                 {/*  Exclusion */}
                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
                   <Stack sx={travelPackageStyle.customFaq}>
-                    <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={1}
+                    >
                       <WarningIcon color="disabled" />
                       <Typography variant="h6" fontWeight={600}>
                         Exclusions
@@ -862,7 +899,12 @@ const EditTravelPackage = () => {
 
                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
                   <Stack sx={travelPackageStyle.customFaq}>
-                    <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={1}
+                    >
                       <TodayIcon color="primary" />
                       <Typography variant="h6" fontWeight={600}>
                         Batch Dates
@@ -941,12 +983,12 @@ const EditTravelPackage = () => {
                       <Box sx={commoncss.fieldbox}>
                         {" "}
                         <CommenTextField
-                  name="slug"
-                  label="slug"
-                  size="small"
-                  disabled
-                  focused={true}
-                />
+                          name="slug"
+                          label="slug"
+                          size="small"
+                          disabled
+                          focused={true}
+                        />
                       </Box>
                     </Box>
                     <Box sx={commoncss.metabox1}>
@@ -961,15 +1003,15 @@ const EditTravelPackage = () => {
                       <Box sx={commoncss.fieldbox}>
                         {" "}
                         <CommenTextField
-                  name="seo.metaTitle"
-                  label="Meta Title *"
-                  required
-                  maxLength={60}
-                  messages={{
-                    required: "Meta title is required",
-                    maxLength: "Please do not exceed 60 characters",
-                  }}
-                />
+                          name="seo.metaTitle"
+                          label="Meta Title *"
+                          required
+                          maxLength={60}
+                          messages={{
+                            required: "Meta title is required",
+                            maxLength: "Please do not exceed 60 characters",
+                          }}
+                        />
                       </Box>
                     </Box>
                     <Box sx={commoncss.metabox1}>
@@ -995,23 +1037,19 @@ const EditTravelPackage = () => {
                       </Box>
                       <Box sx={commoncss.fieldbox}>
                         {" "}
-                         <CommenTextField
-                  name="seo.metaTitle"
-                  label="Meta Title *"
-                  required
-                  maxLength={60}
-                  messages={{
-                    required: "Meta title is required",
-                    maxLength: "Please do not exceed 60 characters",
-                  }}
-                />
+                        <CommenTextField
+                          name="seo.metaTitle"
+                          label="Meta Title *"
+                          required
+                          maxLength={60}
+                          messages={{
+                            required: "Meta title is required",
+                            maxLength: "Please do not exceed 60 characters",
+                          }}
+                        />
                       </Box>
                     </Box>
                   </Box>
-
-
-
-
                 </Paper>
 
                 <Paper elevation={3} sx={commoncss.cardlineargradient}>

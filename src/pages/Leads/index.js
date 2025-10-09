@@ -19,8 +19,10 @@ export default function InquiryTable() {
     {
       field: "message", headerName: "Message", flex: 2,
       renderCell: (params) => (
-        <span style={{ color: params.value ? "black" : "red" }}>
-          {params.value ? params.value : "No message"}
+        // console.log(params?.row?.extraFields?.message)
+        <span style={{ color: params.value || params?.row?.extraFields?.message ? "black" : "red" }}>
+          {params.value ? params.value :params?.row?.extraFields?.message ? params?.row?.extraFields?.message: "No message" }
+          
         </span>
       )
     },
@@ -33,6 +35,7 @@ export default function InquiryTable() {
         setLoading(true);
         const res = await apiClient.get("/api/inquiryform");
         setRows(res.data.data || []);
+        console.log(res.data.data);
       } catch (error) {
         console.error("Error fetching inquiries:", error);
       } finally {
