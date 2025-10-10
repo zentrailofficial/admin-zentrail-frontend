@@ -36,6 +36,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import SatelliteIcon from '@mui/icons-material/Satellite';
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
+import { apiClient } from "../../lib/api-client";
 
 const FULL_DRAWER_WIDTH = 240;
 const MINI_DRAWER_WIDTH = 60;
@@ -97,11 +98,39 @@ export default function Navbar() {
   const staticItems = [
     { title: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
   ];
+  // console.log(user)
+  // console.log(user?.panel)
+  // console.log(user?.allowedModels)
+  const panelType = user?.panel;
+  // console.log(user?.allowedModels?.[panelType])
+
+  const fetchApiForPanelToken = async (val) => {
+    console.log(val?.target?.innerText)
+    const response = await apiClient.post("/api/auth/superadmin/token", { "panel": val?.target?.innerText });
+    console.log(response?.data)
+  }
+
+  // const NAV_ITEMS = [
+  //   ...staticItems,
+  //   ...user?.allowedModels?.[panelType]?.map((key) => sidebarMap[key]).filter(Boolean), 
+  // ];
 
   const NAV_ITEMS = [
     ...staticItems,
-    ...user?.allowedModels?.map((key) => sidebarMap[key]).filter(Boolean), 
+    ...(user?.allowedModels?.[panelType]
+      ? user.allowedModels[panelType].map((key) => sidebarMap[key]).filter(Boolean)
+      : [])
   ];
+
+  // const NAV_ITEMS = [
+  //   ...staticItems,
+  //   ...Object.values(user?.allowedModels || {})
+  //     .flat() // flatten all arrays
+  //     .map((key) => sidebarMap[key])
+  //     .filter(Boolean)
+  // ];
+
+
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -129,7 +158,7 @@ export default function Navbar() {
   const drawerContent = (
     <div>
       <Toolbar sx={{ justifyContent: "center" }} />
-      <List>
+      {user?.role !== "superadmin" ? <List>
         {NAV_ITEMS.map((item) => {
           const isActive = location.pathname === item.path;
 
@@ -173,7 +202,10 @@ export default function Navbar() {
             </ListItemButton>
           );
         })}
-      </List>
+      </List> :
+        <List>
+          {user?.panel?.map((val) => <ListItemButton onClick={(val) => fetchApiForPanelToken(val)}>{val}</ListItemButton>)}
+        </List>}
     </div>
   );
 
@@ -200,7 +232,7 @@ export default function Navbar() {
           </IconButton>
           <Typography
             variant="h6"
-            sx={[commoncss.navtypography,{textTransform: 'capitalize'}]}>
+            sx={[commoncss.navtypography, { textTransform: 'capitalize' }]}>
             {user.panel === "travel" ? 'Zentrail' : user.panel} Admin Panel
           </Typography>
           <IconButton onClick={toggleColorMode}

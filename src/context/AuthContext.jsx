@@ -5,13 +5,13 @@ const AuthContext = createContext();
 const defaultUser = {
   name: "",
   role: "",
-  panel: "",
+  panel: [],
   canEdit: false,
   canDelete: false,
   canView: false,
   canAdd: false,
   isLoggedIn: false,
-  allowedModels:[]
+  allowedModels:{}
 };
 
 export const AuthProvider = ({ children }) => {

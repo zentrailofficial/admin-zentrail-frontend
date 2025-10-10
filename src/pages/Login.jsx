@@ -37,7 +37,7 @@ const Login = () => {
     setLoading(true);
     try {
       const res = await apiClient.post("/api/auth/login", data);
-      login({ ...res?.data?.user, panel: res?.data?.panel,allowedModels:res?.data?.allowedModels });
+      login({ ...res?.data?.user, panel: res?.data?.panels,allowedModels:res?.data?.allowedModels });
       const { token } = res.data;
       Cookies.set("Admin_access", token, { expires: 7 });
       navigate("/dashboard");
