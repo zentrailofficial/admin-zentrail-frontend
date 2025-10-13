@@ -29,6 +29,7 @@ import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import commoncss from "../../styles/commoncss";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { isAllowedKey, sanitizeSlug } from "../../utils/helperFunctions";
+import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
 
 const AddBlogForm = () => {
   const [categoryOptions, setCategoryOptions] = useState([]);
@@ -184,13 +185,23 @@ const AddBlogForm = () => {
                       />
                     </Box>
                   </Box>
-                  <CommenQuillEditor
+                 <Box sx={commoncss.editorBox}>
+                    <label>Description *</label>
+                    <CustomCKEditor
+                      name="description"
+                      required
+                      minLength={30}
+                      placeholder="Write blog content here..."
+                      height="500px"
+                    />
+                    </Box>
+                  {/* <CommenQuillEditor
                     name="description"
                     label="Description *"
                     required
                     minLength={30}
                     placeholder="Write blog content here..."
-                  />
+                  /> */}
                   <Stack direction="row" alignItems="center" spacing={2} mb={1}>
                     <CategoryIcon color="primary" />
                     <Typography variant="h6" fontWeight={600}>

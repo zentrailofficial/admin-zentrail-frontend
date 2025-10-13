@@ -20,6 +20,7 @@ import BookIcon from "@mui/icons-material/Book";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import ImageIcon from "@mui/icons-material/Image";
+import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
 
 const CreateCategoryServices = () => {
   const methods = useForm({
@@ -97,13 +98,23 @@ const CreateCategoryServices = () => {
                         required
                       /> </Box>
                   </Box>
-                  <label>Description *</label>
+                  <Box sx={commoncss.editorBox}>
+                    <label>Description *</label>
+                    <CustomCKEditor
+                      name="description"
+                      required
+                      minLength={30}
+                      placeholder="Write content here..."
+                      height="500px"
+                    />
+                  </Box>
+                  {/* <label>Description *</label>
                   <CommenTextField
                     name="description"
                     label="Description"
                     multiline
                     rows={4}
-                  />
+                  /> */}
                   <Stack
                     direction="row"
                     alignItems="center"

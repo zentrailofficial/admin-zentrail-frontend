@@ -34,6 +34,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import SettingsIcon from "@mui/icons-material/Settings";
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import SkeletonLoader from "../../commen-component/Reusable/SkeletonLoader";
+import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
 
 
 const EditSubCategory = () => {
@@ -278,14 +279,24 @@ const EditSubCategory = () => {
                           altText
                         // defaultImage={defaultImage}
                         />
-                        <CommenQuillEditor
+                        <Box sx={commoncss.editorBox}>
+                          <label>Description *</label>
+                          <CustomCKEditor
+                            name="description"
+                            required
+                            minLength={30}
+                            placeholder="Write content here..."
+                            height="500px"
+                          />
+                        </Box>
+                        {/* <CommenQuillEditor
                           name="description"
                           required minLength={30}
-                          label="Category description" />
+                          label="Category description" /> */}
 
                       </Box>
                     </Paper>
-                       <Paper elevation={3}
+                    <Paper elevation={3}
                       sx={commoncss.cardlineargradient}>
 
                       <Stack sx={travelPackageStyle.customFaq}>
@@ -352,7 +363,7 @@ const EditSubCategory = () => {
                         <CommonToolTip title=" SEO Settings" />
                       </Stack>
                       <Box sx={commoncss.meta}>
-                         <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.metabox1}>
                           <Box sx={commoncss.labelbox}>
                             <label>Slug</label>
                           </Box>

@@ -35,6 +35,7 @@ import TodayIcon from "@mui/icons-material/Today";
 import WarningIcon from "@mui/icons-material/Warning";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import FormatListBulletedAddIcon from "@mui/icons-material/FormatListBulletedAdd";
+import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2.js";
 
 const seasonOptions = [
   { value: "summer-trips", label: "Summer-trips" },
@@ -206,10 +207,10 @@ const EditTravelPackage = () => {
           : [];
         const parsedBatches = Array.isArray(travelPackage.batches)
           ? travelPackage.batches.map((b) => ({
-              ...b,
-              fromDate: b.fromDate ? b.fromDate.split("T")[0] : "",
-              toDate: b.toDate ? b.toDate.split("T")[0] : "",
-            }))
+            ...b,
+            fromDate: b.fromDate ? b.fromDate.split("T")[0] : "",
+            toDate: b.toDate ? b.toDate.split("T")[0] : "",
+          }))
           : [];
         const matchedMood =
           moodBasedList.find(
@@ -220,9 +221,9 @@ const EditTravelPackage = () => {
 
         const parsedItinerary = Array.isArray(travelPackage.itinerary)
           ? travelPackage.itinerary.map((b) => ({
-              title: b.title || "",
-              description: b.description || "",
-            }))
+            title: b.title || "",
+            description: b.description || "",
+          }))
           : [];
 
         methods.reset({
@@ -231,17 +232,17 @@ const EditTravelPackage = () => {
           groupMembers: travelPackage.groupMembers[0],
           featuredImage: travelPackage.featuredImage?.url
             ? [
-                {
-                  url: travelPackage.featuredImage.url,
-                  altText: travelPackage.featuredImage.alt,
-                },
-              ]
+              {
+                url: travelPackage.featuredImage.url,
+                altText: travelPackage.featuredImage.alt,
+              },
+            ]
             : [],
           gallery: Array.isArray(travelPackage.gallery)
             ? travelPackage.gallery.map((img) => ({
-                url: img.url,
-                altText: img.alt || "",
-              }))
+              url: img.url,
+              altText: img.alt || "",
+            }))
             : [],
           batches: parsedBatches,
           locationAddress: travelPackage.locationAddress || "",
@@ -471,13 +472,23 @@ const EditTravelPackage = () => {
                       required
                     />
                   </Box>
-                  <CommenQuillEditor
+                  <Box sx={commoncss.editorBox}>
+                    <label>Description *</label>
+                    <CustomCKEditor
+                      name="description"
+                      required
+                      minLength={30}
+                      placeholder="Write Overview/Trip Details here..."
+                      height="500px"
+                    />
+                  </Box>
+                  {/* <CommenQuillEditor
                     name="description"
                     label="Description * (min 150 characters)"
                     required
                     minLength={150}
                     placeholder="Write Overview/Trip Details here..."
-                  />
+                  /> */}
                   <Box sx={travelPackageStyle.customBox3}>
                     <CommenTextField
                       name="price"
@@ -608,7 +619,7 @@ const EditTravelPackage = () => {
                     label="Choose Package Images"
                     // multiple
                     altText
-                    // required
+                  // required
                   />
                 </Paper>
                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
@@ -741,7 +752,7 @@ const EditTravelPackage = () => {
                           { value: "Moderate", label: "Moderate" },
                           { value: "Difficult", label: "Difficult" },
                         ]}
-                        // required
+                      // required
                       />
                     </>
                   )}
@@ -818,13 +829,23 @@ const EditTravelPackage = () => {
                               focused={true}
                               required
                             />
-
+                            <Box sx={commoncss.editorBox}>
+                              <label>Description *</label>
+                              <CustomCKEditor
+                                 name={`itinerary.${index}.description`}
+                                required
+                                minLength={30}
+                                placeholder="Write itinerary details here..."
+                                height="500px"
+                              />
+                            </Box>
+{/* 
                             <CommenQuillEditor
                               name={`itinerary.${index}.description`}
                               label="Description *"
                               required
                               placeholder="Write itinerary details here..."
-                            />
+                            /> */}
                           </Box>
                         ))}
                       </Box>
