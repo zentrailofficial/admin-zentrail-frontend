@@ -40,6 +40,7 @@ import TodayIcon from '@mui/icons-material/Today';
 import WarningIcon from '@mui/icons-material/Warning';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
+import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2.js";
 
 const seasonOptions = [
   { value: "summer-trips", label: "Summer-trips" },
@@ -408,14 +409,25 @@ const AddTravelPackage = () => {
                       required
                     />
                   </Box>
+                  <Box sx={commoncss.editorBox}>
 
-                  <CommenQuillEditor
+                    <CustomCKEditor
+                      name="description"
+                      label="Description * (min 150 characters)"
+                      required
+                      minLength={150}
+                      placeholder="Write Overview/Trip Details here..."
+                      height="500px"
+                    />
+                  </Box>
+
+                  {/* <CommenQuillEditor
                     name="description"
                     label="Description * (min 150 characters)"
                     required
                     minLength={150}
                     placeholder="Write Overview/Trip Details here..."
-                  />
+                  /> */}
                   <Box sx={travelPackageStyle.customBox3}>
                     <CommenTextField
                       name="price"
@@ -727,12 +739,22 @@ const AddTravelPackage = () => {
                               defaultValues=""
                               required
                             />
-                            <CommenQuillEditor
+                            <Box sx={commoncss.editorBox}>
+                              <label>Description *</label>
+                              <CustomCKEditor
+                                name={`itinerary.${index}.description`}
+                                required
+                                minLength={30}
+                                placeholder="Write itinerary details here..."
+                                height="500px"
+                              />
+                            </Box>
+                            {/* <CommenQuillEditor
                               name={`itinerary.${index}.description`}
                               label="Description *"
                               required
                               placeholder="Write itinerary details here..."
-                            />
+                            /> */}
                           </Box>
                         ))}
                       </Box>

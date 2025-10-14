@@ -34,6 +34,7 @@ import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import { toast } from "react-toastify";
+import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
 
 const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
   const navigate = useNavigate();
@@ -171,13 +172,23 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                       />
                     </Box>
                   </Box>
-                  <CommenQuillEditor
+                  <Box sx={commoncss.editorBox}>
+                    <label>Description *</label>
+                    <CustomCKEditor
+                      name="description"
+                      required
+                      minLength={30}
+                      placeholder="Write content here..."
+                      height="500px"
+                    />
+                  </Box>
+                  {/* <CommenQuillEditor
                     name="description"
                     label="Description *"
                     required
                     minLength={30}
                     placeholder="Write blog content here..."
-                  />
+                  /> */}
                   <Stack direction="row" alignItems="center" spacing={2} mb={1}>
                     <CategoryIcon color="primary" />
                     <Typography variant="h6" fontWeight={600}>
@@ -296,7 +307,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                       <CommenTextField
                         name="whyPoornam[0].title"
                         label="Title *"
-                         maxLength={60}
+                        maxLength={60}
                         required
                       />
                     </Box>
@@ -308,7 +319,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                       <CommenTextField
                         name="whyPoornam[0].description"
                         label="Description *"
-                         maxLength={160}
+                        maxLength={160}
                         required
                         multiline
                         rows={3}
@@ -333,7 +344,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                     Meta Tags
                   </Typography>
                   <Box sx={commoncss.meta}>
-                      <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.metabox1}>
                       <Box sx={commoncss.labelbox}>  <label>uid </label>{" "} </Box>
                       <Box sx={commoncss.tooltipbox}> <CommonToolTip title="URL slug" />{" "} </Box>
                       <Box sx={commoncss.fieldbox}>
@@ -403,7 +414,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
                         />
                       </Box>
                     </Box>
-                  
+
 
 
                     {/* OG Tags Accordion */}

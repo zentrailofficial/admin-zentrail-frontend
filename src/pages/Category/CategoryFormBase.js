@@ -24,6 +24,7 @@ import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import commoncss from "../../styles/commoncss";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { isAllowedKey, sanitizeSlug } from "../../utils/helperFunctions";
+import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
 
 const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
 
@@ -134,8 +135,17 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                       altText
                     // defaultImage={defaultImage}
                     />
-
-                    <CommenQuillEditor name="description" required minLength={30} label="Category description" />
+                    <Box sx={commoncss.editorBox}>
+                      <label>Description *</label>
+                      <CustomCKEditor
+                        name="description"
+                        required
+                        minLength={30}
+                        placeholder="Write content here..."
+                        height="500px"
+                      />
+                    </Box>
+                    {/* <CommenQuillEditor name="description" required minLength={30} label="Category description" /> */}
 
                   </Paper>
                   <Paper elevation={3}

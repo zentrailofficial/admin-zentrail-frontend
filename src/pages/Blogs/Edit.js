@@ -32,6 +32,7 @@ import commoncss from "../../styles/commoncss";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import { toast } from "react-toastify";
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
 
 const EditBlog = () => {
   const navigate = useNavigate();
@@ -201,13 +202,23 @@ const EditBlog = () => {
                     <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Author's Name" /></Box>
                     <Box sx={commoncss.fieldbox1}> <CommenTextField name="author" label="Author" required /></Box>
                   </Box>
-                  <CommenQuillEditor
+                  <Box sx={commoncss.editorBox}>
+                    <label>Description *</label>
+                    <CustomCKEditor
+                      name="description"
+                      required
+                      minLength={30}
+                      placeholder="Write blog content here..."
+                      height="500px"
+                    />
+                  </Box>
+                  {/* <CommenQuillEditor
                     name="description"
                     label="Description *"
                     required
                     minLength={30}
                     placeholder="Write blog content here..."
-                  />
+                  /> */}
 
                   {/* Category and Tags */}
 
@@ -249,7 +260,7 @@ const EditBlog = () => {
                     />
                   </Stack>
                 </Paper>
-                  <Paper elevation={3}
+                <Paper elevation={3}
                   sx={commoncss.cardlineargradient}>
                   <Stack
                     direction="row"
@@ -331,40 +342,40 @@ const EditBlog = () => {
                       </Typography>
                       <CommonToolTip title=" SEO Settings" />
                     </Stack>
-                   <Box sx={commoncss.meta}>
+                    <Box sx={commoncss.meta}>
                       <Box sx={commoncss.customBox1}>
                         <Box sx={commoncss.labelbox}> <label>uid </label>  </Box>
                         <Box sx={commoncss.tooltipbox}> <CommonToolTip title="URL slug" /></Box>
                         <Box sx={commoncss.fieldbox}> <CommenTextField name="uid" label="uid" disabled size="small" /></Box>
                       </Box>
-                        <Box sx={commoncss.metabox1}>
-                         <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
                         <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="60 characters only" /></Box>
                         <Box sx={commoncss.fieldbox}>
-                        <CommenTextField
-                          name="meta.title"
-                          label="Meta Title *"
-                          required={true}
-                          maxLength={60}
-                          messages={{
-                            required: "Meta title is required",
-                            maxLength: "Please do not exceed 60 characters",
-                          }}
-                        />  </Box>
-                       </Box>
+                          <CommenTextField
+                            name="meta.title"
+                            label="Meta Title *"
+                            required={true}
+                            maxLength={60}
+                            messages={{
+                              required: "Meta title is required",
+                              maxLength: "Please do not exceed 60 characters",
+                            }}
+                          />  </Box>
+                      </Box>
                       <Box sx={commoncss.metabox1}>
-                         <Box sx={commoncss.labelbox}> <label>Keywords</label></Box>
-                          <Box sx={commoncss.tooltipbox}> <CommonToolTip title="SEO friendly keywords" /></Box>
-                           <Box sx={commoncss.fieldbox}> <CommenTextField name="meta.keywords" label="Keywords" /></Box>
+                        <Box sx={commoncss.labelbox}> <label>Keywords</label></Box>
+                        <Box sx={commoncss.tooltipbox}> <CommonToolTip title="SEO friendly keywords" /></Box>
+                        <Box sx={commoncss.fieldbox}> <CommenTextField name="meta.keywords" label="Keywords" /></Box>
                         {/* <CommenTextField
                         name="meta.canonicalUrl"
                         label="Canonical URL"
                       /> */}
                       </Box>
-                       <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.metabox1}>
                         <Box sx={commoncss.labelbox}> <label>Meta Description *</label></Box>
-                           <Box sx={commoncss.tooltipbox}> <CommonToolTip title="160 characters only" /></Box>
-                          <Box sx={commoncss.fieldbox}> <CommenTextField
+                        <Box sx={commoncss.tooltipbox}> <CommonToolTip title="160 characters only" /></Box>
+                        <Box sx={commoncss.fieldbox}> <CommenTextField
                           name="meta.description"
                           label="Meta Description *"
                           multiline
@@ -376,7 +387,7 @@ const EditBlog = () => {
                           }}
                         /></Box>
                       </Box>
-                    
+
                       {/* <Typography textAlign={"center"} fontWeight="600">
                       Open Graph
                     </Typography>
@@ -396,7 +407,7 @@ const EditBlog = () => {
                     </Box>
                   </Stack>
                 </Paper>
-              
+
                 <CommonButton type="submit" loading={btnloading}>
                   Submit
                 </CommonButton>

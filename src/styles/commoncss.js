@@ -143,6 +143,9 @@ const commoncss = {
     width: "100%",
     p: 2,
   },
+  editorBox:{
+    mt:1
+  }
 
 };
 

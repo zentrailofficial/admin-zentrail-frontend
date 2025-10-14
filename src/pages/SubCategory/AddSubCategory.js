@@ -33,6 +33,7 @@ import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import ImageIcon from "@mui/icons-material/Image";
 import SettingsIcon from "@mui/icons-material/Settings";
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
 
 const AddSubCategory = () => {
   const [categoriesList, setCategoriesList] = useState([]);
@@ -210,7 +211,7 @@ const AddSubCategory = () => {
                             name="bannertitle"
                             focused={isEdit}
                             label="Banner Title"
-                              maxLength={100}
+                            maxLength={100}
                             required
                           />
                           </Box>
@@ -236,10 +237,20 @@ const AddSubCategory = () => {
                         />
 
                       </Box>
-                      <CommenQuillEditor
+                      <Box sx={commoncss.editorBox}>
+                        <label>Description *</label>
+                        <CustomCKEditor
+                          name="description"
+                          required
+                          minLength={30}
+                          placeholder="Write content here..."
+                          height="500px"
+                        />
+                      </Box>
+                      {/* <CommenQuillEditor
                         name="description"
                         required minLength={30}
-                        label="Category description" />
+                        label="Category description" /> */}
 
                     </Paper>
                     <Paper elevation={3}
@@ -309,7 +320,7 @@ const AddSubCategory = () => {
                         <CommonToolTip title=" SEO Settings" />
                       </Stack>
                       <Box sx={commoncss.meta}>
-                         <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.metabox1}>
                           <Box sx={commoncss.labelbox}>
                             <label>Slug</label>
                           </Box>
@@ -378,7 +389,7 @@ const AddSubCategory = () => {
                             />
                           </Box>
                         </Box>
-                       
+
                       </Box>
                     </Paper>
 
