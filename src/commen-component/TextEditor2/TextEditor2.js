@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { CKEditor } from "ckeditor4-react";
 import { useFormContext, Controller } from "react-hook-form";
 import "./TextEditor2.css";
+import { Box, Typography } from "@mui/material";
 
 const CustomCKEditor = ({ name, label, required, placeholder }) => {
   const { control } = useFormContext();
-
-  // Hook CKEditor dialog definition for custom image upload
+  
   useEffect(() => {
     const handleDialogDefinition = (evt) => {
       if (evt.data.name !== "image") return;
@@ -44,9 +44,31 @@ const CustomCKEditor = ({ name, label, required, placeholder }) => {
 
     return () => {
       if (window.CKEDITOR) {
-        window.CKEDITOR.removeListener("dialogDefinition", handleDialogDefinition);
+        window.CKEDITOR.removeListener(
+          "dialogDefinition",
+          handleDialogDefinition
+        );
       }
     };
+  }, []);
+
+  // ✅ Remove float styles from saved HTML
+  useEffect(() => {
+    if (window.CKEDITOR) {
+      window.CKEDITOR.on("instanceReady", function (ev) {
+        ev.editor.dataProcessor.htmlFilter.addRules({
+          elements: {
+            img: function (el) {
+              if (el.attributes.style) {
+                el.attributes.style = el.attributes.style
+                  .replace(/float\s*:\s*(left|right)\s*;?/gi, "")
+                  .trim();
+              }
+            },
+          },
+        });
+      });
+    }
   }, []);
 
   return (
@@ -61,7 +83,7 @@ const CustomCKEditor = ({ name, label, required, placeholder }) => {
         },
       }}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
-        <div className="text-editor-container">
+        <Box className="text-editor-container">
           {label && <label>{label}</label>}
           <CKEditor
             initData={value || ""}
@@ -69,11 +91,14 @@ const CustomCKEditor = ({ name, label, required, placeholder }) => {
               height: 300,
               placeholder,
               removePlugins: "elementspath",
-              extraPlugins: "image2",
+              extraPlugins: "image2,table,tabletools,tableselection",
+              contentsCss: [
+              
+                "/TextEditor2.css", // ✅ Path to the new file
+              ],
               toolbar: [
                 { name: "clipboard", items: ["Undo", "Redo"] },
                 { name: "styles", items: ["Format"] },
-                
                 {
                   name: "basicstyles",
                   items: ["Bold", "Italic", "Underline", "Strike"],
@@ -96,9 +121,11 @@ const CustomCKEditor = ({ name, label, required, placeholder }) => {
             }}
           />
           {error && (
-            <p style={{ color: "red", marginTop: "4px" }}>{error.message}</p>
+            <Typography style={{ color: "red", marginTop: "4px" }}>
+              {error.message}
+            </Typography>
           )}
-        </div>
+        </Box>
       )}
     />
   );
