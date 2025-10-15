@@ -96,6 +96,7 @@ const CustomCKEditor = ({ name, label, required, placeholder }) => {
               
                 "/TextEditor2.css", // ✅ Path to the new file
               ],
+              format_tags: "p;h2;h3;h4;pre", 
               toolbar: [
                 { name: "clipboard", items: ["Undo", "Redo"] },
                 { name: "styles", items: ["Format"] },

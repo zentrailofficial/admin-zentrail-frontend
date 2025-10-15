@@ -112,7 +112,7 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
                         focused={isEdit}
                         label="Banner Title"
                         maxLength={100}
-                        required
+                        // required
                       />
                       </Box>
                     </Box>
