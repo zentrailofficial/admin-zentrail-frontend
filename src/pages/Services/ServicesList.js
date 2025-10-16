@@ -26,6 +26,7 @@ const ServicesList = () => {
 
   const fetchCategories = async () => {
     const res = await apiClient.get("/api/service/servicepage/AllService");
+    console.log(res);
     const formatted = res?.data?.map((item, index) => ({
       id: item._id,
       sr: index + 1,
@@ -45,9 +46,10 @@ const ServicesList = () => {
   const handleDelete = async () => {
     setLoadingForDelete(true);
     try {
-      const res = await apiClient.delete(`api/service/deleteservice/${IdtoDelete}`);
+      const res = await apiClient.delete(
+        `api/service/deleteservice/${IdtoDelete}`
+      );
       if (res?.data) {
-
         setLoadingForDelete(false);
         setDialogOpen(false);
         setIdtoDelete("");
@@ -111,24 +113,28 @@ const ServicesList = () => {
     <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Services List</Typography>
-         <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
-        <CommonButton
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleCreate}
-        >
-          Add services
-        </CommonButton>
+        <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
+          <CommonButton
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleCreate}
+          >
+            Add services
+          </CommonButton>
         </Stack>
       </Stack>
 
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[10, 20, 50]}
+        pagination
+        pageSizeOptions={[5, 10, 20, 50]}
+        initialState={{
+          pagination: { paginationModel: { pageSize: 5, page: 0 } },
+        }}
         disableRowSelectionOnClick
+        autoHeight
       />
       <ConfirmDelete
         open={dialogOpen}

@@ -25,7 +25,8 @@ const CategoryServicesList = () => {
 
   const fetchCategories = async () => {
     const res = await apiClient.get("/api/service");
-   
+    console.log(res);
+
     const formatted = res?.data?.services.map((item, index) => ({
       id: item._id,
       sr: index + 1,
@@ -114,24 +115,28 @@ const CategoryServicesList = () => {
     <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Category Services</Typography>
-         <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
-        <CommonButton
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleCreate}
-        >
-          Create Category services
-        </CommonButton>
+        <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
+          <CommonButton
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleCreate}
+          >
+            Create Category services
+          </CommonButton>
         </Stack>
       </Stack>
 
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[10, 20, 50]}
+        pagination
+        pageSizeOptions={[5, 10, 20, 50]}
+        initialState={{
+          pagination: { paginationModel: { pageSize: 5, page: 0 } },
+        }}
         disableRowSelectionOnClick
+        autoHeight
       />
       <ConfirmDelete
         open={dialogOpen}

@@ -136,7 +136,7 @@ const commoncss = {
     width: "520px"
   },
   fieldbox1: {
-    width: "630px"
+    width: "630px",
   },
   listBox: {
     height: 680,

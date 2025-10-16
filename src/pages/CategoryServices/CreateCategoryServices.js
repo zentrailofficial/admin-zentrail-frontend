@@ -96,25 +96,23 @@ const CreateCategoryServices = () => {
                         name="name"
                         label="Category Name"
                         required
-                      /> </Box>
+                        fullWidth
+                      /> 
+                      </Box>
                   </Box>
-                  <Box sx={commoncss.editorBox}>
-                    <label>Description *</label>
-                    <CustomCKEditor
-                      name="description"
-                      required
-                      minLength={30}
-                      placeholder="Write content here..."
-                      height="500px"
-                    />
-                  </Box>
-                  {/* <label>Description *</label>
-                  <CommenTextField
+                  <Box sx={commoncss.metabox1}>
+                    <label>Description </label>
+                    <Box sx={commoncss.tooltipbox}> <CommonToolTip title="160 characters only" /></Box>
+                     <Box sx={commoncss.fieldbox1}>
+                   <CommenTextField
                     name="description"
                     label="Description"
                     multiline
                     rows={4}
-                  /> */}
+                  />
+                  </Box>
+                  </Box>
+                  
                   <Stack
                     direction="row"
                     alignItems="center"

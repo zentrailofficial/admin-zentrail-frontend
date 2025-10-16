@@ -102,23 +102,16 @@ const EditCategoryServices = () => {
                     <Box sx={commoncss.fieldbox1}>
                       <CommenTextField name="name" focused={true} label="Category Name" required /> </Box>
                   </Box>
-                  {/* <label>Description *</label>
+                 
+                  <Box sx={commoncss.editorBox}>
+                    <label>Description *</label>
                   <CommenTextField
                     name="description"
                     label="Description"
                     multiline
                     rows={4}
                     focused={true}
-                  /> */}
-                  <Box sx={commoncss.editorBox}>
-                    <label>Description *</label>
-                    <CustomCKEditor
-                      name="description"
-                      required
-                      minLength={30}
-                      placeholder="Write content here..."
-                      height="500px"
-                    />
+                  />
                   </Box>
                   <Stack
                     direction="row"
