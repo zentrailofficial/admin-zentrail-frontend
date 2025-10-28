@@ -41,6 +41,7 @@ const EditBlog = () => {
   const methods = useForm({
     defaultValues: {
       title: "",
+      type: "",
       author: "",
       content: "",
       description: "",
@@ -76,6 +77,7 @@ const EditBlog = () => {
         const blog = res.data.blog;
         const mapped = {
           title: blog.title,
+          type: blog.type,
           author: blog.authorName,
           description: blog.description,
           uid: blog?.uid,
@@ -196,6 +198,28 @@ const EditBlog = () => {
                       size="small"
                       maxLength={70}
                     /></Box>
+                  </Box>
+                   <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.labelbox}>
+                      <label>Blog/news </label>{" "}
+                    </Box>
+                    <Box sx={commoncss.tooltipbox}>
+                      {" "}
+                      <CommonToolTip title="select you want to create blog or news" />
+                    </Box>
+                    <Box sx={commoncss.fieldbox1}>
+                      {" "}
+                      <CommonDropdown
+                        name="type"
+                        label="type *"
+                        options={[
+                          { label: "Blog", value: "blog" },
+                          { label: "News", value: "news" },
+                        ]}
+                        required
+                        disabled
+                      />
+                    </Box>
                   </Box>
                   <Box sx={commoncss.customBox1}>
                     <Box sx={commoncss.labelbox}> <label >Author </label>  </Box>

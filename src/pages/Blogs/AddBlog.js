@@ -37,6 +37,7 @@ const AddBlogForm = () => {
   const navigate = useNavigate();
   const methods = useForm({
     defaultValues: {
+      type: "blog",
       title: "",
       author: "",
       description: "",
@@ -57,6 +58,7 @@ const AddBlogForm = () => {
     try {
       const formData = new FormData();
       formData.append("uid", data.uid);
+      formData.append("type", data.type || "blog");
       formData.append("title", data.title);
       formData.append("authorName", data.author);
       formData.append("description", data.description);
@@ -150,6 +152,27 @@ const AddBlogForm = () => {
                   </Stack>
                   <Box sx={commoncss.metabox1}>
                     <Box sx={commoncss.labelbox}>
+                      <label>Blog/news </label>{" "}
+                    </Box>
+                    <Box sx={commoncss.tooltipbox}>
+                      {" "}
+                      <CommonToolTip title="select you want to create blog or news" />
+                    </Box>
+                    <Box sx={commoncss.fieldbox1}>
+                      {" "}
+                      <CommonDropdown
+                        name="type"
+                        label="type *"
+                        options={[
+                          { label: "Blog", value: "blog" },
+                          { label: "News", value: "news" },
+                        ]}
+                        required
+                      />
+                    </Box>
+                  </Box>
+                  <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.labelbox}>
                       <label>Blog Title </label>{" "}
                     </Box>
                     <Box sx={commoncss.tooltipbox}>
@@ -163,7 +186,7 @@ const AddBlogForm = () => {
                         label="Blog Title *"
                         required
                         size="small"
-                        maxLength={70}
+                        maxLength={90}
                       />
                     </Box>
                   </Box>
@@ -185,7 +208,7 @@ const AddBlogForm = () => {
                       />
                     </Box>
                   </Box>
-                 <Box sx={commoncss.editorBox}>
+                  <Box sx={commoncss.editorBox}>
                     <label>Description *</label>
                     <CustomCKEditor
                       name="description"
@@ -194,7 +217,7 @@ const AddBlogForm = () => {
                       placeholder="Write blog content here..."
                       height="500px"
                     />
-                    </Box>
+                  </Box>
                   {/* <CommenQuillEditor
                     name="description"
                     label="Description *"
@@ -329,7 +352,7 @@ const AddBlogForm = () => {
                           name="uid"
                           label="uid"
                           size="small"
-                          maxLength={70}
+                          maxLength={90}
                           focused={watch("title")?.length}
                           onChange={(input) => {
                             const sanitizedSlug = sanitizeSlug(input);

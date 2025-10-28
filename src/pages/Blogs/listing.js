@@ -17,6 +17,10 @@ import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete";
 import commoncss from "../../styles/commoncss";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 export default function BlogListGrid() {
+  const [page, setPage] = React.useState(0);
+const [limit, setLimit] = React.useState(10);
+const [totalBlogs, setTotalBlogs] = React.useState(0);
+
   const [listData, setListData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -25,14 +29,16 @@ export default function BlogListGrid() {
   const navigate = useNavigate();
   React.useEffect(() => {
     fetchData();
-  }, []);
+  }, [page, limit]);
 
   const fetchData = () => {
     setLoading(true);
     apiClient
-      .get("/api/blogs")
+      .get(`/api/blogs?page=${page + 1}&limit=${limit}`)
       .then((res) => {
         const blogs = res.data.blogs || [];
+        setTotalBlogs(res.data.totalblogs || 0);
+        console.log(res.data)
         const formatted = blogs.map((blog, index) => ({
           ...blog,
           id: blog._id, // Required for DataGrid
@@ -78,6 +84,11 @@ export default function BlogListGrid() {
       flex: 1,
     },
     {
+      field: "type",
+      headerName: "Type",
+      width: 100,
+    },
+    {
       field: "category",
       headerName: "Category",
       width: 130,
@@ -87,41 +98,41 @@ export default function BlogListGrid() {
       headerName: "Author",
       width: 130,
     },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 100,
-      renderCell: (params) => {
-        const status = params.value;
-        let color = 'black';
-        let backgroundColor = '#E0E0E0';
+    // {
+    //   field: "status",
+    //   headerName: "Status",
+    //   width: 100,
+    //   renderCell: (params) => {
+    //     const status = params.value;
+    //     let color = 'black';
+    //     let backgroundColor = '#E0E0E0';
 
-        if (status === 'Published') {
-          color = 'green';
-          backgroundColor = '#E9FFDB'; //  green
-        } else if (status === 'Draft') {
-          color = '#b77d62';
-          backgroundColor = '#fff5cc'; // orange
-        } else if (status === 'Scheduled') {
-          color = '#617e9c';
-          backgroundColor = '#cafdf5'; // blue
-        }
+    //     if (status === 'Published') {
+    //       color = 'green';
+    //       backgroundColor = '#E9FFDB'; //  green
+    //     } else if (status === 'Draft') {
+    //       color = '#b77d62';
+    //       backgroundColor = '#fff5cc'; // orange
+    //     } else if (status === 'Scheduled') {
+    //       color = '#617e9c';
+    //       backgroundColor = '#cafdf5'; // blue
+    //     }
 
-        return (
-          <span
-            style={{
-              color: color,
-              backgroundColor: backgroundColor,
-              fontWeight: 'bold',
-              padding: '5px 15px',
-              borderRadius: '5px',
-            }}
-          >
-            {status}
-          </span>
-        );
-      }
-    },
+    //     return (
+    //       <span
+    //         style={{
+    //           color: color,
+    //           backgroundColor: backgroundColor,
+    //           fontWeight: 'bold',
+    //           padding: '5px 15px',
+    //           borderRadius: '5px',
+    //         }}
+    //       >
+    //         {status}
+    //       </span>
+    //     );
+    //   }
+    // },
     {
       field: "createdAt",
       headerName: "Created At",
@@ -177,6 +188,13 @@ export default function BlogListGrid() {
       <DataGrid
         rows={listData}
         columns={columns}
+        rowCount={totalBlogs}          // 🟢 total count from API
+        paginationMode="server"        // 🟢 server pagination enable
+        paginationModel={{ page, pageSize: limit }}
+        onPaginationModelChange={(model) => {
+          setPage(model.page);
+          setLimit(model.pageSize);
+        }}
         pageSizeOptions={[10, 20]}
         loading={loading}
         initialState={{
