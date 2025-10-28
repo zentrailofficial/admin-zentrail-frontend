@@ -6,7 +6,7 @@ import { Box, Typography } from "@mui/material";
 
 const CustomCKEditor = ({ name, label, required, placeholder }) => {
   const { control } = useFormContext();
-  
+
   useEffect(() => {
     const handleDialogDefinition = (evt) => {
       if (evt.data.name !== "image") return;
@@ -89,29 +89,25 @@ const CustomCKEditor = ({ name, label, required, placeholder }) => {
             initData={value || ""}
             config={{
               height: 300,
-              placeholder,
               removePlugins: "elementspath",
-              extraPlugins: "image2,table,tabletools,tableselection",
-              contentsCss: [
-              
-                "/TextEditor2.css", // ✅ Path to the new file
-              ],
-              format_tags: "p;h2;h3;h4;pre", 
+              extraPlugins: "iframe,image2,table,tabletools,tableselection",
+              allowedContent: true,
+              extraAllowedContent: "iframe[*]",
               toolbar: [
                 { name: "clipboard", items: ["Undo", "Redo"] },
                 { name: "styles", items: ["Format"] },
-                {
-                  name: "basicstyles",
-                  items: ["Bold", "Italic", "Underline", "Strike"],
-                },
+                { name: "basicstyles", items: ["Bold", "Italic", "Underline", "Strike"] },
                 { name: "colors", items: ["TextColor", "BGColor"] },
-                {
-                  name: "paragraph",
-                  items: ["NumberedList", "BulletedList", "Blockquote"],
-                },
+                { name: "paragraph", items: ["NumberedList", "BulletedList", "Blockquote"] },
                 {
                   name: "insert",
-                  items: ["Image", "Table", "HorizontalRule", "Link"],
+                  items: [
+                    "Image",
+                    "Table",
+                    "HorizontalRule",
+                    "Link",
+                    "Iframe" // ✅ Add this instead of "Embed"
+                  ],
                 },
                 { name: "tools", items: ["Maximize", "Source"] },
               ],
