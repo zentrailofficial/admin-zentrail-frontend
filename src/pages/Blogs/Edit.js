@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import {
   Box,
@@ -7,6 +7,12 @@ import {
   Grid,
   IconButton,
   Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
@@ -26,18 +32,20 @@ import {
 import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
 import BookIcon from "@mui/icons-material/Book";
 import { apiClient } from "../../lib/api-client";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import commoncss from "../../styles/commoncss";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import { toast } from "react-toastify";
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
 
 const EditBlog = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // assuming route = /edit/:id
   const [categoryOptions, setCategoryOptions] = useState([]);
+  const [showExitDialog, setShowExitDialog] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState(null);
   const methods = useForm({
     defaultValues: {
       title: "",
@@ -52,13 +60,43 @@ const EditBlog = () => {
     },
   });
   const { reset, handleSubmit, getValues, formState, control } = methods;
-
+  const { isDirty } = formState;
   const { fields, append, remove } = useFieldArray({
     control,
     name: "faq",
   });
   const [loading, setLoading] = useState(true);
   const [btnloading, setbtnLoading] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!isDirty || btnloading) return;
+    const currentPath = location.pathname;
+    const handlePopState = () => {
+      if (isDirty && !btnloading) {
+        setPendingNavigation(() => () => {
+          navigate(-1);
+        });
+        setShowExitDialog(true);
+        window.history.pushState(null, "", currentPath);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    window.history.pushState(null, "", currentPath);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isDirty, btnloading, location.pathname, navigate]);
+
+  const handleExitConfirm = () => {
+    setShowExitDialog(false);
+    navigate("/blog");
+  };
+  const handleExitCancel = () => {
+    setShowExitDialog(false);
+  };
 
   useEffect(() => {
     apiClient.get("/api/category/blog-categories").then((data) => {
@@ -88,19 +126,18 @@ const EditBlog = () => {
               : [{ question: "", answer: "" }],
           images: blog.featuredImage?.url
             ? [
-              {
-                url: blog.featuredImage.url,
-                altText: blog.featuredImage.altText,
-              },
-            ]
+                {
+                  url: blog.featuredImage.url,
+                  altText: blog.featuredImage.altText,
+                },
+              ]
             : [],
           meta: blog.meta,
           ogTags: blog.ogTags,
         };
         reset(mapped);
         setLoading(false);
-      } catch (err) {
-      }
+      } catch (err) {}
     };
 
     fetchData();
@@ -162,81 +199,98 @@ const EditBlog = () => {
   if (loading) return <Typography>Loading...</Typography>;
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <Box
-          sx={commoncss.box}
-        >
-          <Box maxWidth="xl" mx="auto">
-            <Grid
-              container
-              sx={commoncss.grid1}
-            >
-              {/* Left Section */}
-              <Grid
-                item
-                xs={12}
-                md={6}
-                sx={commoncss.leftGrid}
-              >
-                <Paper elevation={3}
-                  sx={commoncss.cardlineargradient}>
-                  <Stack direction="row" alignItems="center" spacing={2} mb={3}>
-                    <BookIcon color="primary" />
-                    <Typography variant="h6" fontWeight={600}>
-                      Update Blog
-                    </Typography>
-                    <CommonToolTip title="Update your Blog" />
-                  </Stack>
-                  <Box sx={commoncss.customBox1}>
-                    <Box sx={commoncss.labelbox}> <label >Blog Title  </label> </Box>
-                    <Box sx={commoncss.tooltipbox}> <CommonToolTip title="Blog's Title" /></Box>
-                    <Box sx={commoncss.fieldbox1}> <CommenTextField
-                      name="title"
-                      label="Blog Title *"
-                      required
-                      size="small"
-                      maxLength={70}
-                    /></Box>
-                  </Box>
-                   <Box sx={commoncss.metabox1}>
-                    <Box sx={commoncss.labelbox}>
-                      <label>Blog/news </label>{" "}
+    <>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <Box sx={commoncss.box}>
+            <Box maxWidth="xl" mx="auto">
+              <Grid container sx={commoncss.grid1}>
+                {/* Left Section */}
+                <Grid item xs={12} md={6} sx={commoncss.leftGrid}>
+                  <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={3}
+                    >
+                      <BookIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        Update Blog
+                      </Typography>
+                      <CommonToolTip title="Update your Blog" />
+                    </Stack>
+                    <Box sx={commoncss.customBox1}>
+                      <Box sx={commoncss.labelbox}>
+                        {" "}
+                        <label>Blog Title </label>{" "}
+                      </Box>
+                      <Box sx={commoncss.tooltipbox}>
+                        {" "}
+                        <CommonToolTip title="Blog's Title" />
+                      </Box>
+                      <Box sx={commoncss.fieldbox1}>
+                        {" "}
+                        <CommenTextField
+                          name="title"
+                          label="Blog Title *"
+                          required
+                          size="small"
+                          maxLength={70}
+                        />
+                      </Box>
                     </Box>
-                    <Box sx={commoncss.tooltipbox}>
-                      {" "}
-                      <CommonToolTip title="select you want to create blog or news" />
+                    <Box sx={commoncss.metabox1}>
+                      <Box sx={commoncss.labelbox}>
+                        <label>Blog/news </label>{" "}
+                      </Box>
+                      <Box sx={commoncss.tooltipbox}>
+                        {" "}
+                        <CommonToolTip title="select you want to create blog or news" />
+                      </Box>
+                      <Box sx={commoncss.fieldbox1}>
+                        {" "}
+                        <CommonDropdown
+                          name="type"
+                          label="type *"
+                          options={[
+                            { label: "Blog", value: "blog" },
+                            { label: "News", value: "news" },
+                          ]}
+                          required
+                          disabled
+                        />
+                      </Box>
                     </Box>
-                    <Box sx={commoncss.fieldbox1}>
-                      {" "}
-                      <CommonDropdown
-                        name="type"
-                        label="type *"
-                        options={[
-                          { label: "Blog", value: "blog" },
-                          { label: "News", value: "news" },
-                        ]}
+                    <Box sx={commoncss.customBox1}>
+                      <Box sx={commoncss.labelbox}>
+                        {" "}
+                        <label>Author </label>{" "}
+                      </Box>
+                      <Box sx={commoncss.tooltipbox}>
+                        {" "}
+                        <CommonToolTip title="Author's Name" />
+                      </Box>
+                      <Box sx={commoncss.fieldbox1}>
+                        {" "}
+                        <CommenTextField
+                          name="author"
+                          label="Author"
+                          required
+                        />
+                      </Box>
+                    </Box>
+                    <Box sx={commoncss.editorBox}>
+                      <label>Description *</label>
+                      <CustomCKEditor
+                        name="description"
                         required
-                        disabled
+                        minLength={30}
+                        placeholder="Write blog content here..."
+                        height="500px"
                       />
                     </Box>
-                  </Box>
-                  <Box sx={commoncss.customBox1}>
-                    <Box sx={commoncss.labelbox}> <label >Author </label>  </Box>
-                    <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="Author's Name" /></Box>
-                    <Box sx={commoncss.fieldbox1}> <CommenTextField name="author" label="Author" required /></Box>
-                  </Box>
-                  <Box sx={commoncss.editorBox}>
-                    <label>Description *</label>
-                    <CustomCKEditor
-                      name="description"
-                      required
-                      minLength={30}
-                      placeholder="Write blog content here..."
-                      height="500px"
-                    />
-                  </Box>
-                  {/* <CommenQuillEditor
+                    {/* <CommenQuillEditor
                     name="description"
                     label="Description *"
                     required
@@ -244,175 +298,216 @@ const EditBlog = () => {
                     placeholder="Write blog content here..."
                   /> */}
 
-                  {/* Category and Tags */}
+                    {/* Category and Tags */}
 
-                  <Stack direction="row" alignItems="center" spacing={2} mb={3}>
-                    <CategoryIcon color="primary" />
-                    <Typography variant="h6" fontWeight={600}>
-                      Category & Tags
-                    </Typography>
-                    <CommonToolTip title="Please select one" />
-                  </Stack>
-
-                  <CommonDropdown
-                    name="category"
-                    label="Category *"
-                    options={categoryOptions}
-                    required
-                    showAddMore
-                    onAddMoreClick={handleAddMore}
-                  />
-                </Paper>
-
-                {/* URL and Image */}
-                <Paper elevation={3}
-                  sx={commoncss.cardlineargradient}>
-
-                  <Stack direction="row" alignItems="center" spacing={2} mb={3}>
-                    <ImageIcon color="primary" />
-                    <Typography variant="h6" fontWeight={600}>
-                      URL & Featured Image
-                    </Typography>
-                    <CommonToolTip title="Include at least one image with alt text" />
-                  </Stack>
-
-                  <Stack spacing={3}>
-                    <ImageUpload
-                      name="images"
-                      label="Choose Blog Images"
-                      altText
-                    />
-                  </Stack>
-                </Paper>
-                <Paper elevation={3}
-                  sx={commoncss.cardlineargradient}>
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    mb={2}
-                  >
-                    <Box sx={commoncss.customBox2}>
-                      <QuestionAnswerIcon color="primary" />
-                      <Typography variant="h6" fontWeight={600}>
-                        FAQs
-                      </Typography>
-                      <CommonToolTip title="Questions and answers" />
-                    </Box>
-                    <IconButton
-                      color="primary"
-                      onClick={() => append({ question: "", answer: "" })}
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  </Stack>
-                  <Box sx={commoncss.faqBox}>
-                    {fields.map((item, index) => (
-                      <Box
-                        key={item.id}
-                        sx={commoncss.faq}
-                      >
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          mb={1}
-                        >
-                          <Typography variant="subtitle1">
-                            FAQ {index + 1}
-                          </Typography>
-                          {fields.length > 1 && (
-                            <IconButton
-                              color="error"
-                              onClick={() => remove(index)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          )}
-                        </Stack>
-                        <CommenTextField
-                          name={`faq.${index}.question`}
-                          label="Question *"
-                        />
-                        <CommenTextField
-                          name={`faq.${index}.answer`}
-                          label="Answer *"
-                          multiline
-                          rows={3}
-                        />
-                      </Box>
-                    ))}
-                  </Box>
-                </Paper>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                md={6}
-                sx={commoncss.rightGrid}
-              >
-                <Paper elevation={3}
-                  sx={commoncss.cardlineargradient}>
-                  <Stack spacing={3}>
                     <Stack
                       direction="row"
                       alignItems="center"
                       spacing={2}
                       mb={3}
                     >
-                      <SettingsIcon color="primary" />
-                      <Typography variant="h6" fontWeight="600">
-                        SEO Settings
+                      <CategoryIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        Category & Tags
                       </Typography>
-                      <CommonToolTip title=" SEO Settings" />
+                      <CommonToolTip title="Please select one" />
                     </Stack>
-                    <Box sx={commoncss.meta}>
-                      <Box sx={commoncss.customBox1}>
-                        <Box sx={commoncss.labelbox}> <label>uid </label>  </Box>
-                        <Box sx={commoncss.tooltipbox}> <CommonToolTip title="URL slug" /></Box>
-                        <Box sx={commoncss.fieldbox}> <CommenTextField name="uid" label="uid" disabled size="small" /></Box>
+
+                    <CommonDropdown
+                      name="category"
+                      label="Category *"
+                      options={categoryOptions}
+                      required
+                      showAddMore
+                      onAddMoreClick={handleAddMore}
+                    />
+                  </Paper>
+
+                  {/* URL and Image */}
+                  <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      mb={3}
+                    >
+                      <ImageIcon color="primary" />
+                      <Typography variant="h6" fontWeight={600}>
+                        URL & Featured Image
+                      </Typography>
+                      <CommonToolTip title="Include at least one image with alt text" />
+                    </Stack>
+
+                    <Stack spacing={3}>
+                      <ImageUpload
+                        name="images"
+                        label="Choose Blog Images"
+                        altText
+                      />
+                    </Stack>
+                  </Paper>
+                  <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      mb={2}
+                    >
+                      <Box sx={commoncss.customBox2}>
+                        <QuestionAnswerIcon color="primary" />
+                        <Typography variant="h6" fontWeight={600}>
+                          FAQs
+                        </Typography>
+                        <CommonToolTip title="Questions and answers" />
                       </Box>
-                      <Box sx={commoncss.metabox1}>
-                        <Box sx={commoncss.labelbox}> <label>Meta Title</label></Box>
-                        <Box sx={commoncss.tooltipbox}>  <CommonToolTip title="60 characters only" /></Box>
-                        <Box sx={commoncss.fieldbox}>
+                      <IconButton
+                        color="primary"
+                        onClick={() => append({ question: "", answer: "" })}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </Stack>
+                    <Box sx={commoncss.faqBox}>
+                      {fields.map((item, index) => (
+                        <Box key={item.id} sx={commoncss.faq}>
+                          <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            mb={1}
+                          >
+                            <Typography variant="subtitle1">
+                              FAQ {index + 1}
+                            </Typography>
+                            {fields.length > 1 && (
+                              <IconButton
+                                color="error"
+                                onClick={() => remove(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            )}
+                          </Stack>
                           <CommenTextField
-                            name="meta.title"
-                            label="Meta Title *"
-                            required={true}
-                            maxLength={60}
-                            messages={{
-                              required: "Meta title is required",
-                              maxLength: "Please do not exceed 60 characters",
-                            }}
-                          />  </Box>
-                      </Box>
-                      <Box sx={commoncss.metabox1}>
-                        <Box sx={commoncss.labelbox}> <label>Keywords</label></Box>
-                        <Box sx={commoncss.tooltipbox}> <CommonToolTip title="SEO friendly keywords" /></Box>
-                        <Box sx={commoncss.fieldbox}> <CommenTextField name="meta.keywords" label="Keywords" /></Box>
-                        {/* <CommenTextField
+                            name={`faq.${index}.question`}
+                            label="Question *"
+                          />
+                          <CommenTextField
+                            name={`faq.${index}.answer`}
+                            label="Answer *"
+                            multiline
+                            rows={3}
+                          />
+                        </Box>
+                      ))}
+                    </Box>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={6} sx={commoncss.rightGrid}>
+                  <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                    <Stack spacing={3}>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={2}
+                        mb={3}
+                      >
+                        <SettingsIcon color="primary" />
+                        <Typography variant="h6" fontWeight="600">
+                          SEO Settings
+                        </Typography>
+                        <CommonToolTip title=" SEO Settings" />
+                      </Stack>
+                      <Box sx={commoncss.meta}>
+                        <Box sx={commoncss.customBox1}>
+                          <Box sx={commoncss.labelbox}>
+                            {" "}
+                            <label>uid </label>{" "}
+                          </Box>
+                          <Box sx={commoncss.tooltipbox}>
+                            {" "}
+                            <CommonToolTip title="URL slug" />
+                          </Box>
+                          <Box sx={commoncss.fieldbox}>
+                            {" "}
+                            <CommenTextField
+                              name="uid"
+                              label="uid"
+                              disabled
+                              size="small"
+                            />
+                          </Box>
+                        </Box>
+                        <Box sx={commoncss.metabox1}>
+                          <Box sx={commoncss.labelbox}>
+                            {" "}
+                            <label>Meta Title</label>
+                          </Box>
+                          <Box sx={commoncss.tooltipbox}>
+                            {" "}
+                            <CommonToolTip title="60 characters only" />
+                          </Box>
+                          <Box sx={commoncss.fieldbox}>
+                            <CommenTextField
+                              name="meta.title"
+                              label="Meta Title *"
+                              required={true}
+                              maxLength={60}
+                              messages={{
+                                required: "Meta title is required",
+                                maxLength: "Please do not exceed 60 characters",
+                              }}
+                            />{" "}
+                          </Box>
+                        </Box>
+                        <Box sx={commoncss.metabox1}>
+                          <Box sx={commoncss.labelbox}>
+                            {" "}
+                            <label>Keywords</label>
+                          </Box>
+                          <Box sx={commoncss.tooltipbox}>
+                            {" "}
+                            <CommonToolTip title="SEO friendly keywords" />
+                          </Box>
+                          <Box sx={commoncss.fieldbox}>
+                            {" "}
+                            <CommenTextField
+                              name="meta.keywords"
+                              label="Keywords"
+                            />
+                          </Box>
+                          {/* <CommenTextField
                         name="meta.canonicalUrl"
                         label="Canonical URL"
                       /> */}
-                      </Box>
-                      <Box sx={commoncss.metabox1}>
-                        <Box sx={commoncss.labelbox}> <label>Meta Description *</label></Box>
-                        <Box sx={commoncss.tooltipbox}> <CommonToolTip title="160 characters only" /></Box>
-                        <Box sx={commoncss.fieldbox}> <CommenTextField
-                          name="meta.description"
-                          label="Meta Description *"
-                          multiline
-                          rows={3}
-                          maxLength={160}
-                          messages={{
-                            required: "Meta description is required",
-                            maxLength: "Please do not exceed 160 characters",
-                          }}
-                        /></Box>
-                      </Box>
+                        </Box>
+                        <Box sx={commoncss.metabox1}>
+                          <Box sx={commoncss.labelbox}>
+                            {" "}
+                            <label>Meta Description *</label>
+                          </Box>
+                          <Box sx={commoncss.tooltipbox}>
+                            {" "}
+                            <CommonToolTip title="160 characters only" />
+                          </Box>
+                          <Box sx={commoncss.fieldbox}>
+                            {" "}
+                            <CommenTextField
+                              name="meta.description"
+                              label="Meta Description *"
+                              multiline
+                              rows={3}
+                              maxLength={160}
+                              messages={{
+                                required: "Meta description is required",
+                                maxLength:
+                                  "Please do not exceed 160 characters",
+                              }}
+                            />
+                          </Box>
+                        </Box>
 
-                      {/* <Typography textAlign={"center"} fontWeight="600">
+                        {/* <Typography textAlign={"center"} fontWeight="600">
                       Open Graph
                     </Typography>
                     <Stack spacing={2}>
@@ -427,20 +522,43 @@ const EditBlog = () => {
                         name="ogTags.image"
                         label="OG Image URL"
                       /> */}
-                      {/* </Stack> */}
-                    </Box>
-                  </Stack>
-                </Paper>
+                        {/* </Stack> */}
+                      </Box>
+                    </Stack>
+                  </Paper>
 
-                <CommonButton type="submit" loading={btnloading}>
-                  Submit
-                </CommonButton>
+                  <CommonButton type="submit" loading={btnloading}>
+                    Submit
+                  </CommonButton>
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-      </form>
-    </FormProvider>
+        </form>
+      </FormProvider>
+
+      {/* Exit Confirmation Dialog */}
+      <Dialog
+        open={showExitDialog}
+        onClose={handleExitCancel}
+        aria-labelledby="exit-dialog-title"
+        aria-describedby="exit-dialog-description"
+      >
+        <DialogTitle id="exit-dialog-title">Unsaved Changes</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="exit-dialog-description">
+            You have unsaved changes. Are you sure you want to leave this page?
+            Your changes will be lost.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <CommonButton onClick={handleExitCancel}>Stay</CommonButton>
+          <CommonButton onClick={handleExitConfirm} autoFocus>
+            Leave Without Saving
+          </CommonButton>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
