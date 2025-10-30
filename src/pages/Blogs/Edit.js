@@ -240,7 +240,7 @@ console.log(methods.getValues());
                           label="Blog Title *"
                           required
                           size="small"
-                          maxLength={70}
+                          maxLength={90}
                         />
                       </Box>
                     </Box>
