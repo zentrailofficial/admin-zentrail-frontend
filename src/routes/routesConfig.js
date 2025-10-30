@@ -27,6 +27,9 @@ import EditTravelPackage from "../pages/TravelPackage/EditTravelPackage";
 import AddSubCategory from "../pages/SubCategory/AddSubCategory";
 import ListSubCategory from "../pages/SubCategory/ListSubCategory";
 import EditSubCategory from "../pages/SubCategory/EditSubCategory";
+import Listing from "../pages/Role/Listing";
+import AddRole from "../pages/Role/AddRole";
+import EditRole from "../pages/Role/EditRole";
 const routesConfig = [
   {
     element: <Layout1 />,
@@ -199,6 +202,31 @@ const routesConfig = [
       {
         path: "/edittour/:id",
         element: <RoutingList Component={EditTravelPackage} />,
+      },
+      // {
+      //   path: "/categoryedit/:id",
+      //   element: <RoutingList Component={EditCategory} />,
+      // },
+    ],
+  },
+   {
+    element: (
+      <ProtectedRoute>
+        <Layout2 />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "/role",
+        element: <RoutingList Component={Listing} />,
+      },
+      {
+        path: "/addrole",
+        element: <RoutingList Component={AddRole} />,
+      },
+      {
+        path: "/editrole/:id",
+        element: <RoutingList Component={EditRole} />,
       },
       // {
       //   path: "/categoryedit/:id",

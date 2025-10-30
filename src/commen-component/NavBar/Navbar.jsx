@@ -25,6 +25,7 @@ import {
   Brightness7,
   Menu as MenuIcon,
   ChevronLeft,
+  VerifiedUserOutlined,
 } from "@mui/icons-material";
 import { useThemeMode } from "../../context/ThemeProvider";
 import { useEffect, useState } from "react";
@@ -92,6 +93,11 @@ export default function Navbar() {
       title: "Service Page",
       icon: <MiscellaneousServicesIcon />,
       path: "/categoryservices",
+    },
+    User:{
+      title: "Role",
+      icon: <VerifiedUserOutlined />,
+      path: "/role",
     },
   };
 
