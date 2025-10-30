@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import { useForm, FormProvider, useFieldArray, Controller } from "react-hook-form";
 import { Box, Paper, Typography, Stack, Grid, IconButton } from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
@@ -30,11 +30,21 @@ import commoncss from "../../styles/commoncss";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { isAllowedKey, sanitizeSlug } from "../../utils/helperFunctions";
 import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
-
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 const AddBlogForm = () => {
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+ const defaultScheduleTime = dayjs()
+    .hour(12)
+    .minute(0)
+    .second(0)
+    .millisecond(0);
+
   const methods = useForm({
     defaultValues: {
       type: "blog",
@@ -43,6 +53,8 @@ const AddBlogForm = () => {
       description: "",
       category: "",
       images: [],
+      Status: "Draft",
+         scheduledDate: defaultScheduleTime,
       faq: [{ question: "", answer: "" }],
     },
   });
@@ -54,6 +66,8 @@ const AddBlogForm = () => {
   });
 
   const onSubmit = async (data) => {
+     console.log("Submitted data:", data);
+
     setLoading(true);
     try {
       const formData = new FormData();
@@ -64,7 +78,7 @@ const AddBlogForm = () => {
       formData.append("description", data.description);
       formData.append("category", data.category);
       formData.append("tags", JSON.stringify(data.tags || []));
-      formData.append("status", "Draft");
+      formData.append("status", data.Status);
 
       if (data.images?.[0]?.file) {
         formData.append("featuredImage", data.images[0].file);
@@ -435,25 +449,21 @@ const AddBlogForm = () => {
                       label="Canonical URL"
                     /> */}
                   </Box>
-                  {/* <Box
-                  {/* <Box
+                </Paper>
+                <Paper>
+                  <Box
                     sx={{ borderRadius: 3, mb: 4, padding: { xs: 3, md: 2 } }}
                   >
-                    <Typography fontWeight="600" textAlign="center">
-                    <Typography fontWeight="600" textAlign="center">
-                      Open Graph
-                    </Typography>
-                    <CommenTextField name="ogTags.title" label="OG Title" />
-                    </Typography>
-                    <CommenTextField name="ogTags.title" label="OG Title" />
-                    <CommenTextField
-                      name="ogTags.description"
-                      label="OG Description"
-                      multiline
-                      rows={3}
+                    <CommonDropdown
+                      name="Status"
+                      label="status"
+                      options={[
+                        { label: "Draft", value: "Draft" },
+                        { label: "Published", value: "Published" },
+            
+                      ]}
                     />
-                    <CommenTextField name="ogTags.image" label="OG Image URL" />
-                  </Box> */}
+                  </Box>
                 </Paper>
 
                 <CommonButton type="submit" loading={loading}>

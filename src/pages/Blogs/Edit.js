@@ -56,6 +56,7 @@ const EditBlog = () => {
       images: [],
       meta: {},
       ogTags: {},
+      Status: "",
       faq: [{ question: "", answer: "" }],
     },
   });
@@ -107,7 +108,7 @@ const EditBlog = () => {
       setCategoryOptions(option);
     });
   }, []);
-
+console.log(methods.getValues());
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -120,6 +121,7 @@ const EditBlog = () => {
           description: blog.description,
           uid: blog?.uid,
           category: blog.category?._id,
+          Status: blog.status,
           faq:
             Array.isArray(blog.faq) && blog.faq.length > 0
               ? blog.faq
@@ -154,7 +156,7 @@ const EditBlog = () => {
       formData.append("description", data.description);
       formData.append("category", data.category);
       formData.append("tags", JSON.stringify(data.tags || []));
-      formData.append("status", "Draft");
+      formData.append("status", data.Status);
       formData.append("faq", JSON.stringify(data.faq));
 
       // Check if a new image is uploaded
@@ -187,7 +189,9 @@ const EditBlog = () => {
         setbtnLoading(false);
       }
     } catch (error) {
-      toast.error("Failed to update");
+      const message =
+      error.response?.data?.message || "Failed to update. Please try again.";
+    toast.error(message);
       setbtnLoading(false);
     }
   };
@@ -506,25 +510,32 @@ const EditBlog = () => {
                             />
                           </Box>
                         </Box>
-
-                        {/* <Typography textAlign={"center"} fontWeight="600">
-                      Open Graph
-                    </Typography>
-                    <Stack spacing={2}>
-                      {/* <CommenTextField name="ogTags.title" label="OG Title" />
-                      <CommenTextField
-                        name="ogTags.description"
-                        label="OG Description"
-                        multiline
-                        rows={3}
-                      />
-                      <CommenTextField
-                        name="ogTags.image"
-                        label="OG Image URL"
-                      /> */}
-                        {/* </Stack> */}
                       </Box>
                     </Stack>
+                  </Paper>
+                  <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                    <Box sx={commoncss.metabox1}>
+                          <Box sx={commoncss.labelbox}>
+                            {" "}
+                            <label>Status</label>
+                          </Box>
+                          <Box sx={commoncss.tooltipbox}>
+                            {" "}
+                            <CommonToolTip title="After checking the blog and news publication, I was't able to draft it."/>
+                          </Box>
+                          <Box sx={commoncss.fieldbox}>
+                            {" "}
+                           <CommonDropdown
+                        name="Status"
+                        label="status"
+                        options={[
+                          { label: "Draft", value: "Draft" },
+                          { label: "Published", value: "Published" },
+                        ]}
+                      />
+                           
+                          </Box>
+                        </Box>
                   </Paper>
 
                   <CommonButton type="submit" loading={btnloading}>
