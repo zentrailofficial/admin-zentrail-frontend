@@ -98,41 +98,41 @@ const [totalBlogs, setTotalBlogs] = React.useState(0);
       headerName: "Author",
       width: 130,
     },
-    // {
-    //   field: "status",
-    //   headerName: "Status",
-    //   width: 100,
-    //   renderCell: (params) => {
-    //     const status = params.value;
-    //     let color = 'black';
-    //     let backgroundColor = '#E0E0E0';
+    {
+      field: "status",
+      headerName: "Status",
+      width: 100,
+      renderCell: (params) => {
+        const status = params.value;
+        let color = 'black';
+        let backgroundColor = '#E0E0E0';
 
-    //     if (status === 'Published') {
-    //       color = 'green';
-    //       backgroundColor = '#E9FFDB'; //  green
-    //     } else if (status === 'Draft') {
-    //       color = '#b77d62';
-    //       backgroundColor = '#fff5cc'; // orange
-    //     } else if (status === 'Scheduled') {
-    //       color = '#617e9c';
-    //       backgroundColor = '#cafdf5'; // blue
-    //     }
+        if (status === 'Published') {
+          color = 'green';
+          backgroundColor = '#E9FFDB'; //  green
+        } else if (status === 'Draft') {
+          color = '#b77d62';
+          backgroundColor = '#fff5cc'; // orange
+        } else if (status === 'Scheduled') {
+          color = '#617e9c';
+          backgroundColor = '#cafdf5'; // blue
+        }
 
-    //     return (
-    //       <span
-    //         style={{
-    //           color: color,
-    //           backgroundColor: backgroundColor,
-    //           fontWeight: 'bold',
-    //           padding: '5px 15px',
-    //           borderRadius: '5px',
-    //         }}
-    //       >
-    //         {status}
-    //       </span>
-    //     );
-    //   }
-    // },
+        return (
+          <span
+            style={{
+              color: color,
+              backgroundColor: backgroundColor,
+              fontWeight: 'bold',
+              padding: '5px 15px',
+              borderRadius: '5px',
+            }}
+          >
+            {status}
+          </span>
+        );
+      }
+    },
     {
       field: "createdAt",
       headerName: "Created At",
