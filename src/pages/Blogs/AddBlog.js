@@ -39,7 +39,7 @@ const AddBlogForm = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
- const defaultScheduleTime = dayjs()
+  const defaultScheduleTime = dayjs()
     .hour(12)
     .minute(0)
     .second(0)
@@ -54,7 +54,7 @@ const AddBlogForm = () => {
       category: "",
       images: [],
       Status: "Draft",
-         scheduledDate: defaultScheduleTime,
+      scheduledDate: defaultScheduleTime,
       faq: [{ question: "", answer: "" }],
     },
   });
@@ -66,7 +66,7 @@ const AddBlogForm = () => {
   });
 
   const onSubmit = async (data) => {
-     console.log("Submitted data:", data);
+    console.log("Submitted data:", data);
 
     setLoading(true);
     try {
@@ -450,19 +450,28 @@ const AddBlogForm = () => {
                     /> */}
                   </Box>
                 </Paper>
-                <Paper>
-                  <Box
-                    sx={{ borderRadius: 3, mb: 4, padding: { xs: 3, md: 2 } }}
-                  >
-                    <CommonDropdown
-                      name="Status"
-                      label="status"
-                      options={[
-                        { label: "Draft", value: "Draft" },
-                        { label: "Published", value: "Published" },
-            
-                      ]}
-                    />
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.labelbox}>
+                      {" "}
+                      <label>Status</label>
+                    </Box>
+                    <Box sx={commoncss.tooltipbox}>
+                      {" "}
+                      <CommonToolTip title="After checking the blog and news publication, I was't able to draft it." />
+                    </Box>
+                    <Box sx={commoncss.fieldbox}>
+                      {" "}
+                      <CommonDropdown
+                        name="Status"
+                        label="status"
+                        options={[
+                          { label: "Draft", value: "Draft" },
+                          { label: "Published", value: "Published" },
+                        ]}
+                      />
+
+                    </Box>
                   </Box>
                 </Paper>
 
