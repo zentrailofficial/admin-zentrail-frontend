@@ -93,6 +93,7 @@ const CustomCKEditor = ({ name, label, required, placeholder }) => {
               extraPlugins: "iframe,image2,table,tabletools,tableselection",
               allowedContent: true,
               extraAllowedContent: "iframe[*]",
+              format_tags: "p;h1;h2;h3;h4;h5;h6;pre",
               toolbar: [
                 { name: "clipboard", items: ["Undo", "Redo"] },
                 { name: "styles", items: ["Format"] },
