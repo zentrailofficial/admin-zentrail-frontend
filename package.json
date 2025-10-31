@@ -16,6 +16,7 @@
     "@toolpad/core": "^0.16.0",
     "axios": "^1.10.0",
     "ckeditor4-react": "^4.3.0",
+    "dayjs": "^1.11.10",
     "dotenv": "^17.2.0",
     "js-cookie": "^3.0.5",
     "prop-types": "^15.8.1",

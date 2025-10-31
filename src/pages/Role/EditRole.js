@@ -73,6 +73,7 @@ const EditRole = () => {
         canEdit: permissions.edit,
         canDelete: permissions.delete,
         canView: permissions.view,
+        createdBy: user?.id
       });
 
       toast.success("Role updated successfully!");
@@ -136,7 +137,7 @@ const EditRole = () => {
                   </Box>
                 </Box>
 
-                <Box sx={commoncss.metabox1}>
+                {/* <Box sx={commoncss.metabox1}>
                   <Box sx={commoncss.labelbox}>
                     <label>Role</label>
                   </Box>
@@ -156,14 +157,14 @@ const EditRole = () => {
                       size="small"
                     />
                   </Box>
-                </Box>
+                </Box> */}
 
-                <Box sx={{ ...commoncss.metabox1, mt: 3 }}>
+                <Box sx={{ ...commoncss.metabox1}}>
                   <Box sx={commoncss.labelbox}>
                     <label>Permissions</label>
                   </Box>
                   <Box sx={{ ...commoncss.fieldbox1, mt: 1 }}>
-                    <FormGroup>
+                    <FormGroup sx={{flexDirection:"row",justifyContent:"center"}}>
                       <FormControlLabel
                         control={
                           <Checkbox

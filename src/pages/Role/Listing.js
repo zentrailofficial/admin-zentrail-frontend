@@ -15,8 +15,11 @@ import { apiClient } from "../../lib/api-client.js";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete.jsx";
 import { toast } from "react-toastify";
 import commoncss from "../../styles/commoncss.js";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const Listing = () => {
+  const { user } = useAuth()
+  console.log(user)
   const [listData, setListData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -31,7 +34,7 @@ const Listing = () => {
   const fetchData = () => {
     setLoading(true);
     apiClient
-      .get(`/api/userAuth/alluser`)
+      .get(`/api/userAuth/alluser?role=${user?.role == "admin" ? "manager" : "executive"}`)
       .then((res) => {
         const users = res?.data?.data || [];
         const formatted = users.map((val, index) => ({

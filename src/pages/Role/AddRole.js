@@ -37,12 +37,13 @@ const AddRole = ({ defaultValues }) => {
         name: data.name,
         email: data.email,
         password: data.password,
-        role: data.role,
+        role: user?.role=="admin"?"manager":"executive",
         panel:user.panel[0],
         canAdd: permissions.add,
         canEdit: permissions.edit,
         canDelete: permissions.delete,
         canView: permissions.view,
+        createdBy: user?.id
       });
       navigate("/role");
     } catch (error) {
@@ -62,7 +63,7 @@ const AddRole = ({ defaultValues }) => {
                 <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                   {/* <BookIcon color="primary" /> */}
                   <Typography variant="h6" gutterBottom fontWeight={600}>
-                    Add Role
+                    Add {user?.role=="admin"?"Manager":"Executive"}
                   </Typography>
                 </Stack>
                 <Box sx={commoncss.metabox1}>
@@ -118,7 +119,7 @@ const AddRole = ({ defaultValues }) => {
                     />
                   </Box>
                 </Box>
-                <Box sx={commoncss.metabox1}>
+                {/* <Box sx={commoncss.metabox1}>
                   <Box sx={commoncss.labelbox}>
                     <label>Role</label>{" "}
                   </Box>
@@ -138,8 +139,8 @@ const AddRole = ({ defaultValues }) => {
                       size="small"
                     />
                   </Box>
-                </Box>
-                <Box sx={{ ...commoncss.metabox1, mt: 3 }}>
+                </Box> */}
+                <Box sx={{ ...commoncss.metabox1}}>
                   <Box sx={commoncss.labelbox}>
                     <label>Permissions</label>
                   </Box>
@@ -147,7 +148,7 @@ const AddRole = ({ defaultValues }) => {
                     <CommonToolTip title="Select role permissions" />
                   </Box>
                   <Box sx={{ ...commoncss.fieldbox1, mt: 1 }}>
-                    <FormGroup>
+                    <FormGroup sx={{flexDirection:"row",justifyContent:"center"}}>
                       <FormControlLabel
                         control={
                           <Checkbox
