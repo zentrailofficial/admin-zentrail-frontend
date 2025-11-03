@@ -36,6 +36,7 @@ import WarningIcon from "@mui/icons-material/Warning";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import FormatListBulletedAddIcon from "@mui/icons-material/FormatListBulletedAdd";
 import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2.js";
+import SkeletonLoader from "../../commen-component/Reusable/SkeletonLoader.js";
 
 const seasonOptions = [
   { value: "summer-trips", label: "Summer-trips" },
@@ -45,6 +46,7 @@ const seasonOptions = [
 ];
 const EditTravelPackage = () => {
   const [loading, setLoading] = useState(false);
+  const [loadingpage, setLoadingpage] = useState(true);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [formKey, setFormKey] = useState(0);
   const param = useParams();
@@ -149,10 +151,24 @@ const EditTravelPackage = () => {
     }
   };
 
+  // useEffect(() => {
+  //   const days = parseInt(duration) || 0;
+  //   if (days > 0) {
+  //     const newItinerary = Array.from({ length: days }, (_, i) => ({
+  //       title: "",
+  //       description: "",
+  //     }));
+  //     replaceItinerary(newItinerary);
+  //   } else {
+  //     replaceItinerary([]);
+  //   }
+  // }, [duration, replaceItinerary]);
   useEffect(() => {
+  if (!travelPackageId) {
     const days = parseInt(duration) || 0;
+
     if (days > 0) {
-      const newItinerary = Array.from({ length: days }, (_, i) => ({
+      const newItinerary = Array.from({ length: days }, () => ({
         title: "",
         description: "",
       }));
@@ -160,7 +176,9 @@ const EditTravelPackage = () => {
     } else {
       replaceItinerary([]);
     }
-  }, [duration, replaceItinerary]);
+  }
+}, [duration, replaceItinerary, travelPackageId]);
+
   const handleAddExclusion = () => {
     setExclusions([...exclusions, ""]);
   };
@@ -191,6 +209,7 @@ const EditTravelPackage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoadingpage(true)
         const response = await apiClient.get(
           `api/travel-packages/${travelPackageId}`
         );
@@ -260,6 +279,8 @@ const EditTravelPackage = () => {
         setFormKey((prev) => prev + 1);
       } catch (error) {
         console.error(error);
+      }finally {
+        setLoadingpage(false)
       }
     };
     if (moodBasedList?.length > 0) {
@@ -384,15 +405,18 @@ const EditTravelPackage = () => {
         navigate("/travelpackage");
       }
     } catch (error) {
-      console.error("Error creating travel package:", error?.response);
-      toast.error(
-        "Failed to Update travel package. Please try again: ",
-        error?.response
+      toast.error(error?.response?.data?.message||
+        "Failed to Update travel package. Please try again: "
       );
+      console.error("Error creating travel package:", error?.response);
     } finally {
       setLoading(false);
     }
   };
+
+  if(loadingpage){
+    return <SkeletonLoader/>
+  }
 
   return (
     <FormProvider {...methods} key={formKey}>
