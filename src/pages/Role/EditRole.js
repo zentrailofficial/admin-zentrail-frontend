@@ -128,7 +128,7 @@ const EditRole = () => {
                   <Box sx={commoncss.fieldbox1}>
                     <CommenTextField
                       name="email"
-                      label="Email *"
+                      // label="Email *"
                       required
                       size="small"
                       focused={true}
@@ -212,7 +212,7 @@ const EditRole = () => {
                     </FormGroup>
                   </Box>
                 </Box>
-
+              </Paper>
                 <CommonButton
                   sx={{ borderRadius: 10, width: "100%" }}
                   loading={loading}
@@ -220,7 +220,6 @@ const EditRole = () => {
                 >
                   Update
                 </CommonButton>
-              </Paper>
             </Grid>
           </Grid>
         </Box>
