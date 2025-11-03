@@ -364,6 +364,7 @@ import {
   DialogActions,
   TextField,
   MenuItem,
+  Paper,
 } from "@mui/material";
 import { CircularProgress, Box, Stack, Typography, Button } from "@mui/material";
 import { apiClient } from "../../lib/api-client";
@@ -373,6 +374,7 @@ import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import { toast } from "react-toastify";
 
 export default function InquiryTable() {
   const { user } = useAuth();
@@ -414,45 +416,45 @@ export default function InquiryTable() {
   };
 
   // 🕒 Handle date filter logic
-const handleFilterChange = (type) => {
-  setFilterType(type);
+  const handleFilterChange = (type) => {
+    setFilterType(type);
 
-  const now = dayjs();
-  let startDate, endDate;
+    const now = dayjs();
+    let startDate, endDate;
 
-  switch (type) {
-    case "today":
-      startDate = now.startOf("day").format("YYYY-MM-DD");
-      endDate = now.endOf("day").format("YYYY-MM-DD");
-      break;
-    case "week":
-      startDate = now.startOf("week").format("YYYY-MM-DD");
-      endDate = now.endOf("week").format("YYYY-MM-DD");
-      break;
-    case "month":
-      startDate = now.startOf("month").format("YYYY-MM-DD");
-      endDate = now.endOf("month").format("YYYY-MM-DD");
-      break;
-    case "year":
-      startDate = now.startOf("year").format("YYYY-MM-DD");
-      endDate = now.endOf("year").format("YYYY-MM-DD");
-      break;
-    case "custom":
-      return; // user will choose manually
-    default:
-      fetchInquiries();
-      return;
-  }
+    switch (type) {
+      case "today":
+        startDate = now.startOf("day").format("YYYY-MM-DD");
+        endDate = now.endOf("day").format("YYYY-MM-DD");
+        break;
+      case "week":
+        startDate = now.startOf("week").format("YYYY-MM-DD");
+        endDate = now.endOf("week").format("YYYY-MM-DD");
+        break;
+      case "month":
+        startDate = now.startOf("month").format("YYYY-MM-DD");
+        endDate = now.endOf("month").format("YYYY-MM-DD");
+        break;
+      case "year":
+        startDate = now.startOf("year").format("YYYY-MM-DD");
+        endDate = now.endOf("year").format("YYYY-MM-DD");
+        break;
+      case "custom":
+        return; // user will choose manually
+      default:
+        fetchInquiries();
+        return;
+    }
 
-  fetchInquiries(startDate, endDate);
-};
+    fetchInquiries(startDate, endDate);
+  };
 
 
   const handleApplyCustom = () => {
     if (customRange.start && customRange.end) {
       fetchInquiries(customRange.start, customRange.end);
     } else {
-      alert("Please select both start and end dates");
+      toast.error("Please select both start and end dates");
     }
   };
 
@@ -480,7 +482,7 @@ const handleFilterChange = (type) => {
           }))
         );
       } catch (error) {
-        console.error("Error fetching users:", error);
+        toast.error("Error fetching users:", error);
       }
     };
     fetchManagers();
@@ -519,8 +521,9 @@ const handleFilterChange = (type) => {
         )
       );
       setOpen(false);
+      toast.success("Successfully updated")
     } catch (err) {
-      console.error("Error updating inquiry:", err);
+      toast.error("Error updating inquiry:", err);
     }
   };
 
@@ -528,13 +531,94 @@ const handleFilterChange = (type) => {
     { field: "fullName", headerName: "Full Name", flex: 1 },
     { field: "email", headerName: "Email", flex: 1 },
     { field: "phoneNo", headerName: "Phone No", flex: 1 },
-    { field: "source", headerName: "Source", flex: 1 },
-    { field: "status", headerName: "Status", flex: 1 },
-    { field: "tag", headerName: "Tag", flex: 1 },
+    {
+      field: "source", headerName: "Source", flex: 1
+    },
+    {
+      field: "status", headerName: "Status", flex: 1
+      ,
+      renderCell: (params) => {
+        const status = params.value;
+        let color = 'black';
+        let backgroundColor = '#E0E0E0';
+
+        if (status === 'Contacted') {
+          color = '#0D47A1';          // Blue
+          backgroundColor = '#E3F2FD';
+        } else if (status === 'Lost') {
+          color = 'red';                 // red
+          backgroundColor = '#FFDCD1';
+        } else if (status === 'New') {
+          color = "#8E24AA";          // violet text 
+          backgroundColor = "#F3E5F5";
+        } else if (status === 'In Progress') {
+          color = '#E91E63';          // Pink
+          backgroundColor = '#FCE4EC';
+        } else if (status === 'Converted') {
+          color = 'green';               //  green
+          backgroundColor = '#E9FFDB';
+        }
+
+        return (
+          <span
+            style={{
+              color: color,
+              backgroundColor: backgroundColor,
+              fontWeight: 'bold',
+              padding: '5px 15px',
+              borderRadius: '5px',
+            }}
+          >
+            {status}
+          </span>
+        );
+      }
+    },
+    {
+      field: "tag", headerName: "Tag", flex: 1,
+      renderCell: (params) => {
+        const status = params.value;
+        let color = 'black';
+        let backgroundColor = '#E0E0E0';
+
+        if (status === 'Interested') {
+          color = '#b77d62';               // orange
+          backgroundColor = '#fff5cc';
+        } else if (status === 'Hot') {
+          color = 'red';                      // red
+          backgroundColor = '#FFDCD1';
+        } else if (status === 'Follow-up') {
+          color = '#0D47A1';               // blue
+          backgroundColor = '#E3F2FD';
+        }
+        else if (status === 'Converted') {
+          color = 'green';                   //  green
+          backgroundColor = '#E9FFDB';
+        }
+        else if (status === 'Irrelevant') {
+          color = 'black';                  // grey
+          backgroundColor = '#D3D3D3';
+        }
+        return (
+          <span
+            style={{
+              color: color,
+              backgroundColor: backgroundColor,
+              fontWeight: 'bold',
+              padding: '5px 15px',
+              borderRadius: '5px',
+            }}
+          >
+            {status}
+          </span>
+        );
+      }
+    },
     {
       field: "assigned_to",
       headerName: "Assigned To",
       flex: 1,
+      borderRadius: 4,
       renderCell: (params) => (
         <select
           disabled={user.role === "executive"}
@@ -552,12 +636,20 @@ const handleFilterChange = (type) => {
                     : row
                 )
               );
+              toast.success("Assigned successfully");
             } catch (err) {
-              console.error("Error updating assignment", err);
+              toast.error("Error updating assignment", err);
             }
           }}
+          style={{
+            borderRadius: "8px",
+            padding: "6px 10px",
+            border: "1px solid #ccc",
+            width: "100%",
+            
+          }}
         >
-          <option value="">Unassigned</option>
+          <option value="">{`Unassigned`}</option>
           {userlist.map((user) => (
             <option key={user.id} value={user.id}>
               {user.name}
@@ -577,7 +669,7 @@ const handleFilterChange = (type) => {
           size="small"
           onClick={() => handleEditClick(params.row)}
         >
-          Edit
+          {`  Edit`}
         </Button>
       ),
     },
@@ -594,20 +686,20 @@ const handleFilterChange = (type) => {
   return (
     <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
-        <Typography variant="h5">Leads</Typography>
+        <Typography variant="h5">{`Leads`}</Typography>
         <Stack direction="row" spacing={2} alignItems="center">
           <select
             value={filterType}
             onChange={(e) => handleFilterChange(e.target.value)}
-            style={{ padding: "8px", borderRadius: "6px", border: "1px solid #ccc" }}
+            style={{ padding: "10px", borderRadius: "6px", border: "1px solid #ccc" }}
           >
-            <option value="">Select Filter</option>
-            <option value="all">All</option>
-            <option value="today">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="year">This Year</option>
-            <option value="custom">Custom Range</option>
+            <option value="">{`Select Filter`}</option>
+            <option value="all">{`All`}</option>
+            <option value="today">{`Today`}</option>
+            <option value="week">{`This Week`}</option>
+            <option value="month">{`This Month`}</option>
+            <option value="year">{`This Year`}</option>
+            <option value="custom">{`Custom Range`}</option>
           </select>
 
           {filterType === "custom" && (
@@ -627,7 +719,7 @@ const handleFilterChange = (type) => {
                 }
               />
               <Button variant="contained" onClick={handleApplyCustom}>
-                Apply
+                {` Apply`}
               </Button>
             </>
           )}
@@ -637,15 +729,15 @@ const handleFilterChange = (type) => {
             color="primary"
             onClick={() => navigate("/addrole")}
           >
-            Add Role
+            {` Add Role`}
           </CommonButton>
-          <CommonButton
+          {/* <CommonButton
             variant="contained"
             color="primary"
             onClick={() => handleDownloadCSV(columns, rows, "Lead")}
           >
-            Export
-          </CommonButton>
+            {`  Export`}
+          </CommonButton> */}
         </Stack>
       </Stack>
 
@@ -660,72 +752,76 @@ const handleFilterChange = (type) => {
       />
 
       {/* Edit Dialog */}
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>Edit Inquiry</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
-          <Typography><strong>Name:</strong> {selectedInquiry?.fullName}</Typography>
-          <Typography><strong>Email:</strong> {selectedInquiry?.email}</Typography>
-          <Typography><strong>Phone:</strong> {selectedInquiry?.phoneNo}</Typography>
 
-          <TextField
-            select
-            label="Source"
-            name="source"
-            value={formData.source}
-            onChange={(e) => setFormData({ ...formData, source: e.target.value })}
-          >
-            <MenuItem value="meta">Meta</MenuItem>
-            <MenuItem value="google">Google</MenuItem>
-            <MenuItem value="website">Website</MenuItem>
-            <MenuItem value="whatsapp">WhatsApp</MenuItem>
-            <MenuItem value="manual">Manual</MenuItem>
-          </TextField>
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm" >
+        <Paper sx={commoncss.cardlineargradient1}>
+          <DialogTitle>{`Edit Inquiry`}</DialogTitle>
+          <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+            <Typography><strong>{`Name:`}</strong> {selectedInquiry?.fullName}</Typography>
+            <Typography><strong>{`Email:`}</strong> {selectedInquiry?.email}</Typography>
+            <Typography><strong>{`Phone:`}</strong> {selectedInquiry?.phoneNo}</Typography>
 
-          <TextField
-            select
-            label="Status"
-            name="status"
-            value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-          >
-            <MenuItem value="New">New</MenuItem>
-            <MenuItem value="Contacted">Contacted</MenuItem>
-            <MenuItem value="In Progress">In Progress</MenuItem>
-            <MenuItem value="Converted">Converted</MenuItem>
-            <MenuItem value="Lost">Lost</MenuItem>
-          </TextField>
+            <TextField
+              select
+              label="Source"
+              name="source"
+              disabled
+              value={formData.source}
+              onChange={(e) => setFormData({ ...formData, source: e.target.value })}
+            >
+              <MenuItem value="meta">{`Meta`}</MenuItem>
+              <MenuItem value="google">{`Google`}</MenuItem>
+              <MenuItem value="website">{`Website`}</MenuItem>
+              <MenuItem value="whatsapp">{`WhatsApp`}</MenuItem>
+              <MenuItem value="manual">{`Manual`}</MenuItem>
+            </TextField>
 
-          <TextField
-            select
-            label="Tag"
-            name="tag"
-            value={formData.tag}
-            onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
-          >
-            <MenuItem value="Hot">Hot</MenuItem>
-            <MenuItem value="Interested">Interested</MenuItem>
-            <MenuItem value="Irrelevant">Irrelevant</MenuItem>
-            <MenuItem value="Converted">Converted</MenuItem>
-            <MenuItem value="Follow-up">Follow-up</MenuItem>
-          </TextField>
+            <TextField
+              select
+              label="Status"
+              name="status"
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+            >
+              <MenuItem value="New">{`New`}</MenuItem>
+              <MenuItem value="Contacted">{`Contacted`}</MenuItem>
+              <MenuItem value="In Progress">{`In Progress`}</MenuItem>
+              <MenuItem value="Converted">{`Converted`}</MenuItem>
+              <MenuItem value="Lost">{`Lost`}</MenuItem>
+            </TextField>
 
-          <TextField
-            label="Remarks"
-            name="remarks"
-            multiline
-            rows={3}
-            value={formData.remarks}
-            onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
-          />
-        </DialogContent>
+            <TextField
+              select
+              label="Tag"
+              name="tag"
+              value={formData.tag}
+              onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
+            >
+              <MenuItem value="Hot">{`Hot`}</MenuItem>
+              <MenuItem value="Interested">{`Interested`}</MenuItem>
+              <MenuItem value="Irrelevant">{`Irrelevant`}</MenuItem>
+              <MenuItem value="Converted">{`Converted`}</MenuItem>
+              <MenuItem value="Follow-up">{`Follow-up`}</MenuItem>
+            </TextField>
 
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" color="primary" onClick={handleUpdate}>
-            Update
-          </Button>
-        </DialogActions>
+            <TextField
+              label="Remarks"
+              name="remarks"
+              multiline
+              rows={3}
+              value={formData.remarks}
+              onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="contained" color="primary" onClick={handleUpdate}>
+              {`  Update`}
+            </Button>
+          </DialogActions>
+        </Paper>
       </Dialog>
+
     </Box>
   );
 }

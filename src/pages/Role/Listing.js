@@ -127,10 +127,10 @@ const Listing = () => {
     <Box sx={commoncss.listBox}>
       <Stack sx={travelPackageStyle.customBox2}>
         <Typography variant="h5" fontWeight={600}>
-          Role Management
+        {`  Role Management`}
         </Typography>
         <CommonButton onClick={handleAddNew} fullWidth={false}>
-          Add New Role
+        {`  Add New Role`}
         </CommonButton>
       </Stack>
 

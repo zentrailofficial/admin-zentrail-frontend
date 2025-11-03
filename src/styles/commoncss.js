@@ -78,6 +78,22 @@ const commoncss = {
 
     }
   },
+   cardlineargradient1: {
+    position: 'relative',
+    p: 3,
+    overflow: 'hidden',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      width: '6px',
+      borderTopLeftRadius: 'inherit',
+      borderBottomLeftRadius: 'inherit',
+      backgroundImage: 'linear-gradient(180deg, #00ffe5be, #d24bff)',
+    }
+  },
   leftGrid: {
     width: { xs: "100%", md: "50%" },
     display: "flex",
