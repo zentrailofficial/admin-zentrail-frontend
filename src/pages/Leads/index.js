@@ -745,6 +745,7 @@ export default function InquiryTable() {
       <DataGrid
         rows={rows}
         columns={columns}
+        getRowId={(row) => row._id}   
         pagination
         pageSizeOptions={[10, 20, 50]}
         loading={loading}
