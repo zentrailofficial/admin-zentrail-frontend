@@ -477,7 +477,7 @@ export default function InquiryTable() {
         setUserlist(
           filtered.map((u) => ({
             id: u._id,
-            name: `${u.role.charAt(0).toUpperCase()} ${u.name}`,
+            name: u.name,
             role: u.role,
           }))
         );
@@ -649,8 +649,8 @@ export default function InquiryTable() {
             
           }}
         >
-          <option value="">{`Unassigned`}</option>
-          {userlist.map((user) => (
+          <option value="">Unassigned</option>
+          {userlist?.map((user) => (
             <option key={user.id} value={user.id}>
               {user.name}
             </option>
