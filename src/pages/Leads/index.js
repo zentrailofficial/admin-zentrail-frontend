@@ -822,7 +822,7 @@ export default function InquiryTable() {
           <DialogActions>
             <Button onClick={() => setOpen(false)}>Cancel</Button>
             <Button variant="contained" color="primary" onClick={handleUpdate}
-              disabled={loading} // 🟢 disable button while loading
+              disabled={loading} 
               startIcon={loading && <CircularProgress size={20} color="inherit" />}>
               {loading ? "Updating..." : "Update"}
             </Button>
