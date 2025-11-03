@@ -1,6 +1,5 @@
 import {
   Box,
-  CssBaseline,
   AppBar,
   Toolbar,
   Typography,
@@ -15,6 +14,7 @@ import {
   Menu,
   Avatar,
   Divider,
+  Collapse,
 } from "@mui/material";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -26,9 +26,11 @@ import {
   Menu as MenuIcon,
   ChevronLeft,
   VerifiedUserOutlined,
+  ExpandLess,
+  ExpandMore,
 } from "@mui/icons-material";
 import { useThemeMode } from "../../context/ThemeProvider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import HikingIcon from '@mui/icons-material/Hiking';
 import commoncss from "../../styles/commoncss";
@@ -41,8 +43,6 @@ import { apiClient } from "../../lib/api-client";
 
 const FULL_DRAWER_WIDTH = 240;
 const MINI_DRAWER_WIDTH = 60;
-
-
 
 export default function Navbar() {
   const theme = useTheme();
@@ -58,66 +58,79 @@ export default function Navbar() {
       title: "Blog",
       icon: <AutoStoriesIcon />,
       path: "/blog",
-      show:user?.role =="admin"
+      show: user?.role == "admin",
+      group: "Website"
     },
     Category: {
       title: "Category",
       icon: <CategoryIcon />,
       path: "/category",
-      show:user?.role =="admin"
+      show: user?.role == "admin",
+      group: "Website"
     },
     subCategory: {
       title: "Sub Category",
       icon: <SatelliteIcon />,
       path: "/listsubcategory",
-      show:user?.role =="admin"
+      show: user?.role == "admin",
+      group: "Website"
     },
     inqueryform: {
       title: "Leads",
       icon: <NewReleasesIcon />,
       path: "/leads",
-      show:user?.role =="admin"|| user?.role =="manager"|| user?.role =="executive"
+      show: user?.role == "admin" || user?.role == "manager" || user?.role == "executive",
+      group: "CRM"
     },
     TravelPackage: {
       title: "Travel Package",
       icon: <HikingIcon />,
       path: "/travelpackage",
-      show:user?.role =="admin"
+      show: user?.role == "admin",
+      group: "Website"
     },
     Portfolio: {
       title: "Portfolio",
       icon: <WorkIcon />,
       path: "/portfolio",
-      show:user?.role =="admin"
+      show: user?.role == "admin",
+      group: "Website"
     },
     Service: {
       title: "Services",
       icon: <SettingsSuggestIcon />,
       path: "/services",
-      show:user?.role =="admin"
+      show: user?.role == "admin",
+      group: "Website"
     },
     servicePage: {
       title: "Service Page",
       icon: <MiscellaneousServicesIcon />,
       path: "/categoryservices",
-      show:user?.role =="admin"
+      show: user?.role == "admin",
+      group: "Website"
     },
-    User:{
+    User: {
       title: "Role",
       icon: <VerifiedUserOutlined />,
       path: "/role",
-      show:user?.role =="admin"|| user?.role =="manager"
+      show: user?.role == "admin" || user?.role == "manager",
+      group: "CRM"
     },
   };
 
   const staticItems = [
     { title: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
   ];
-  // console.log(user)
-  // console.log(user?.panel)
-  // console.log(user?.allowedModels)
+
   const panelType = user?.panel;
-  // console.log(user?.allowedModels?.[panelType])
+  const allowed = user?.allowedModels?.[panelType] || [];
+
+  const allowedItems = allowed
+    .map((key) => sidebarMap[key])
+    .filter(Boolean);
+  const websiteItems = allowedItems.filter((item) => item.group === "Website");
+  const crmItems = allowedItems.filter((item) => item.group === "CRM");
 
   const fetchApiForPanelToken = async (val) => {
     console.log(val?.target?.innerText)
@@ -125,27 +138,25 @@ export default function Navbar() {
     console.log(response?.data)
   }
 
-  // const NAV_ITEMS = [
-  //   ...staticItems,
-  //   ...user?.allowedModels?.[panelType]?.map((key) => sidebarMap[key]).filter(Boolean), 
-  // ];
-
-  const NAV_ITEMS = [
+  const sidebarGroups = [
     ...staticItems,
-    ...(user?.allowedModels?.[panelType]
-      ? user.allowedModels[panelType].map((key) => sidebarMap[key]).filter(Boolean).filter(item => item.show !== false)
-      : [])
+    ...(websiteItems.length
+      ? [{
+        title: "Website",
+        icon: <AutoStoriesIcon />,
+        children: websiteItems,
+        show: true,
+      }]
+      : []),
+    ...(crmItems.length
+      ? [{
+        title: "CRM",
+        icon: <VerifiedUserOutlined />,
+        children: crmItems,
+        show: true,
+      }]
+      : []),
   ];
-
-  // const NAV_ITEMS = [
-  //   ...staticItems,
-  //   ...Object.values(user?.allowedModels || {})
-  //     .flat() // flatten all arrays
-  //     .map((key) => sidebarMap[key])
-  //     .filter(Boolean)
-  // ];
-
-
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -162,6 +173,14 @@ export default function Navbar() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [miniDrawer, setMiniDrawer] = useState(false); // For desktop
+  const [openMenus, setOpenMenus] = useState({});
+
+const handleToggleMenu = (menuTitle) => {
+  setOpenMenus((prev) => ({
+    ...prev,
+    [menuTitle]: !prev[menuTitle],
+  }));
+};
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -170,65 +189,128 @@ export default function Navbar() {
   const handleMiniDrawerToggle = () => {
     setMiniDrawer(!miniDrawer);
   };
-  const drawerContent = (
-    <div>
-      <Toolbar sx={{ justifyContent: "center" }} />
-      {user?.role !== "superadmin" ? <List>
-        {NAV_ITEMS.map((item) => {
-          const isActive = location.pathname === item.path;
-
-          return (
-            <ListItemButton
-              key={item.title}
-              onClick={() => {
-                navigate(item.path);
-                setMobileOpen(false);
-              }}
-              sx={{
-                justifyContent: miniDrawer ? "center" : "flex-start",
-                px: miniDrawer ? 2 : 3,
-              }}
-            >
-              <ListItemIcon
+const drawerContent = (
+  <div>
+    <Toolbar sx={{ justifyContent: "center" }} />
+    {user?.role !== "superadmin" ? (
+      <List>
+        {sidebarGroups
+          .filter((group) => group.show !== false)
+          .map((group) => (
+            <Box key={group.title}>
+              <ListItemButton
+                onClick={() => {
+                  if (!group.children?.length) {
+                    navigate(group.path);
+                  } else {
+                    handleToggleMenu(group.title);
+                  }
+                }}
                 sx={{
-                  minWidth: 0,
-                  mr: miniDrawer ? 0 : 2,
-                  justifyContent: "center",
-                  color: "#c843ff",
+                  justifyContent: miniDrawer ? "center" : "flex-start",
+                  px: miniDrawer ? 2 : 3,
                 }}
               >
-                {item.icon}
-              </ListItemIcon>
-
-              {!miniDrawer && (
-                <ListItemText
-                  primary={item.title}
+                <ListItemIcon
                   sx={{
-                    ...(isActive && {
-                      background:
-                        "linear-gradient(135deg, #c843ff, #ff7eff, #75d9e6ff)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      fontWeight: 600,
-                    }),
+                    minWidth: 0,
+                    mr: miniDrawer ? 0 : 2,
+                    justifyContent: "center",
+                    color: "#c843ff",
                   }}
-                />
+                >
+                  {group.icon}
+                </ListItemIcon>
+
+                {!miniDrawer && (
+                  <>
+                    <ListItemText
+                      primary={group.title}
+                      sx={{
+                        fontWeight: 600,
+                        textTransform: "capitalize",
+                      }}
+                    />
+                    {group.children?.length > 0 &&
+                      (openMenus[group.title] ? (
+                        <ExpandLess sx={{ color: "#c843ff" }} />
+                      ) : (
+                        <ExpandMore sx={{ color: "#c843ff" }} />
+                      ))}
+                  </>
+                )}
+              </ListItemButton>
+
+              {!miniDrawer && group.children?.length > 0 && (
+                <Collapse
+                  in={openMenus[group.title]}
+                  timeout="auto"
+                  unmountOnExit
+                >
+                  <List component="div" disablePadding sx={{ pl: 6 }}>
+                    {group.children.map((child) => {
+                      const isActive = location.pathname === child.path;
+                      return (
+                        <ListItemButton
+                          key={child.title}
+                          onClick={() => navigate(child.path)}
+                          sx={{
+                            py: 0.5,
+                            px: 2,
+                            borderRadius: 1,
+                            backgroundColor: isActive
+                              ? "rgba(200, 67, 255, 0.1)"
+                              : "transparent",
+                            "&:hover": {
+                              backgroundColor: "rgba(200, 67, 255, 0.15)",
+                            },
+                          }}
+                        >
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: 2,
+                              justifyContent: "center",
+                              color: "#c843ff",
+                            }}
+                          >
+                            {child.icon}
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={child.title}
+                            sx={{
+                              ...(isActive && {
+                                background:
+                                  "linear-gradient(135deg, #c843ff, #ff7eff, #75d9e6ff)",
+                                WebkitBackgroundClip: "text",
+                                WebkitTextFillColor: "transparent",
+                                fontWeight: 600,
+                              }),
+                            }}
+                          />
+                        </ListItemButton>
+                      );
+                    })}
+                  </List>
+                </Collapse>
               )}
-            </ListItemButton>
-          );
-        })}
-      </List> :
-        <List>
-          {user?.panel?.map((val) => <ListItemButton onClick={(val) => fetchApiForPanelToken(val)}>{val}</ListItemButton>)}
-        </List>}
-    </div>
-  );
+            </Box>
+          ))}
+      </List>
+    ) : (
+      <List>
+        {user?.panel?.map((val) => (
+          <ListItemButton key={val} onClick={(val) => fetchApiForPanelToken(val)}>
+            {val}
+          </ListItemButton>
+        ))}
+      </List>
+    )}
+  </div>
+);
 
   return (
     <Box sx={{ display: "flex", width: "100%" }}>
-      {/* <CssBaseline /> */}
-
-      {/* Top AppBar */}
       <AppBar sx={commoncss.apptop}>
         <Toolbar>
           <IconButton
@@ -260,7 +342,6 @@ export default function Navbar() {
             </Avatar>
           </IconButton>
 
-          {/* Dropdown Menu */}
           <Menu
             anchorEl={anchorEl}
             open={open}
@@ -285,7 +366,6 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
 
-      {/* Navigation */}
       <Box
         component="nav"
         sx={{
@@ -293,7 +373,6 @@ export default function Navbar() {
           flexShrink: 0,
         }}
       >
-        {/* Mobile Drawer */}
         <Drawer
           variant="temporary"
           open={mobileOpen}
@@ -307,7 +386,6 @@ export default function Navbar() {
           {drawerContent}
         </Drawer>
 
-        {/* Desktop Drawer */}
         <Drawer
           variant="permanent"
           open
@@ -325,7 +403,6 @@ export default function Navbar() {
         </Drawer>
       </Box>
 
-      {/* Main content */}
       <Box
         component="main"
         sx={{
@@ -336,7 +413,7 @@ export default function Navbar() {
             sm: miniDrawer
               ? `${MINI_DRAWER_WIDTH}px`
               : `${FULL_DRAWER_WIDTH}px`,
-          }, // create space for drawer
+          },
         }}
       >
         <Toolbar />

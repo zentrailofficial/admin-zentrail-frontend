@@ -188,8 +188,6 @@ const EditTravelPackage = () => {
     fetchMoodBased();
   }, []);
 
-  console.log(moodBasedList);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -197,7 +195,7 @@ const EditTravelPackage = () => {
           `api/travel-packages/${travelPackageId}`
         );
         const travelPackage = response.data.data;
-        console.log(response.data.data);
+        // console.log(response.data.data);
         const parsedInclusions = Array.isArray(travelPackage?.inclusions)
           ? JSON.parse(travelPackage?.inclusions[0] || "[]")
           : [];
@@ -217,7 +215,7 @@ const EditTravelPackage = () => {
             (item) => item.value === travelPackage?.moodOfJourney?.title
           ) || null;
 
-        console.log(matchedMood);
+        // console.log(matchedMood);
 
         const parsedItinerary = Array.isArray(travelPackage.itinerary)
           ? travelPackage.itinerary.map((b) => ({
@@ -320,6 +318,7 @@ const EditTravelPackage = () => {
       formData.append("description", data.description);
       formData.append("price", data.price);
       formData.append("discount", JSON.stringify(data.discount));
+      formData.append("status", data.status);
       // Package Details
       formData.append("duration", data.duration);
       formData.append("altitude", data.altitude);
@@ -1072,6 +1071,27 @@ const EditTravelPackage = () => {
                     </Box>
                   </Box>
                 </Paper>
+
+                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                                  <Box sx={commoncss.metabox1}>
+                                    <Box sx={commoncss.labelbox}>
+                                      <label>Status</label>
+                                    </Box>
+                                    <Box sx={commoncss.tooltipbox}>
+                                      <CommonToolTip title="After checking the blog and news publication, I was't able to draft it." />
+                                    </Box>
+                                    <Box sx={commoncss.fieldbox}>
+                                      <CommonDropdown
+                                        name="status"
+                                        label="status"
+                                        options={[
+                                          { label: "Draft", value: "Draft" },
+                                          { label: "Published", value: "Published" },
+                                        ]}
+                                      />
+                                    </Box>
+                                  </Box>
+                                </Paper>
 
                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
                   <Box sx={travelPackageStyle.buttonBox}>
