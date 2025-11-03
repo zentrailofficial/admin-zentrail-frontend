@@ -9,6 +9,7 @@ import { apiClient } from "../../lib/api-client.js";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete.jsx";
 import { toast } from "react-toastify";
 import commoncss from "../../styles/commoncss.js";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 const ListingTravelPackage = () => {
   const [listData, setListData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,7 @@ const ListingTravelPackage = () => {
           season: val?.season,
           weatherLocation: val?.weatherLocation,
           isActive: val?.isActive ? "Active" : "Inactive",
+          status: val?.status,
           discount: val?.discount.amount
             ? `₹ ${val?.discount.amount}`
             : val?.discount?.percentage
@@ -77,17 +79,16 @@ const ListingTravelPackage = () => {
 
   const columns = [
     { field: "sr", headerName: "Sr", width: 70 },
-    { field: "name", headerName: "Package Name", width: 180, flex: 1 },
+    { field: "name", headerName: "Package Name", flex: 1 },
     // { field: "duration", headerName: "Duration", flex: 1 },
-    { field: "moodOfJourney", headerName: "Mood Of Journey", width: 200 },
-    { field: "type", headerName: "Type", width: 200 },
+    { field: "moodOfJourney", headerName: "Mood Of Journey", flex: 1 },
+    { field: "type", headerName: "Type" },
 
     // { field: "season", headerName: "Season", flex: 1 },
-    { field: "price", headerName: "Price", width: 150 },
+    { field: "price", headerName: "Price" },
     {
       field: "discount",
       headerName: "Discount",
-      width: 150,
       renderCell: (params, i) => (
         <span
           style={{
@@ -104,13 +105,22 @@ const ListingTravelPackage = () => {
 
     {
       field: "isActive",
+      headerName: "Active",
+      renderCell: (params) => (
+        <span>
+          {params.value !== "Active" ? <IoEyeOff color="red" fontSize={20} /> : <IoEye color="green" fontSize={20} />}
+        </span>
+      ),
+    },
+    {
+      field: "status",
       headerName: "Status",
-      width: 150,
+      width: 120,
       renderCell: (params) => (
         <span
           style={{
-            color: params.value !== "Active" ? "red" : "green",
-            backgroundColor: params.value !== "Active" ? "#FFDCD1" : "#E9FFDB",
+            color: params.value !== "Published" ? "orange" : "green",
+            backgroundColor: params.value !== "Published" ? "#ffe1acff" : "#E9FFDB",
             fontWeight: "bold",
             padding: "5px 15px",
             borderRadius: "5px",
@@ -123,7 +133,6 @@ const ListingTravelPackage = () => {
     {
       field: "actions",
       headerName: "Actions",
-      width: 120,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
