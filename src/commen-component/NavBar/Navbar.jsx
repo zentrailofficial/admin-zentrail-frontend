@@ -175,12 +175,12 @@ export default function Navbar() {
   const [miniDrawer, setMiniDrawer] = useState(false); // For desktop
   const [openMenus, setOpenMenus] = useState({});
 
-const handleToggleMenu = (menuTitle) => {
-  setOpenMenus((prev) => ({
-    ...prev,
-    [menuTitle]: !prev[menuTitle],
-  }));
-};
+  const handleToggleMenu = (menuTitle) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [menuTitle]: !prev[menuTitle],
+    }));
+  };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -189,125 +189,127 @@ const handleToggleMenu = (menuTitle) => {
   const handleMiniDrawerToggle = () => {
     setMiniDrawer(!miniDrawer);
   };
-const drawerContent = (
-  <div>
-    <Toolbar sx={{ justifyContent: "center" }} />
-    {user?.role !== "superadmin" ? (
-      <List>
-        {sidebarGroups
-          .filter((group) => group.show !== false)
-          .map((group) => (
-            <Box key={group.title}>
-              <ListItemButton
-                onClick={() => {
-                  if (!group.children?.length) {
-                    navigate(group.path);
-                  } else {
-                    handleToggleMenu(group.title);
-                  }
-                }}
-                sx={{
-                  justifyContent: miniDrawer ? "center" : "flex-start",
-                  px: miniDrawer ? 2 : 3,
-                }}
-              >
-                <ListItemIcon
+  const drawerContent = (
+    <div>
+      <Toolbar sx={{ justifyContent: "center" }} />
+      {user?.role !== "superadmin" ? (
+        <List>
+          {sidebarGroups.filter(
+              (g) => g.show !== false && (!g.children?.length || g.children.some(c => c.show !== false))
+            )
+
+            .map((group) => (
+              <Box key={group.title}>
+                <ListItemButton
+                  onClick={() => {
+                    if (!group.children?.length) {
+                      navigate(group.path);
+                    } else {
+                      handleToggleMenu(group.title);
+                    }
+                  }}
                   sx={{
-                    minWidth: 0,
-                    mr: miniDrawer ? 0 : 2,
-                    justifyContent: "center",
-                    color: "#c843ff",
+                    justifyContent: miniDrawer ? "center" : "flex-start",
+                    px: miniDrawer ? 2 : 3,
                   }}
                 >
-                  {group.icon}
-                </ListItemIcon>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: miniDrawer ? 0 : 2,
+                      justifyContent: "center",
+                      color: "#c843ff",
+                    }}
+                  >
+                    {group.icon}
+                  </ListItemIcon>
 
-                {!miniDrawer && (
-                  <>
-                    <ListItemText
-                      primary={group.title}
-                      sx={{
-                        fontWeight: 600,
-                        textTransform: "capitalize",
-                      }}
-                    />
-                    {group.children?.length > 0 &&
-                      (openMenus[group.title] ? (
-                        <ExpandLess sx={{ color: "#c843ff" }} />
-                      ) : (
-                        <ExpandMore sx={{ color: "#c843ff" }} />
-                      ))}
-                  </>
-                )}
-              </ListItemButton>
+                  {!miniDrawer && (
+                    <>
+                      <ListItemText
+                        primary={group.title}
+                        sx={{
+                          fontWeight: 600,
+                          textTransform: "capitalize",
+                        }}
+                      />
+                      {group.children?.length > 0 &&
+                        (openMenus[group.title] ? (
+                          <ExpandLess sx={{ color: "#c843ff" }} />
+                        ) : (
+                          <ExpandMore sx={{ color: "#c843ff" }} />
+                        ))}
+                    </>
+                  )}
+                </ListItemButton>
 
-              {!miniDrawer && group.children?.length > 0 && (
-                <Collapse
-                  in={openMenus[group.title]}
-                  timeout="auto"
-                  unmountOnExit
-                >
-                  <List component="div" disablePadding sx={{ pl: 6 }}>
-                    {group.children.map((child) => {
-                      const isActive = location.pathname === child.path;
-                      return (
-                        <ListItemButton
-                          key={child.title}
-                          onClick={() => navigate(child.path)}
-                          sx={{
-                            py: 0.5,
-                            px: 2,
-                            borderRadius: 1,
-                            backgroundColor: isActive
-                              ? "rgba(200, 67, 255, 0.1)"
-                              : "transparent",
-                            "&:hover": {
-                              backgroundColor: "rgba(200, 67, 255, 0.15)",
-                            },
-                          }}
-                        >
-                          <ListItemIcon
+                {!miniDrawer && group.children?.length > 0 && (
+                  <Collapse
+                    in={openMenus[group.title]}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <List component="div" disablePadding sx={{ pl: 6 }}>
+                      {group.children.filter((child) => child.show !== false).map((child) => {
+                        const isActive = location.pathname === child.path;
+                        return (
+                          <ListItemButton
+                            key={child.title}
+                            onClick={() => navigate(child.path)}
                             sx={{
-                              minWidth: 0,
-                              mr: 2,
-                              justifyContent: "center",
-                              color: "#c843ff",
+                              py: 0.5,
+                              px: 2,
+                              borderRadius: 1,
+                              backgroundColor: isActive
+                                ? "rgba(200, 67, 255, 0.1)"
+                                : "transparent",
+                              "&:hover": {
+                                backgroundColor: "rgba(200, 67, 255, 0.15)",
+                              },
                             }}
                           >
-                            {child.icon}
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={child.title}
-                            sx={{
-                              ...(isActive && {
-                                background:
-                                  "linear-gradient(135deg, #c843ff, #ff7eff, #75d9e6ff)",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                                fontWeight: 600,
-                              }),
-                            }}
-                          />
-                        </ListItemButton>
-                      );
-                    })}
-                  </List>
-                </Collapse>
-              )}
-            </Box>
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: 2,
+                                justifyContent: "center",
+                                color: "#c843ff",
+                              }}
+                            >
+                              {child.icon}
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={child.title}
+                              sx={{
+                                ...(isActive && {
+                                  background:
+                                    "linear-gradient(135deg, #c843ff, #ff7eff, #75d9e6ff)",
+                                  WebkitBackgroundClip: "text",
+                                  WebkitTextFillColor: "transparent",
+                                  fontWeight: 600,
+                                }),
+                              }}
+                            />
+                          </ListItemButton>
+                        );
+                      })}
+                    </List>
+                  </Collapse>
+                )}
+              </Box>
+            ))}
+        </List>
+      ) : (
+        <List>
+          {user?.panel?.map((val) => (
+            <ListItemButton key={val} onClick={(val) => fetchApiForPanelToken(val)}>
+              {val}
+            </ListItemButton>
           ))}
-      </List>
-    ) : (
-      <List>
-        {user?.panel?.map((val) => (
-          <ListItemButton key={val} onClick={(val) => fetchApiForPanelToken(val)}>
-            {val}
-          </ListItemButton>
-        ))}
-      </List>
-    )}
-  </div>
-);
+        </List>
+      )}
+    </div>
+  );
 
   return (
     <Box sx={{ display: "flex", width: "100%" }}>

@@ -484,7 +484,7 @@ export default function InquiryTable() {
           }))
         );
       } catch (error) {
-        toast.error("Error fetching users:", error);
+        console.error("Error fetching users:", error);
       }
     };
     fetchManagers();
