@@ -72,7 +72,7 @@ const AddRole = ({ defaultValues }) => {
                 </Stack>
                 <Box sx={commoncss.metabox1}>
                   <Box sx={commoncss.labelbox}>
-                    <label>{`Name`} </label>{" "}
+                    <label>Name </label>{" "}
                   </Box>
                   <Box sx={commoncss.tooltipbox}>
                     {" "}
@@ -107,7 +107,7 @@ const AddRole = ({ defaultValues }) => {
                 </Box>
                 <Box sx={commoncss.metabox1}>
                   <Box sx={commoncss.labelbox}>
-                    <label>{`Password`}</label>{" "}
+                    <label>Password</label>{" "}
                   </Box>
                   <Box sx={commoncss.tooltipbox}>
                     {" "}
@@ -161,7 +161,7 @@ const AddRole = ({ defaultValues }) => {
                 </Box> */}
                 <Box sx={{ ...commoncss.metabox1 }}>
                   <Box sx={commoncss.labelbox}>
-                    <label>{`Permissions`}</label>
+                    <label>Permissions</label>
                   </Box>
                   <Box sx={commoncss.tooltipbox}>
                     <CommonToolTip title="Select role permissions" />
@@ -224,7 +224,7 @@ const AddRole = ({ defaultValues }) => {
                 loading={loading}
                 type="submit"
               >
-                {` Submit`}
+                Submit
               </CommonButton>
             </Grid>
           </Grid>

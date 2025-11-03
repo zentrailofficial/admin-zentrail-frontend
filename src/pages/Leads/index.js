@@ -646,7 +646,7 @@ export default function InquiryTable() {
             padding: "6px 10px",
             border: "1px solid #ccc",
             width: "100%",
-            
+
           }}
         >
           <option value="">Unassigned</option>
@@ -669,7 +669,7 @@ export default function InquiryTable() {
           size="small"
           onClick={() => handleEditClick(params.row)}
         >
-          {`  Edit`}
+          Edit
         </Button>
       ),
     },
@@ -686,20 +686,20 @@ export default function InquiryTable() {
   return (
     <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
-        <Typography variant="h5">{`Leads`}</Typography>
+        <Typography variant="h5">Leads</Typography>
         <Stack direction="row" spacing={2} alignItems="center">
           <select
             value={filterType}
             onChange={(e) => handleFilterChange(e.target.value)}
             style={{ padding: "10px", borderRadius: "6px", border: "1px solid #ccc" }}
           >
-            <option value="">{`Select Filter`}</option>
-            <option value="all">{`All`}</option>
-            <option value="today">{`Today`}</option>
-            <option value="week">{`This Week`}</option>
-            <option value="month">{`This Month`}</option>
-            <option value="year">{`This Year`}</option>
-            <option value="custom">{`Custom Range`}</option>
+            <option value="">Select Filter</option>
+            <option value="all">All</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="year">This Year</option>
+            <option value="custom">Custom Range</option>
           </select>
 
           {filterType === "custom" && (
@@ -719,7 +719,7 @@ export default function InquiryTable() {
                 }
               />
               <Button variant="contained" onClick={handleApplyCustom}>
-                {` Apply`}
+                Apply
               </Button>
             </>
           )}
@@ -729,14 +729,14 @@ export default function InquiryTable() {
             color="primary"
             onClick={() => navigate("/addrole")}
           >
-            {` Add Role`}
+            Add Role
           </CommonButton>
           {/* <CommonButton
             variant="contained"
             color="primary"
             onClick={() => handleDownloadCSV(columns, rows, "Lead")}
           >
-            {`  Export`}
+            Export
           </CommonButton> */}
         </Stack>
       </Stack>
@@ -755,11 +755,11 @@ export default function InquiryTable() {
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm" >
         <Paper sx={commoncss.cardlineargradient1}>
-          <DialogTitle>{`Edit Inquiry`}</DialogTitle>
+          <DialogTitle>Edit Inquiry</DialogTitle>
           <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
-            <Typography><strong>{`Name:`}</strong> {selectedInquiry?.fullName}</Typography>
-            <Typography><strong>{`Email:`}</strong> {selectedInquiry?.email}</Typography>
-            <Typography><strong>{`Phone:`}</strong> {selectedInquiry?.phoneNo}</Typography>
+            <Typography><strong>Name:</strong> {selectedInquiry?.fullName}</Typography>
+            <Typography><strong>Email:</strong> {selectedInquiry?.email}</Typography>
+            <Typography><strong>Phone:</strong> {selectedInquiry?.phoneNo}</Typography>
 
             <TextField
               select
@@ -769,11 +769,11 @@ export default function InquiryTable() {
               value={formData.source}
               onChange={(e) => setFormData({ ...formData, source: e.target.value })}
             >
-              <MenuItem value="meta">{`Meta`}</MenuItem>
-              <MenuItem value="google">{`Google`}</MenuItem>
-              <MenuItem value="website">{`Website`}</MenuItem>
-              <MenuItem value="whatsapp">{`WhatsApp`}</MenuItem>
-              <MenuItem value="manual">{`Manual`}</MenuItem>
+              <MenuItem value="meta">Meta</MenuItem>
+              <MenuItem value="google">Google</MenuItem>
+              <MenuItem value="website">Website</MenuItem>
+              <MenuItem value="whatsapp">WhatsApp</MenuItem>
+              <MenuItem value="manual">Manual</MenuItem>
             </TextField>
 
             <TextField
@@ -783,11 +783,11 @@ export default function InquiryTable() {
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value })}
             >
-              <MenuItem value="New">{`New`}</MenuItem>
-              <MenuItem value="Contacted">{`Contacted`}</MenuItem>
-              <MenuItem value="In Progress">{`In Progress`}</MenuItem>
-              <MenuItem value="Converted">{`Converted`}</MenuItem>
-              <MenuItem value="Lost">{`Lost`}</MenuItem>
+              <MenuItem value="New">New</MenuItem>
+              <MenuItem value="Contacted">Contacted</MenuItem>
+              <MenuItem value="In Progress">In Progress</MenuItem>
+              <MenuItem value="Converted">Converted</MenuItem>
+              <MenuItem value="Lost">Lost</MenuItem>
             </TextField>
 
             <TextField
@@ -797,11 +797,11 @@ export default function InquiryTable() {
               value={formData.tag}
               onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
             >
-              <MenuItem value="Hot">{`Hot`}</MenuItem>
-              <MenuItem value="Interested">{`Interested`}</MenuItem>
-              <MenuItem value="Irrelevant">{`Irrelevant`}</MenuItem>
-              <MenuItem value="Converted">{`Converted`}</MenuItem>
-              <MenuItem value="Follow-up">{`Follow-up`}</MenuItem>
+              <MenuItem value="Hot">Hot</MenuItem>
+              <MenuItem value="Interested">Interested</MenuItem>
+              <MenuItem value="Irrelevant">Irrelevant</MenuItem>
+              <MenuItem value="Converted">Converted</MenuItem>
+              <MenuItem value="Follow-up">Follow-up</MenuItem>
             </TextField>
 
             <TextField
@@ -816,7 +816,7 @@ export default function InquiryTable() {
           <DialogActions>
             <Button onClick={() => setOpen(false)}>Cancel</Button>
             <Button variant="contained" color="primary" onClick={handleUpdate}>
-              {`  Update`}
+              Update
             </Button>
           </DialogActions>
         </Paper>
