@@ -475,7 +475,7 @@ const handleFilterChange = (type) => {
         setUserlist(
           filtered.map((u) => ({
             id: u._id,
-            name: `${u.role.charAt(0).toUpperCase()} ${u.name}`,
+            name: u.name,
             role: u.role,
           }))
         );
@@ -558,7 +558,7 @@ const handleFilterChange = (type) => {
           }}
         >
           <option value="">Unassigned</option>
-          {userlist.map((user) => (
+          {userlist?.map((user) => (
             <option key={user.id} value={user.id}>
               {user.name}
             </option>

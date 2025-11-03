@@ -58,46 +58,55 @@ export default function Navbar() {
       title: "Blog",
       icon: <AutoStoriesIcon />,
       path: "/blog",
+      show:user?.role =="admin"
     },
     Category: {
       title: "Category",
       icon: <CategoryIcon />,
       path: "/category",
+      show:user?.role =="admin"
     },
     subCategory: {
       title: "Sub Category",
       icon: <SatelliteIcon />,
       path: "/listsubcategory",
+      show:user?.role =="admin"
     },
     inqueryform: {
       title: "Leads",
       icon: <NewReleasesIcon />,
       path: "/leads",
+      show:user?.role =="admin"|| user?.role =="manager"|| user?.role =="executive"
     },
     TravelPackage: {
       title: "Travel Package",
       icon: <HikingIcon />,
       path: "/travelpackage",
+      show:user?.role =="admin"
     },
     Portfolio: {
       title: "Portfolio",
       icon: <WorkIcon />,
       path: "/portfolio",
+      show:user?.role =="admin"
     },
     Service: {
       title: "Services",
       icon: <SettingsSuggestIcon />,
       path: "/services",
+      show:user?.role =="admin"
     },
     servicePage: {
       title: "Service Page",
       icon: <MiscellaneousServicesIcon />,
       path: "/categoryservices",
+      show:user?.role =="admin"
     },
     User:{
       title: "Role",
       icon: <VerifiedUserOutlined />,
       path: "/role",
+      show:user?.role =="admin"|| user?.role =="manager"
     },
   };
 
@@ -124,7 +133,7 @@ export default function Navbar() {
   const NAV_ITEMS = [
     ...staticItems,
     ...(user?.allowedModels?.[panelType]
-      ? user.allowedModels[panelType].map((key) => sidebarMap[key]).filter(Boolean)
+      ? user.allowedModels[panelType].map((key) => sidebarMap[key]).filter(Boolean).filter(item => item.show !== false)
       : [])
   ];
 
