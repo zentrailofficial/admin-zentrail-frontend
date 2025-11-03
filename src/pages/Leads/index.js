@@ -365,6 +365,7 @@ import {
   TextField,
   MenuItem,
   Paper,
+  IconButton,
 } from "@mui/material";
 import { CircularProgress, Box, Stack, Typography, Button } from "@mui/material";
 import { apiClient } from "../../lib/api-client";
@@ -375,6 +376,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function InquiryTable() {
   const { user } = useAuth();
@@ -661,16 +663,15 @@ export default function InquiryTable() {
     {
       field: "action",
       headerName: "Action",
+      width: 120,
       flex: 1,
       renderCell: (params) => (
-        <Button
-          variant="contained"
+        <IconButton
           color="primary"
-          size="small"
           onClick={() => handleEditClick(params.row)}
         >
-          Edit
-        </Button>
+          <EditIcon />
+        </IconButton>
       ),
     },
   ];
@@ -744,19 +745,23 @@ export default function InquiryTable() {
       <DataGrid
         rows={rows}
         columns={columns}
-        getRowId={(row) => row._id}
-        pageSize={5}
-        rowsPerPageOptions={[5, 10, 20]}
-        disableSelectionOnClick
+        pagination
+        pageSizeOptions={[10, 20, 50]}
         loading={loading}
+        autoHeight
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: 10, page: 0 },
+          },
+        }}
       />
 
       {/* Edit Dialog */}
 
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm" >
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm"  >
         <Paper sx={commoncss.cardlineargradient1}>
           <DialogTitle>Edit Inquiry</DialogTitle>
-          <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+          <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1, maxHeight: "70vh", overflowY: "auto" }}>
             <Typography><strong>Name:</strong> {selectedInquiry?.fullName}</Typography>
             <Typography><strong>Email:</strong> {selectedInquiry?.email}</Typography>
             <Typography><strong>Phone:</strong> {selectedInquiry?.phoneNo}</Typography>
@@ -815,8 +820,10 @@ export default function InquiryTable() {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpen(false)}>Cancel</Button>
-            <Button variant="contained" color="primary" onClick={handleUpdate}>
-              Update
+            <Button variant="contained" color="primary" onClick={handleUpdate}
+              disabled={loading} // 🟢 disable button while loading
+              startIcon={loading && <CircularProgress size={20} color="inherit" />}>
+              {loading ? "Updating..." : "Update"}
             </Button>
           </DialogActions>
         </Paper>
