@@ -556,7 +556,7 @@ console.log(methods.getValues());
         aria-describedby="exit-dialog-description"
       >
          <Paper sx={commoncss.cardlineargradient1}>
-        <DialogTitle varient="h6" fontWeight={600}id="exit-dialog-title">Unsaved Changes</DialogTitle>
+        <DialogTitle varient="h6" fontWeight={600} id="exit-dialog-title">Unsaved Changes</DialogTitle>
         <DialogContent>
           <DialogContentText id="exit-dialog-description">
              <Typography variant="p" fontWeight={600}>
