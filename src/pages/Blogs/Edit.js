@@ -555,11 +555,13 @@ console.log(methods.getValues());
         aria-labelledby="exit-dialog-title"
         aria-describedby="exit-dialog-description"
       >
-        <DialogTitle id="exit-dialog-title">Unsaved Changes</DialogTitle>
+         <Paper sx={commoncss.cardlineargradient1}>
+        <DialogTitle varient="h6" fontWeight={600}id="exit-dialog-title">Unsaved Changes</DialogTitle>
         <DialogContent>
           <DialogContentText id="exit-dialog-description">
+             <Typography variant="p" fontWeight={600}>
             You have unsaved changes. Are you sure you want to leave this page?
-            Your changes will be lost.
+            Your changes will be lost.</Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -568,6 +570,7 @@ console.log(methods.getValues());
             Leave Without Saving
           </CommonButton>
         </DialogActions>
+        </Paper>
       </Dialog>
     </>
   );
