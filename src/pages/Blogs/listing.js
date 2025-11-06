@@ -101,7 +101,6 @@ const [totalBlogs, setTotalBlogs] = React.useState(0);
     {
       field: "status",
       headerName: "Status",
-      width: 100,
       renderCell: (params) => {
         const status = params.value;
         let color = 'black';
@@ -136,7 +135,6 @@ const [totalBlogs, setTotalBlogs] = React.useState(0);
     {
       field: "createdAt",
       headerName: "Created At",
-      width: 180,
       // valueGetter: (params) =>
       //   new Date(params?.row?.createdAt).toLocaleString(),
     },

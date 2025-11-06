@@ -119,6 +119,7 @@ const EditSubCategory = () => {
       formData.append("metaDescription", data?.metaDescription);
       formData.append("metaKeyword", data?.metaKeyword);
       formData.append("faq", JSON.stringify(data?.faq));
+      formData.append("status", data.status);
       // formData.append("image", data?.image);
       // if (data.image[0]?.file) {
       // formData.append("image", data?.image[0]?.file);
@@ -421,6 +422,26 @@ const EditSubCategory = () => {
                               required
                             />
                           </Box>
+                        </Box>
+                      </Box>
+                    </Paper>
+                    <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}>
+                          <label>Status</label>
+                        </Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="After checking the blog and news publication, I was't able to draft it." />
+                        </Box>
+                        <Box sx={commoncss.fieldbox}>
+                          <CommonDropdown
+                            name="status"
+                            label="status"
+                            options={[
+                              { label: "Draft", value: "Draft" },
+                              { label: "Published", value: "Published" },
+                            ]}
+                          />
                         </Box>
                       </Box>
                     </Paper>

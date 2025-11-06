@@ -35,6 +35,7 @@ const ServicesList = () => {
       metaTitle: item.meta.title,
       metaDescription: item.meta.description,
       image: item.featuredImage.url,
+      status: item.status,
     }));
     setRows(formatted);
   };
@@ -71,6 +72,24 @@ const ServicesList = () => {
     { field: "name", headerName: "Name", flex: 1 },
     { field: "metaTitle", headerName: "Meta Title", flex: 1 },
     { field: "metaDescription", headerName: "Meta Description", flex: 1.5 },
+     {
+      field: "status",
+      headerName: "Status",
+      width: 120,
+      renderCell: (params) => (
+        <span
+          style={{
+            color: params.value !== "Published" ? "orange" : "green",
+            backgroundColor: params.value !== "Published" ? "#ffe1acff" : "#E9FFDB",
+            fontWeight: "bold",
+            padding: "5px 15px",
+            borderRadius: "5px",
+          }}
+        >
+          {params.value}
+        </span>
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",

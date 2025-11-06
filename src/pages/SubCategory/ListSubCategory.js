@@ -63,7 +63,24 @@ const ListSubCategory = () => {
     { field: "name", headerName: "subcategory Name", flex: 2 },
     { field: "category", headerName: "category", flex: 2 },
     { field: "createdAt", headerName: "created at", flex: 2 },
-
+ {
+      field: "status",
+      headerName: "Status",
+      width: 120,
+      renderCell: (params) => (
+        <span
+          style={{
+            color: params.value !== "Published" ? "orange" : "green",
+            backgroundColor: params.value !== "Published" ? "#ffe1acff" : "#E9FFDB",
+            fontWeight: "bold",
+            padding: "5px 15px",
+            borderRadius: "5px",
+          }}
+        >
+          {params.value}
+        </span>
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",

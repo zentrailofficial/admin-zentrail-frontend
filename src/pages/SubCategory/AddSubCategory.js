@@ -48,6 +48,7 @@ const AddSubCategory = () => {
       image: "",
       isblog: false,
       faq: [{ question: "", answer: "" }],
+      Status: "Draft",
     },
   });
   const {
@@ -132,6 +133,7 @@ const AddSubCategory = () => {
       formData.append("metaDescription", data?.metaDescription);
       formData.append("metaKeyword", data?.metaKeyword);
       formData.append("faq", JSON.stringify(data?.faq));
+      formData.append("status", data.Status);
       // formData.append("image", data?.image);
       // if (data.image[0]?.file) {
       formData.append("image", data?.image[0]?.file);
@@ -142,7 +144,7 @@ const AddSubCategory = () => {
       });
       toast.success("Create Successful");
       // methods.reset();
-       navigate("/listsubcategory");
+      navigate("/listsubcategory");
     } catch (error) {
       toast.error(error?.response?.data?.message);
     }
@@ -392,6 +394,28 @@ const AddSubCategory = () => {
 
                       </Box>
                     </Paper>
+
+                    <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                      <Box sx={commoncss.metabox1}>
+                        <Box sx={commoncss.labelbox}>
+                          <label>Status</label>
+                        </Box>
+                        <Box sx={commoncss.tooltipbox}>
+                          <CommonToolTip title="After checking the blog and news publication, I was't able to draft it." />
+                        </Box>
+                        <Box sx={commoncss.fieldbox}>
+                          <CommonDropdown
+                            name="Status"
+                            label="status"
+                            options={[
+                              { label: "Draft", value: "Draft" },
+                              { label: "Published", value: "Published" },
+                            ]}
+                          />
+                        </Box>
+                      </Box>
+                    </Paper>
+
 
                     <CommonButton
                       type="submit"
