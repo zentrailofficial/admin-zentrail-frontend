@@ -92,7 +92,7 @@ const ListingTravelPackage = () => {
       renderCell: (params, i) => (
         <span
           style={{
-            color: params.value == "No Discount" ? "red" : "green",
+            color: params.value === "No Discount" ? "red" : "green",
             fontWeight: "bold",
             padding: "5px 15px",
             borderRadius: "5px",
