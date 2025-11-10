@@ -22,7 +22,6 @@ import EditService from "../pages/Services/editService";
 import Leads from "../pages/Leads";
 import ListingTravelPackage from "../pages/TravelPackage/ListingTravelPackage";
 import AddTravelPackage from "../pages/TravelPackage/AddTravelPackage";
-import { Edit } from "@mui/icons-material";
 import EditTravelPackage from "../pages/TravelPackage/EditTravelPackage";
 import AddSubCategory from "../pages/SubCategory/AddSubCategory";
 import ListSubCategory from "../pages/SubCategory/ListSubCategory";

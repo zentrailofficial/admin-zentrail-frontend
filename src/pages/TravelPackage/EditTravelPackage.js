@@ -164,20 +164,20 @@ const EditTravelPackage = () => {
   //   }
   // }, [duration, replaceItinerary]);
   useEffect(() => {
-  if (!travelPackageId) {
-    const days = parseInt(duration) || 0;
+    if (!travelPackageId) {
+      const days = parseInt(duration) || 0;
 
-    if (days > 0) {
-      const newItinerary = Array.from({ length: days }, () => ({
-        title: "",
-        description: "",
-      }));
-      replaceItinerary(newItinerary);
-    } else {
-      replaceItinerary([]);
+      if (days > 0) {
+        const newItinerary = Array.from({ length: days }, () => ({
+          title: "",
+          description: "",
+        }));
+        replaceItinerary(newItinerary);
+      } else {
+        replaceItinerary([]);
+      }
     }
-  }
-}, [duration, replaceItinerary, travelPackageId]);
+  }, [duration, replaceItinerary, travelPackageId]);
 
   const handleAddExclusion = () => {
     setExclusions([...exclusions, ""]);
@@ -279,7 +279,7 @@ const EditTravelPackage = () => {
         setFormKey((prev) => prev + 1);
       } catch (error) {
         console.error(error);
-      }finally {
+      } finally {
         setLoadingpage(false)
       }
     };
@@ -405,7 +405,7 @@ const EditTravelPackage = () => {
         navigate("/travelpackage");
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message||
+      toast.error(error?.response?.data?.message ||
         "Failed to Update travel package. Please try again: "
       );
       console.error("Error creating travel package:", error?.response);
@@ -414,8 +414,8 @@ const EditTravelPackage = () => {
     }
   };
 
-  if(loadingpage){
-    return <SkeletonLoader/>
+  if (loadingpage) {
+    return <SkeletonLoader />
   }
 
   return (
@@ -855,14 +855,14 @@ const EditTravelPackage = () => {
                             <Box sx={commoncss.editorBox}>
                               <label>Description *</label>
                               <CustomCKEditor
-                                 name={`itinerary.${index}.description`}
+                                name={`itinerary.${index}.description`}
                                 required
                                 minLength={30}
                                 placeholder="Write itinerary details here..."
                                 height="500px"
                               />
                             </Box>
-{/* 
+                            {/* 
                             <CommenQuillEditor
                               name={`itinerary.${index}.description`}
                               label="Description *"
@@ -1082,13 +1082,15 @@ const EditTravelPackage = () => {
                       <Box sx={commoncss.fieldbox}>
                         {" "}
                         <CommenTextField
-                          name="seo.metaTitle"
-                          label="Meta Title *"
+                          name="seo.metaDescription"
+                          label="Meta Description *"
+                          multiline
                           required
-                          maxLength={60}
+                          rows={3}
+                          maxLength={160}
                           messages={{
-                            required: "Meta title is required",
-                            maxLength: "Please do not exceed 60 characters",
+                            required: "Meta description is required",
+                            maxLength: "Please do not exceed 160 characters",
                           }}
                         />
                       </Box>
@@ -1096,26 +1098,26 @@ const EditTravelPackage = () => {
                   </Box>
                 </Paper>
 
-                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
-                                  <Box sx={commoncss.metabox1}>
-                                    <Box sx={commoncss.labelbox}>
-                                      <label>Status</label>
-                                    </Box>
-                                    <Box sx={commoncss.tooltipbox}>
-                                      <CommonToolTip title="After checking the blog and news publication, I was't able to draft it." />
-                                    </Box>
-                                    <Box sx={commoncss.fieldbox}>
-                                      <CommonDropdown
-                                        name="status"
-                                        label="status"
-                                        options={[
-                                          { label: "Draft", value: "Draft" },
-                                          { label: "Published", value: "Published" },
-                                        ]}
-                                      />
-                                    </Box>
-                                  </Box>
-                                </Paper>
+                <Paper elevation={3} sx={commoncss.cardlineargradient}>
+                  <Box sx={commoncss.metabox1}>
+                    <Box sx={commoncss.labelbox}>
+                      <label>Status</label>
+                    </Box>
+                    <Box sx={commoncss.tooltipbox}>
+                      <CommonToolTip title="After checking the blog and news publication, I was't able to draft it." />
+                    </Box>
+                    <Box sx={commoncss.fieldbox}>
+                      <CommonDropdown
+                        name="status"
+                        label="status"
+                        options={[
+                          { label: "Draft", value: "Draft" },
+                          { label: "Published", value: "Published" },
+                        ]}
+                      />
+                    </Box>
+                  </Box>
+                </Paper>
 
                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
                   <Box sx={travelPackageStyle.buttonBox}>
