@@ -355,7 +355,7 @@
 // }
 
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Dialog,
@@ -377,6 +377,7 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
+import { set } from "react-hook-form";
 
 export default function InquiryTable() {
   const { user } = useAuth();
@@ -397,6 +398,11 @@ export default function InquiryTable() {
     remarks: "",
     source: "",
   });
+  // for excel upload
+  const [file, setFile] = useState(null);
+    const fileInputRef = useRef(null); 
+  const [message, setMessage] = useState("");
+  const [loader, setloader] = useState(false);
 
   // 📦 Fetch data from API (with optional date filters)
   const fetchInquiries = async (startDate, endDate) => {
@@ -493,7 +499,7 @@ export default function InquiryTable() {
   // 🔥 Fetch all on mount
   useEffect(() => {
     fetchInquiries();
-  }, []);
+  }, [message]);
 
   // ✏️ Edit Inquiry
   const handleEditClick = (inquiry) => {
@@ -684,11 +690,51 @@ export default function InquiryTable() {
   //   );
   // }
 
+  const handleUpload = async () => {
+    if (!file) return alert("Please select a file first");
+    setloader(true)
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await apiClient.post(`/api/inquiryform/upload-excel/${user.panel}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setMessage(res.data.message);
+      toast.success(res.data.message || "excel upload completed");
+       setFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // this clears the <input type="file" />
+      }
+    } catch (err) {
+      setMessage("Upload failed");
+      toast.error("Please select both start and end dates");
+    } finally {
+      setloader(false)
+    }
+  };
+
   return (
     <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Leads</Typography>
         <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={-5} alignItems="center">
+            <input
+              type="file"
+              accept=".xlsx,.xls"
+               ref={fileInputRef}
+              onChange={(e) => setFile(e.target.files[0])}
+            />
+            <CommonButton
+              variant="contained"
+              color="primary"
+              onClick={handleUpload}
+              loading={loader}
+            >
+              Upload
+            </CommonButton>
+          </Stack>
           <select
             value={filterType}
             onChange={(e) => handleFilterChange(e.target.value)}
@@ -745,7 +791,7 @@ export default function InquiryTable() {
       <DataGrid
         rows={rows}
         columns={columns}
-        getRowId={(row) => row._id}   
+        getRowId={(row) => row._id}
         pagination
         pageSizeOptions={[10, 20, 50]}
         loading={loading}
@@ -822,7 +868,7 @@ export default function InquiryTable() {
           <DialogActions>
             <Button onClick={() => setOpen(false)}>Cancel</Button>
             <Button variant="contained" color="primary" onClick={handleUpdate}
-              disabled={loading} 
+              disabled={loading}
               startIcon={loading && <CircularProgress size={20} color="inherit" />}>
               {loading ? "Updating..." : "Update"}
             </Button>
