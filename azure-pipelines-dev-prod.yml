@@ -4,7 +4,7 @@ trigger:
       - main
 
 pool:
-  name: frontend-agent
+  name: DESKTOP-GC3NJ5M
 
 stages:
   - stage: Dev
