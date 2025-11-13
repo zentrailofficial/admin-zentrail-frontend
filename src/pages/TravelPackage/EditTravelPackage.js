@@ -1,15 +1,14 @@
 import { Box, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import {
   Controller,
   FormProvider,
-  set,
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
+
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import travelPackageStyle from "../../styles/travelPackage.js";
 import ImageUpload from "../../commen-component/ImageUpload/ImageUpload.js";
@@ -47,7 +46,6 @@ const seasonOptions = [
 const EditTravelPackage = () => {
   const [loading, setLoading] = useState(false);
   const [loadingpage, setLoadingpage] = useState(true);
-  const [selectedLocation, setSelectedLocation] = useState(null);
   const [formKey, setFormKey] = useState(0);
   const param = useParams();
 
@@ -91,7 +89,6 @@ const EditTravelPackage = () => {
     setValue,
     handleSubmit,
     setFocus,
-    formState: { isSubmitting, errors },
   } = methods;
   const [exclusions, setExclusions] = useState([""]);
   const [inclusions, setInclusions] = useState([""]);
@@ -125,7 +122,6 @@ const EditTravelPackage = () => {
     name: "batches",
   });
   const duration = watch("duration");
-  const titleValue = watch("title");
 
   const discount = watch("discount");
 
@@ -286,7 +282,7 @@ const EditTravelPackage = () => {
     if (moodBasedList?.length > 0) {
       fetchData();
     }
-  }, [param?.id, moodBasedList]);
+  }, [param?.id, moodBasedList, methods, replaceBatches, replaceItinerary, travelPackageId]);
 
   const onSubmit = async (data) => {
     const price = parseFloat(data.price) || 0;
@@ -317,7 +313,7 @@ const EditTravelPackage = () => {
       return;
     }
 
-    if (data.featuredImage?.length == 0) {
+    if (data.featuredImage?.length === 0) {
       toast.error("Featured image is required");
       setFocus("featuredImage");
       return;
@@ -748,7 +744,7 @@ const EditTravelPackage = () => {
                   </Box>
 
                   {/* trek only */}
-                  {methods.watch("type") == "trek" && (
+                  {methods.watch("type") === "trek" && (
                     <>
                       <Stack flexDirection="row" gap={3}>
                         <CommenTextField
