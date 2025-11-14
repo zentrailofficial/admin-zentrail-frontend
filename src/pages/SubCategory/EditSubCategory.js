@@ -1,17 +1,14 @@
 import {
   Box,
-  FormControlLabel,
   Grid,
   IconButton,
   Paper,
   Stack,
-  Switch,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import {
-  Controller,
   FormProvider,
   useFieldArray,
   useForm,
@@ -24,12 +21,10 @@ import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import travelPackageStyle from "../../styles/travelPackage";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
-import categoryStyle from "../../styles/category";
 import { appendImagesToFormData } from "../../utils/helperFunctions";
 import { toast } from "react-toastify";
 import commoncss from "../../styles/commoncss";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
-import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import ImageIcon from "@mui/icons-material/Image";
 import SettingsIcon from "@mui/icons-material/Settings";
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
@@ -189,7 +184,7 @@ const EditSubCategory = () => {
       }
     };
     fetchService();
-  }, [id]);
+  }, [id, methods]);
 
   if (loading) {
     return <SkeletonLoader />

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import {
   Box,
@@ -12,28 +12,21 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Button,
 } from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import {
-  CloudUpload as CloudUploadIcon,
   Add as AddIcon,
   Delete as DeleteIcon,
-  ExpandMore as ExpandMoreIcon,
-  Article as ArticleIcon,
   Settings as SettingsIcon,
   Image as ImageIcon,
-  Tag as TagIcon,
-  Person as PersonIcon,
   Category as CategoryIcon,
 } from "@mui/icons-material";
 import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
 import BookIcon from "@mui/icons-material/Book";
 import { apiClient } from "../../lib/api-client";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import commoncss from "../../styles/commoncss";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import { toast } from "react-toastify";
@@ -60,7 +53,7 @@ const EditBlog = () => {
       faq: [{ question: "", answer: "" }],
     },
   });
-  const { reset, handleSubmit, getValues, formState, control } = methods;
+  const { reset, formState, control } = methods;
   const { isDirty } = formState;
   const { fields, append, remove } = useFieldArray({
     control,
@@ -93,7 +86,7 @@ const EditBlog = () => {
 
   const handleExitConfirm = () => {
     setShowExitDialog(false);
-    navigate("/blog");
+    navigate(pendingNavigation || "/blog");
   };
   const handleExitCancel = () => {
     setShowExitDialog(false);

@@ -38,7 +38,7 @@ const EditCategory = () => {
       setloading(false)
     };
     fetchData();
-  }, [categoryId]);
+  }, [categoryId, methods]);
 
   const onSubmit = async (data) => {
     try {

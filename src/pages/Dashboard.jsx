@@ -1,6 +1,4 @@
 import React from 'react'
-import BarChart from '../commen-component/BarChart/BarChart'
-import MovingBulletsChart from '../commen-component/BarChart/BarChart'
 import ColumnsWithMovingBullets from '../commen-component/BarChart/BarChart'
 import { Box, Grid, Typography } from '@mui/material'
 import BarChartLead from '../commen-component/BarChart/BarChartlead'

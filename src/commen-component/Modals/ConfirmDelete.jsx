@@ -7,8 +7,6 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import CommonButton from "../CommenButton/CommenButton";
-
 const ConfirmDelete = ({
   open,
   onClose,

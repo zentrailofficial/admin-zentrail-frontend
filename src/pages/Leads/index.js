@@ -369,7 +369,6 @@ import {
 } from "@mui/material";
 import { CircularProgress, Box, Stack, Typography, Button } from "@mui/material";
 import { apiClient } from "../../lib/api-client";
-import { handleDownloadCSV } from "../../utils/helperFunctions";
 import commoncss from "../../styles/commoncss";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import { useAuth } from "../../context/AuthContext";
@@ -377,7 +376,6 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
-import { set } from "react-hook-form";
 
 export default function InquiryTable() {
   const { user } = useAuth();
@@ -494,7 +492,7 @@ export default function InquiryTable() {
       }
     };
     fetchManagers();
-  }, []);
+  }, [user?.role]);
 
   // 🔥 Fetch all on mount
   useEffect(() => {

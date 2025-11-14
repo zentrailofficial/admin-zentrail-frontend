@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Box,
   IconButton,
@@ -10,7 +10,7 @@ import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import { useNavigate } from "react-router-dom";
 import travelPackageStyle from "../../styles/travelPackage.js";
 import { DataGrid } from "@mui/x-data-grid";
-import { Delete, Edit } from "@mui/icons-material";
+import {  Edit } from "@mui/icons-material";
 import { apiClient } from "../../lib/api-client.js";
 import ConfirmDelete from "../../commen-component/Modals/ConfirmDelete.jsx";
 import { toast } from "react-toastify";
@@ -27,14 +27,10 @@ const Listing = () => {
   const [loadingForDelete, setLoadingForDelete] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     setLoading(true);
     apiClient
-      .get(`/api/userAuth/alluser?role=${user?.role == "admin" ? "manager" : "executive"}`)
+      .get(`/api/userAuth/alluser?role=${user?.role === "admin" ? "manager" : "executive"}`)
       .then((res) => {
         const users = res?.data?.data || [];
         const formatted = users.map((val, index) => ({
@@ -53,7 +49,11 @@ const Listing = () => {
       })
       .catch((err) => console.error("Fetch users failed:", err))
       .finally(() => setLoading(false));
-  };
+  }, [user?.role]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleDelete = () => {
     setLoadingForDelete(true);

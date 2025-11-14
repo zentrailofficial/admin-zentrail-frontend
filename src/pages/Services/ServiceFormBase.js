@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Card,
-  CardContent,
   Grid,
   Stack,
   Typography,
@@ -19,8 +17,6 @@ import {
   Image as ImageIcon,
   Settings as SettingsIcon,
 } from "@mui/icons-material";
-
-import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
@@ -44,7 +40,7 @@ const ServiceFormBase = ({ defaultValues, mode = "add", serviceId }) => {
   const [serviceOptions, setServiceOptions] = useState([]);
 
   const methods = useForm({ defaultValues });
-  const { setValue, control, handleSubmit, getValues } = methods;
+  const { setValue, control, handleSubmit } = methods;
   const { fields, append, remove } = useFieldArray({ control, name: "faq" });
   useEffect(() => {
     const fetchData = async () => {

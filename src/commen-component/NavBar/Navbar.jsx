@@ -58,63 +58,63 @@ export default function Navbar() {
       title: "Blog",
       icon: <AutoStoriesIcon />,
       path: "/blog",
-      show: user?.role == "admin",
+      show: user?.role === "admin",
       group: "Website"
     },
     Category: {
       title: "Category",
       icon: <CategoryIcon />,
       path: "/category",
-      show: user?.role == "admin",
+      show: user?.role === "admin",
       group: "Website"
     },
     subCategory: {
       title: "Sub Category",
       icon: <SatelliteIcon />,
       path: "/listsubcategory",
-      show: user?.role == "admin",
+      show: user?.role === "admin",
       group: "Website"
     },
     inqueryform: {
       title: "Leads",
       icon: <NewReleasesIcon />,
       path: "/leads",
-      show: user?.role == "admin" || user?.role == "manager" || user?.role == "executive",
+      show: user?.role === "admin" || user?.role === "manager" || user?.role === "executive",
       group: "CRM"
     },
     TravelPackage: {
       title: "Travel Package",
       icon: <HikingIcon />,
       path: "/travelpackage",
-      show: user?.role == "admin",
+      show: user?.role === "admin",
       group: "Website"
     },
     Portfolio: {
       title: "Portfolio",
       icon: <WorkIcon />,
       path: "/portfolio",
-      show: user?.role == "admin",
+      show: user?.role === "admin",
       group: "Website"
     },
     Service: {
       title: "Services",
       icon: <SettingsSuggestIcon />,
       path: "/services",
-      show: user?.role == "admin",
+      show: user?.role === "admin",
       group: "Website"
     },
     servicePage: {
       title: "Service Page",
       icon: <MiscellaneousServicesIcon />,
       path: "/categoryservices",
-      show: user?.role == "admin",
+      show: user?.role === "admin",
       group: "Website"
     },
     User: {
       title: "Role",
       icon: <VerifiedUserOutlined />,
       path: "/role",
-      show: user?.role == "admin" || user?.role == "manager",
+      show: user?.role === "admin" || user?.role === "manager",
       group: "CRM"
     },
   };

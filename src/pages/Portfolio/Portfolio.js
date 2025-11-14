@@ -7,11 +7,7 @@ import {
   Box,
   Typography,
   Paper,
-  Grid,
-  Card,
-  CardMedia,
-  CircularProgress,
-  Button,
+ CircularProgress,
   Stack,
 } from "@mui/material";
 import ImageList from '@mui/material/ImageList';
@@ -32,7 +28,7 @@ const PortfolioPage = () => {
 
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [allPortfolioData, setAllPortfolioData] = useState([]);
-  const [filteredImages, setFilteredImages] = useState([]);
+  const [, setFilteredImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [IdtoDelete, setIdtoDelete] = useState("");
@@ -158,7 +154,7 @@ const PortfolioPage = () => {
                     <img
                       srcSet={`${img?.images[0]?.url}?w=248&fit=crop&auto=format&dpr=2 2x`}
                       src={`${img?.images[0]?.url}?w=248&fit=crop&auto=format`}
-                      alt={"image portfolio"}
+                      alt="portfolio"
                       loading="lazy"
                     />
                       <Paper

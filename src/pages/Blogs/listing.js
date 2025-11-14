@@ -1,13 +1,11 @@
 import * as React from "react";
 import {
   Box,
-  Button,
-  CircularProgress,
   Stack,
   Typography,
   IconButton,
 } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid} from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,18 +18,13 @@ export default function BlogListGrid() {
   const [page, setPage] = React.useState(0);
 const [limit, setLimit] = React.useState(10);
 const [totalBlogs, setTotalBlogs] = React.useState(0);
-
-  const [listData, setListData] = React.useState([]);
+const [listData, setListData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [IdtoDelete, setIdtoDelete] = React.useState("");
   const [loadingForDelete, setLoadingForDelete] = React.useState(false);
   const navigate = useNavigate();
-  React.useEffect(() => {
-    fetchData();
-  }, [page, limit]);
-
-  const fetchData = () => {
+ const fetchData = React.useCallback ( () => {
     setLoading(true);
     apiClient
       .get(`/api/blogs?page=${page + 1}&limit=${limit}`)
@@ -49,7 +42,11 @@ const [totalBlogs, setTotalBlogs] = React.useState(0);
         setListData(formatted);
       })
       .finally(() => setLoading(false));
-  };
+  },[page, limit]);
+
+  React.useEffect(() => {
+    fetchData();
+  }, [page, limit,fetchData]);
   const handleEdit = (id) => {
     navigate(`/editblog/${id}`);
   };

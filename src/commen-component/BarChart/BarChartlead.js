@@ -217,7 +217,7 @@ const BarChartLead = () => {
 
         series.bullets.push((root, series, dataItem) => {
             const bulletContainer = am5.Container.new(root, {});
-            const circle = bulletContainer.children.push(
+            bulletContainer.children.push(
                 am5.Circle.new(
                     root,
                     {

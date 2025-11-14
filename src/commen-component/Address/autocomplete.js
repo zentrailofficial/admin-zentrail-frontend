@@ -3,10 +3,6 @@ import { IoLocationSharp } from "react-icons/io5";
 import {
   InputAdornment,
   TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
   Box,
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -16,7 +12,8 @@ const LocationSearch = ({ onSelect , value }) => {
   const uniqueId = useId();
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState(value);
-  const [locationData, setLocationData] = useState({
+// eslint-disable-next-line
+  const [_, setLocationData] = useState({
     formatted_address: "",
     country: "",
     state: "",

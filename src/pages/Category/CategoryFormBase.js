@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Paper,
@@ -18,8 +18,6 @@ import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import ImageIcon from "@mui/icons-material/Image";
 import travelPackageStyle from "../../styles/travelPackage";
-import categoryStyle from "../../styles/category";
-import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import commoncss from "../../styles/commoncss";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -50,7 +48,7 @@ const CategoryFormBase = ({ methods, onSubmit, isEdit = false }) => {
       const sanitizedSlug = sanitizeSlug(name);
       setValue("slug", sanitizedSlug, { shouldValidate: true });
     }
-  }, [watch("name")]);
+  }, [watch, methods, isEdit,setValue]);
 
 
   return (

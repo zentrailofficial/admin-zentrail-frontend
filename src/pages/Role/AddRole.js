@@ -1,5 +1,5 @@
 import { Box, Grid, Paper, Stack, Typography, FormControlLabel, Checkbox, FormGroup, InputAdornment, IconButton } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import commoncss from "../../styles/commoncss";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
 import CommenTextField from "../../commen-component/TextField/TextField";
@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { apiClient } from "../../lib/api-client";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import { useAuth } from "../../context/AuthContext";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -38,7 +37,7 @@ const AddRole = ({ defaultValues }) => {
         name: data.name,
         email: data.email,
         password: data.password,
-        role: user?.role == "admin" ? "manager" : "executive",
+        role: user?.role === "admin" ? "manager" : "executive",
         panel: user.panel[0],
         canAdd: permissions.add,
         canEdit: permissions.edit,
@@ -67,7 +66,7 @@ const AddRole = ({ defaultValues }) => {
                 <Stack direction="row" alignItems="center" spacing={2} mb={3}>
                   {/* <BookIcon color="primary" /> */}
                   <Typography variant="h6" gutterBottom fontWeight={600}>
-                    Add {user?.role == "admin" ? "Manager" : "Executive"}
+                    Add {user?.role === "admin" ? "Manager" : "Executive"}
                   </Typography>
                 </Stack>
                 <Box sx={commoncss.metabox1}>

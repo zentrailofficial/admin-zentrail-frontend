@@ -105,8 +105,6 @@ const EditTravelPackage = () => {
   });
   const {
     fields: itineraryFields,
-    append: appendItinerary,
-    remove: removeItinerary,
     replace: replaceItinerary,
   } = useFieldArray({
     control,

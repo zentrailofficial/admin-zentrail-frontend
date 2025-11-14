@@ -7,17 +7,15 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import {
   Controller,
   FormProvider,
-  set,
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import travelPackageStyle from "../../styles/travelPackage.js";
 import ImageUpload from "../../commen-component/ImageUpload/ImageUpload.js";
@@ -61,8 +59,6 @@ const exclusionOptions = [
 ];
 const AddTravelPackage = () => {
   const [loading, setLoading] = useState(false);
-
-  const [selectedLocation, setSelectedLocation] = useState(null);
   const methods = useForm({
     defaultValues: {
       type: "",
@@ -97,7 +93,6 @@ const AddTravelPackage = () => {
     setValue,
     handleSubmit,
     setFocus,
-    formState: { isSubmitting, errors },
   } = methods;
   const navigate = useNavigate();
   const [moodBasedList, setMoodBasedList] = useState([]);
@@ -124,8 +119,6 @@ const AddTravelPackage = () => {
   });
   const {
     fields: itineraryFields,
-    append: appendItinerary,
-    remove: removeItinerary,
     replace: replaceItinerary,
   } = useFieldArray({
     control,
@@ -166,7 +159,6 @@ const AddTravelPackage = () => {
   const titleValue = watch("title");
 
   const discount = watch("discount");
-  const discountType = watch("discountType");
   const price = watch("price");
   useEffect(() => {
     if (titleValue) {
@@ -244,7 +236,7 @@ const AddTravelPackage = () => {
       return;
     }
 
-    if (data.featuredImage?.length == 0) {
+    if (data.featuredImage?.length === 0) {
       toast.error("Featured image is required");
       setFocus("featuredImage");
       return;
@@ -653,7 +645,7 @@ const AddTravelPackage = () => {
                   </Box>
 
                   {/* trek only */}
-                  {methods.watch("type") == "trek" && (
+                  {methods.watch("type") === "trek" && (
                     <>
                       <Stack flexDirection="row" gap={3}>
                         <CommenTextField

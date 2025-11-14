@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Paper,
   Typography,
-  Button,
   Grid,
-  CircularProgress,
   Stack,
 } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
-import CommonDropdown from "../../commen-component/CommonDropdown/CommonDropdown";
 import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
 import { apiClient } from "../../lib/api-client";
 import { useNavigate } from "react-router-dom";
@@ -18,9 +15,8 @@ import CommonButton from "../../commen-component/CommenButton/CommenButton";
 import commoncss from "../../styles/commoncss";
 import BookIcon from "@mui/icons-material/Book";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
-import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import ImageIcon from "@mui/icons-material/Image";
-import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
+
 
 const CreateCategoryServices = () => {
   const methods = useForm({
@@ -30,7 +26,7 @@ const CreateCategoryServices = () => {
       image: [],
     },
   });
-  const { handleSubmit, reset } = methods;
+  const { reset } = methods;
 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);

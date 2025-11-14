@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm, FormProvider, useFieldArray, Controller } from "react-hook-form";
+import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { Box, Paper, Typography, Stack, Grid, IconButton } from "@mui/material";
 import CommenTextField from "../../commen-component/TextField/TextField";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
@@ -8,21 +8,13 @@ import ImageUpload from "../../commen-component/ImageUpload/ImageUpload";
 import BookIcon from "@mui/icons-material/Book";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
-  CloudUpload as CloudUploadIcon,
   Add as AddIcon,
   Delete as DeleteIcon,
-  ExpandMore as ExpandMoreIcon,
-  Article as ArticleIcon,
   Image as ImageIcon,
-  Tag as TagIcon,
-  Person as PersonIcon,
   Category as CategoryIcon,
 } from "@mui/icons-material";
 import { apiClient } from "../../lib/api-client";
-import { v4 as uuidv4 } from "uuid";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import CommenQuillEditor from "../../commen-component/TextEditor/TextEditor";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CommonToolTip from "../../commen-component/CommonToolTip/CommonToolTip";
@@ -30,9 +22,6 @@ import commoncss from "../../styles/commoncss";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { isAllowedKey, sanitizeSlug } from "../../utils/helperFunctions";
 import CustomCKEditor from "../../commen-component/TextEditor2/TextEditor2";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 const AddBlogForm = () => {
   const [categoryOptions, setCategoryOptions] = useState([]);
@@ -59,14 +48,12 @@ const AddBlogForm = () => {
     },
   });
   const { watch, setValue, control } = methods;
-  const titleValue = watch("title");
   const { fields, append, remove } = useFieldArray({
     control,
     name: "faq",
   });
 
   const onSubmit = async (data) => {
-    console.log("Submitted data:", data);
 
     setLoading(true);
     try {
@@ -112,30 +99,13 @@ const AddBlogForm = () => {
     }
   };
 
-  const handleAddMore = () => {
-    alert("Add more clicked!");
-  };
-
-  // useEffect(() => {
-  //   if (titleValue) {
-  //     const slug = titleValue
-  //       .toLowerCase()
-  //       .trim()
-  //       .replace(/&/g, "and")
-  //       .replace(/[^\w\s]/gi, "-")
-  //       .replace(/\s+/g, "-")
-  //       .replace(/-+/g, "-")
-  //       .replace(/^-+|-+$/g, "");
-  //     setValue("uid", slug);
-  //   }
-  // }, [titleValue, setValue]);
+  const titleValue = watch("title");
   useEffect(() => {
-    const name = watch("title");
-    if (name) {
-      const sanitizedSlug = sanitizeSlug(name);
+    if (titleValue) {
+      const sanitizedSlug = sanitizeSlug(titleValue);
       setValue("uid", sanitizedSlug, { shouldValidate: true });
     }
-  }, [watch("title")]);
+  }, [titleValue, setValue]);
 
   useEffect(() => {
     apiClient.get("/api/category/blog-categories").then((data) => {
