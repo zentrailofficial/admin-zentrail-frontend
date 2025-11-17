@@ -398,7 +398,7 @@ export default function InquiryTable() {
   });
   // for excel upload
   const [file, setFile] = useState(null);
-    const fileInputRef = useRef(null); 
+  const fileInputRef = useRef(null);
   const [message, setMessage] = useState("");
   const [loader, setloader] = useState(false);
 
@@ -700,7 +700,7 @@ export default function InquiryTable() {
       });
       setMessage(res.data.message);
       toast.success(res.data.message || "excel upload completed");
-       setFile(null);
+      setFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = ""; // this clears the <input type="file" />
       }
@@ -718,18 +718,19 @@ export default function InquiryTable() {
         <Typography variant="h5">Leads</Typography>
         <Stack direction="row" spacing={2} alignItems="center">
           <Stack direction="row" spacing={-5} alignItems="center">
-            <input
-              type="file"
-              accept=".xlsx,.xls"
-               ref={fileInputRef}
-              onChange={(e) => setFile(e.target.files[0])}
-            />
             <CommonButton
               variant="contained"
               color="primary"
               onClick={handleUpload}
               loading={loader}
             >
+              <input
+                type="file"
+                accept=".xlsx,.xls"
+                ref={fileInputRef}
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+
               Upload
             </CommonButton>
           </Stack>
