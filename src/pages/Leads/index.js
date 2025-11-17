@@ -717,7 +717,7 @@ export default function InquiryTable() {
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Leads</Typography>
         <Stack direction="row" spacing={2} alignItems="center">
-          <Stack direction="row" spacing={-5} alignItems="center">
+          <Stack direction="row"  alignItems="center">
             <CommonButton
               variant="contained"
               color="primary"
@@ -764,9 +764,9 @@ export default function InquiryTable() {
                   setCustomRange((prev) => ({ ...prev, end: e.target.value }))
                 }
               />
-              <Button variant="contained" onClick={handleApplyCustom}>
+              <CommonButton variant="contained" onClick={handleApplyCustom}>
                 Apply
-              </Button>
+              </CommonButton>
             </>
           )}
 
