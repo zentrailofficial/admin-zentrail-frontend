@@ -83,13 +83,7 @@ const EditTravelPackage = () => {
     },
   });
 
-  const {
-    control,
-    watch,
-    setValue,
-    handleSubmit,
-    setFocus,
-  } = methods;
+  const { control, watch, setValue, handleSubmit, setFocus } = methods;
   const [exclusions, setExclusions] = useState([""]);
   const [inclusions, setInclusions] = useState([""]);
   const navigate = useNavigate();
@@ -106,6 +100,7 @@ const EditTravelPackage = () => {
   const {
     fields: itineraryFields,
     replace: replaceItinerary,
+    remove,
   } = useFieldArray({
     control,
     name: "itinerary",
@@ -124,7 +119,6 @@ const EditTravelPackage = () => {
   const discount = watch("discount");
 
   const price = watch("price");
-  // 🧠 Automatically reset other discount field to 0 based on selected type
   useEffect(() => {
     if (discount?.type === "amount") {
       setValue("discount.percentage", 0);
@@ -145,33 +139,20 @@ const EditTravelPackage = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const days = parseInt(duration) || 0;
-  //   if (days > 0) {
-  //     const newItinerary = Array.from({ length: days }, (_, i) => ({
-  //       title: "",
-  //       description: "",
-  //     }));
-  //     replaceItinerary(newItinerary);
-  //   } else {
-  //     replaceItinerary([]);
-  //   }
-  // }, [duration, replaceItinerary]);
   useEffect(() => {
-    if (!travelPackageId) {
-      const days = parseInt(duration) || 0;
+    const days = parseInt(duration) || 0;
+    const prevItinerary = watch("itinerary") || [];
+    if (days > prevItinerary.length) {
+      const difference = days - prevItinerary.length;
 
-      if (days > 0) {
-        const newItinerary = Array.from({ length: days }, () => ({
-          title: "",
-          description: "",
-        }));
-        replaceItinerary(newItinerary);
-      } else {
-        replaceItinerary([]);
-      }
+      const newItems = Array.from({ length: difference }, () => ({
+        title: "",
+        description: "",
+      }));
+
+      replaceItinerary([...prevItinerary, ...newItems]);
     }
-  }, [duration, replaceItinerary, travelPackageId]);
+  }, [duration, replaceItinerary, watch]);
 
   const handleAddExclusion = () => {
     setExclusions([...exclusions, ""]);
@@ -203,12 +184,11 @@ const EditTravelPackage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoadingpage(true)
+        setLoadingpage(true);
         const response = await apiClient.get(
           `api/travel-packages/${travelPackageId}`
         );
         const travelPackage = response.data.data;
-        // console.log(response.data.data);
         const parsedInclusions = Array.isArray(travelPackage?.inclusions)
           ? JSON.parse(travelPackage?.inclusions[0] || "[]")
           : [];
@@ -218,10 +198,10 @@ const EditTravelPackage = () => {
           : [];
         const parsedBatches = Array.isArray(travelPackage.batches)
           ? travelPackage.batches.map((b) => ({
-            ...b,
-            fromDate: b.fromDate ? b.fromDate.split("T")[0] : "",
-            toDate: b.toDate ? b.toDate.split("T")[0] : "",
-          }))
+              ...b,
+              fromDate: b.fromDate ? b.fromDate.split("T")[0] : "",
+              toDate: b.toDate ? b.toDate.split("T")[0] : "",
+            }))
           : [];
         const matchedMood =
           moodBasedList.find(
@@ -232,9 +212,9 @@ const EditTravelPackage = () => {
 
         const parsedItinerary = Array.isArray(travelPackage.itinerary)
           ? travelPackage.itinerary.map((b) => ({
-            title: b.title || "",
-            description: b.description || "",
-          }))
+              title: b.title || "",
+              description: b.description || "",
+            }))
           : [];
 
         methods.reset({
@@ -243,17 +223,17 @@ const EditTravelPackage = () => {
           groupMembers: travelPackage.groupMembers[0],
           featuredImage: travelPackage.featuredImage?.url
             ? [
-              {
-                url: travelPackage.featuredImage.url,
-                altText: travelPackage.featuredImage.alt,
-              },
-            ]
+                {
+                  url: travelPackage.featuredImage.url,
+                  altText: travelPackage.featuredImage.alt,
+                },
+              ]
             : [],
           gallery: Array.isArray(travelPackage.gallery)
             ? travelPackage.gallery.map((img) => ({
-              url: img.url,
-              altText: img.alt || "",
-            }))
+                url: img.url,
+                altText: img.alt || "",
+              }))
             : [],
           batches: parsedBatches,
           locationAddress: travelPackage.locationAddress || "",
@@ -274,13 +254,20 @@ const EditTravelPackage = () => {
       } catch (error) {
         console.error(error);
       } finally {
-        setLoadingpage(false)
+        setLoadingpage(false);
       }
     };
     if (moodBasedList?.length > 0) {
       fetchData();
     }
-  }, [param?.id, moodBasedList, methods, replaceBatches, replaceItinerary, travelPackageId]);
+  }, [
+    param?.id,
+    moodBasedList,
+    methods,
+    replaceBatches,
+    replaceItinerary,
+    travelPackageId,
+  ]);
 
   const onSubmit = async (data) => {
     const price = parseFloat(data.price) || 0;
@@ -399,8 +386,9 @@ const EditTravelPackage = () => {
         navigate("/travelpackage");
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message ||
-        "Failed to Update travel package. Please try again: "
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to Update travel package. Please try again: "
       );
       console.error("Error creating travel package:", error?.response);
     } finally {
@@ -409,7 +397,7 @@ const EditTravelPackage = () => {
   };
 
   if (loadingpage) {
-    return <SkeletonLoader />
+    return <SkeletonLoader />;
   }
 
   return (
@@ -499,13 +487,7 @@ const EditTravelPackage = () => {
                       height="500px"
                     />
                   </Box>
-                  {/* <CommenQuillEditor
-                    name="description"
-                    label="Description * (min 150 characters)"
-                    required
-                    minLength={150}
-                    placeholder="Write Overview/Trip Details here..."
-                  /> */}
+
                   <Box sx={travelPackageStyle.customBox3}>
                     <CommenTextField
                       name="price"
@@ -636,7 +618,7 @@ const EditTravelPackage = () => {
                     label="Choose Package Images"
                     // multiple
                     altText
-                  // required
+                    // required
                   />
                 </Paper>
                 <Paper elevation={3} sx={commoncss.cardlineargradient}>
@@ -769,7 +751,7 @@ const EditTravelPackage = () => {
                           { value: "Moderate", label: "Moderate" },
                           { value: "Difficult", label: "Difficult" },
                         ]}
-                      // required
+                        // required
                       />
                     </>
                   )}
@@ -838,6 +820,14 @@ const EditTravelPackage = () => {
                               {`Day ${index + 1}`}
                             </Typography>
 
+                            <IconButton
+                              onClick={() => remove(index)}   
+                              color="error"
+                              size="small"
+                            >
+                              ✕
+                            </IconButton>
+
                             <CommenTextField
                               name={`itinerary.${index}.title`}
                               label="Title *"
@@ -856,13 +846,6 @@ const EditTravelPackage = () => {
                                 height="500px"
                               />
                             </Box>
-                            {/* 
-                            <CommenQuillEditor
-                              name={`itinerary.${index}.description`}
-                              label="Description *"
-                              required
-                              placeholder="Write itinerary details here..."
-                            /> */}
                           </Box>
                         ))}
                       </Box>
