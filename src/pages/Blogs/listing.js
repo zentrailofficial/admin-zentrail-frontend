@@ -4,8 +4,11 @@ import {
   Stack,
   Typography,
   IconButton,
+  MenuItem,
+  FormControl,
+  Select,
 } from "@mui/material";
-import { DataGrid} from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -16,18 +19,20 @@ import commoncss from "../../styles/commoncss";
 import CommonButton from "../../commen-component/CommenButton/CommenButton";
 export default function BlogListGrid() {
   const [page, setPage] = React.useState(0);
-const [limit, setLimit] = React.useState(10);
-const [totalBlogs, setTotalBlogs] = React.useState(0);
-const [listData, setListData] = React.useState([]);
+  const [limit, setLimit] = React.useState(10);
+  const [totalBlogs, setTotalBlogs] = React.useState(0);
+  const [listData, setListData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [IdtoDelete, setIdtoDelete] = React.useState("");
   const [loadingForDelete, setLoadingForDelete] = React.useState(false);
+  const [filterType, setFilterType] = React.useState("all");
   const navigate = useNavigate();
- const fetchData = React.useCallback ( () => {
+  const fetchData = React.useCallback(() => {
     setLoading(true);
+    const typeQuery = filterType !== "all" ? `&type=${filterType}` : "";
     apiClient
-      .get(`/api/blogs?page=${page + 1}&limit=${limit}`)
+      .get(`/api/blogs?page=${page + 1}&limit=${limit}${typeQuery}`)
       .then((res) => {
         const blogs = res.data.blogs || [];
         setTotalBlogs(res.data.totalblogs || 0);
@@ -42,11 +47,11 @@ const [listData, setListData] = React.useState([]);
         setListData(formatted);
       })
       .finally(() => setLoading(false));
-  },[page, limit]);
+  }, [page, limit, filterType]);
 
   React.useEffect(() => {
     fetchData();
-  }, [page, limit,fetchData]);
+  }, [page, limit, fetchData, filterType]);
   const handleEdit = (id) => {
     navigate(`/editblog/${id}`);
   };
@@ -167,7 +172,20 @@ const [listData, setListData] = React.useState([]);
     <Box sx={commoncss.listBox}>
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Blogs</Typography>
-        <Stack direction="row" justifyContent="space-between" mb={2} gap={2}>
+        <Stack direction="row" gap={2} alignItems="center">
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <Select
+              value={filterType}
+              onChange={(e) => {
+                setPage(0);
+                setFilterType(e.target.value);
+              }}
+            >
+              <MenuItem value="all">All</MenuItem>
+              <MenuItem value="blog">Blog</MenuItem>
+              <MenuItem value="news">News</MenuItem>
+            </Select>
+          </FormControl>
           <CommonButton
             variant="contained"
             color="primary"
