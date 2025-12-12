@@ -1,75 +1,10 @@
-import React, { useEffect } from "react";
-import { CKEditor } from "ckeditor4-react";
-import { useFormContext, Controller } from "react-hook-form";
-import "./TextEditor2.css";
+import { Controller, useFormContext } from "react-hook-form";
 import { Box, Typography } from "@mui/material";
+import JoditEditor from "jodit-react";
+import config from "./editorConfig";
 
-const CustomCKEditor = ({ name, label, required, placeholder }) => {
+const CustomCKEditor = ({ name, label, required, minLength, maxLength}) => {
   const { control } = useFormContext();
-
-  useEffect(() => {
-    const handleDialogDefinition = (evt) => {
-      if (evt.data.name !== "image") return;
-
-      const infoTab = evt.data.definition.getContents("info");
-      const browseButton = infoTab.get("browse");
-
-      if (browseButton) {
-        browseButton.hidden = false;
-        browseButton.onClick = function () {
-          const fileInput = document.createElement("input");
-          fileInput.type = "file";
-          fileInput.accept = "image/*";
-          fileInput.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = () => {
-              const altText =
-                prompt("Enter image description / alt text:", file.name) || "";
-              infoTab.get("txtUrl").setValue(reader.result);
-              infoTab.get("txtAlt").setValue(altText);
-            };
-            reader.readAsDataURL(file);
-          };
-          fileInput.click();
-        };
-      }
-    };
-
-    if (window.CKEDITOR) {
-      window.CKEDITOR.on("dialogDefinition", handleDialogDefinition);
-    }
-
-    return () => {
-      if (window.CKEDITOR) {
-        window.CKEDITOR.removeListener(
-          "dialogDefinition",
-          handleDialogDefinition
-        );
-      }
-    };
-  }, []);
-
-  // ✅ Remove float styles from saved HTML
-  useEffect(() => {
-    if (window.CKEDITOR) {
-      window.CKEDITOR.on("instanceReady", function (ev) {
-        ev.editor.dataProcessor.htmlFilter.addRules({
-          elements: {
-            img: function (el) {
-              if (el.attributes.style) {
-                el.attributes.style = el.attributes.style
-                  .replace(/float\s*:\s*(left|right)\s*;?/gi, "")
-                  .trim();
-              }
-            },
-          },
-        });
-      });
-    }
-  }, []);
 
   return (
     <Controller
@@ -77,49 +12,39 @@ const CustomCKEditor = ({ name, label, required, placeholder }) => {
       control={control}
       rules={{
         required: required ? "This field is required" : false,
-        minLength: {
-          value: 30,
-          message: "Description must be at least 30 characters long",
+
+        // Custom min + max word validation
+        validate: (value) => {
+          const text = value?.replace(/<[^>]+>/g, "")?.trim(); // remove HTML tags
+          const wordCount = text ? text.split(/\s+/).length : 0;
+
+          if (minLength && wordCount < minLength) {
+            return `Minimum ${minLength} words required`;
+          }
+
+          if (maxLength && wordCount > maxLength) {
+            return `Maximum ${maxLength} words allowed`;
+          }
+
+          return true;
         },
       }}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
-        <Box className="text-editor-container">
-          {label && <label>{label}</label>}
-          <CKEditor
-            initData={value || ""}
-            config={{
-              height: 300,
-              removePlugins: "elementspath",
-              extraPlugins: "iframe,image2,table,tabletools,tableselection",
-              allowedContent: true,
-              extraAllowedContent: "iframe[*]",
-              format_tags: "p;h1;h2;h3;h4;h5;h6;pre",
-              toolbar: [
-                { name: "clipboard", items: ["Undo", "Redo"] },
-                { name: "styles", items: ["Format"] },
-                { name: "basicstyles", items: ["Bold", "Italic", "Underline", "Strike"] },
-                { name: "colors", items: ["TextColor", "BGColor"] },
-                { name: "paragraph", items: ["NumberedList", "BulletedList", "Blockquote"] },
-                {
-                  name: "insert",
-                  items: [
-                    "Image",
-                    "Table",
-                    "HorizontalRule",
-                    "Link",
-                    "Iframe" // ✅ Add this instead of "Embed"
-                  ],
-                },
-                { name: "tools", items: ["Maximize", "Source"] },
-              ],
-            }}
-            onChange={(evt) => {
-              const data = evt.editor.getData();
-              onChange(data);
-            }}
+        <Box>
+          {label && (
+            <Typography sx={{ mb: 1, fontWeight: 600 }}>
+              {label}
+            </Typography>
+          )}
+
+          <JoditEditor
+            value={value || ""}
+            config={config}
+            onBlur={(content) => onChange(content)}
           />
+
           {error && (
-            <Typography style={{ color: "red", marginTop: "4px" }}>
+            <Typography sx={{ color: "red", mt: 1 }}>
               {error.message}
             </Typography>
           )}
