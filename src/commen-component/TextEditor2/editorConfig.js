@@ -29,17 +29,6 @@ export function InsertReelPlugin(editor) {
   });
 }
 
-
-
-
-
-
-
-
-
-
-
-
 const editorConfig = {
   height: 450,
   toolbarSticky: false,

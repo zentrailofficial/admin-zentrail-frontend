@@ -12,10 +12,8 @@ const CustomCKEditor = ({ name, label, required, minLength, maxLength}) => {
       control={control}
       rules={{
         required: required ? "This field is required" : false,
-
-        // Custom min + max word validation
         validate: (value) => {
-          const text = value?.replace(/<[^>]+>/g, "")?.trim(); // remove HTML tags
+          const text = value?.replace(/<[^>]+>/g, "")?.trim(); 
           const wordCount = text ? text.split(/\s+/).length : 0;
 
           if (minLength && wordCount < minLength) {
@@ -30,7 +28,9 @@ const CustomCKEditor = ({ name, label, required, minLength, maxLength}) => {
         },
       }}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
+    
         <Box>
+          {    console.log(value )}
           {label && (
             <Typography sx={{ mb: 1, fontWeight: 600 }}>
               {label}

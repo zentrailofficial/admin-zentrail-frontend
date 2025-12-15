@@ -14,6 +14,7 @@ apiClient.interceptors.request.use(
     const isAuthRoute = config.url.includes("/api/auth/login") || config.url.includes("/api/auth/register");
 
     if (!isAuthRoute) {
+      
       const token = getCookie("Admin_access");
 
       if (token) {

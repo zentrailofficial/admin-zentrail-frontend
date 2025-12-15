@@ -44,17 +44,17 @@ const AddBlogForm = () => {
       images: [],
       Status: "Draft",
       scheduledDate: defaultScheduleTime,
-      faq: [{ question: "", answer: "" }],
+      faq: [],
     },
   });
-  const { watch, setValue, control } = methods;
+  const { watch, setValue, control  ,getValues} = methods;
   const { fields, append, remove } = useFieldArray({
     control,
     name: "faq",
   });
 
   const onSubmit = async (data) => {
-
+    
     setLoading(true);
     try {
       const formData = new FormData();
