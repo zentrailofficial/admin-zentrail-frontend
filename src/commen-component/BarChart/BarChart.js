@@ -101,13 +101,13 @@ const ColumnsWithMovingBullets = () => {
           src: "https://www.zentrail.in/_next/image?url=%2Ffooterlogo.png&w=1920&q=75",
         },
       },
-      {
-        name: "Proonam",
-        steps: 1000,
-        pictureSettings: {
-          src: "https://www.poornamevents.com/_next/image?url=%2Flogo2.webp&w=256&q=75",
-        },
-      },
+      // {
+      //   name: "Proonam",
+      //   steps: 1000,
+      //   pictureSettings: {
+      //     src: "https://www.poornamevents.com/_next/image?url=%2Flogo2.webp&w=256&q=75",
+      //   },
+      // },
     ];
 
     // Chart container

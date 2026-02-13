@@ -12,13 +12,13 @@ const commoncss = {
   },
 
   commonBtn: {
-    background: " linear-gradient(to right , #0095ffbe, #d24bff, #d24bff)",
+    background: "#35C0F0",
     color: "#fff",
     fontWeight: "600",
     textTransform: "none",
     whiteSpace: "nowrap",
     "&:hover": {
-      background: " linear-gradient(180deg, #5959b9be, #d24bff)",
+      background: "#1FA4D4",
     },
   },
    apptop: (theme) => ({
@@ -33,7 +33,7 @@ const commoncss = {
   iconbtn: {
     mr: 2,
     display: { xs: "none", sm: "inline-flex" },
-    background: "linear-gradient(135deg, #75d9e6ff, #c843ff, #ff7eff)",
+    background: "#35C0F0",
     color: "white",
     "&:hover": {
       background: "linear-gradient(135deg,  #c843ff, #ff7eff, #75d9e6ff)",
@@ -74,7 +74,7 @@ const commoncss = {
       width: '6px',
       borderTopLeftRadius: 'inherit',
       borderBottomLeftRadius: 'inherit',
-      backgroundImage: 'linear-gradient(180deg, #00ffe5be, #d24bff)',
+      backgroundImage: 'linear-gradient(180deg, #00ffe5be, #35C0F0)',
 
     }
   },
