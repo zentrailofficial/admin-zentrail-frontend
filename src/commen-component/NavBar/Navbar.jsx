@@ -195,8 +195,8 @@ export default function Navbar() {
       {user?.role !== "superadmin" ? (
         <List>
           {sidebarGroups.filter(
-              (g) => g.show !== false && (!g.children?.length || g.children.some(c => c.show !== false))
-            )
+            (g) => g.show !== false && (!g.children?.length || g.children.some(c => c.show !== false))
+          )
 
             .map((group) => (
               <Box key={group.title}>
@@ -218,7 +218,7 @@ export default function Navbar() {
                       minWidth: 0,
                       mr: miniDrawer ? 0 : 2,
                       justifyContent: "center",
-                      color: "#c843ff",
+                      color: "#35C0F0",
                     }}
                   >
                     {group.icon}
@@ -235,9 +235,9 @@ export default function Navbar() {
                       />
                       {group.children?.length > 0 &&
                         (openMenus[group.title] ? (
-                          <ExpandLess sx={{ color: "#c843ff" }} />
+                          <ExpandLess sx={{ color: "#35C0F0" }} />
                         ) : (
-                          <ExpandMore sx={{ color: "#c843ff" }} />
+                          <ExpandMore sx={{ color: "#35C0F0" }} />
                         ))}
                     </>
                   )}
@@ -273,7 +273,7 @@ export default function Navbar() {
                                 minWidth: 0,
                                 mr: 2,
                                 justifyContent: "center",
-                                color: "#c843ff",
+                                color: "#35C0F0",
                               }}
                             >
                               {child.icon}
@@ -283,7 +283,7 @@ export default function Navbar() {
                               sx={{
                                 ...(isActive && {
                                   background:
-                                    "linear-gradient(135deg, #c843ff, #ff7eff, #75d9e6ff)",
+                                    "linear-gradient(135deg, #35C0F0, #ff7eff, #75d9e6ff)",
                                   WebkitBackgroundClip: "text",
                                   WebkitTextFillColor: "transparent",
                                   fontWeight: 600,
@@ -329,11 +329,17 @@ export default function Navbar() {
           >
             {miniDrawer ? <MenuIcon /> : <ChevronLeft />}
           </IconButton>
-          <Typography
-            variant="h6"
-            sx={[commoncss.navtypography, { textTransform: 'capitalize' }]}>
-            {user.panel === "travel" ? 'Zentrail' : user.panel} Admin Panel
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+            <Box
+              component="img"
+              src="/logo.png"
+              alt="Logo"
+              sx={{ height: 32, mr: 1 }}
+            />
+            <Typography variant="h6" sx={[commoncss.navtypography, { textTransform: "capitalize" }]}>
+              {user.panel === "travel" ? "Zentrail" : user.panel} Admin Panel
+            </Typography>
+          </Box>
           <IconButton onClick={toggleColorMode}
             sx={commoncss.iconbtn}>
             {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}

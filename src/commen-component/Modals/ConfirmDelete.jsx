@@ -26,7 +26,7 @@ const ConfirmDelete = ({
       <DialogActions>
         <Button
           onClick={onClose}
-          color="primary" 
+          color="#37863F" 
           variant="outlined"
           fullWidth={false}
         >

@@ -302,7 +302,7 @@ const Login = () => {
           >
             <Box
               component="img"
-              src="companylogo.svg"
+              src="Zentraillogo.png"
               alt="logo"
               sx={{
                 maxWidth: {
