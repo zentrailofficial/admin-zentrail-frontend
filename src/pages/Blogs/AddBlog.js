@@ -47,7 +47,7 @@ const AddBlogForm = () => {
       faq: [],
     },
   });
-  const { watch, setValue, control  ,getValues} = methods;
+  const { watch, setValue, control  } = methods;
   const { fields, append, remove } = useFieldArray({
     control,
     name: "faq",
