@@ -40,7 +40,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "preview:worker": "npm run build && wrangler dev",
-    "deploy:worker": "npm run build && wrangler pages deploy build"
+    "deploy:worker": "npm run build && wrangler deploy"
   },
   "eslintConfig": {
     "extends": [
@@ -59,8 +59,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "wrangler": "^4.81.0"
   }
 }
