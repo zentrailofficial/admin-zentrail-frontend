@@ -4,7 +4,8 @@
   "compatibility_date": "2024-09-23",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    "directory": "build"
+    "directory": "./build",
+    "binding": "ASSETS"
   },
   "vars": {
       "REACT_APP_GOOGLE_MAPS_API_KEY": "AIzaSyBRchIzUTBZskwvoli9S0YxLdmklTcOicU",
