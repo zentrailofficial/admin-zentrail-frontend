@@ -1,6 +1,5 @@
 {  
   "name": "admin-zentrail",
-  "main": "src/index.js", // This would be your Worker script
   "compatibility_date": "2024-09-23",
   "compatibility_flags": ["nodejs_compat"],
   "pages_build_output_dir": "./build",
