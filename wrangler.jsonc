@@ -3,9 +3,6 @@
   "compatibility_date": "2024-09-23",
   "compatibility_flags": ["nodejs_compat"],
   "pages_build_output_dir": "./build",
-  "assets": {
-    "directory": "build"
-  },
   "vars": {
       "REACT_APP_GOOGLE_MAPS_API_KEY": "AIzaSyBRchIzUTBZskwvoli9S0YxLdmklTcOicU",
       "REACT_APP_SERVER_URL": "https://zentrail-backend-prod.onrender.com"
